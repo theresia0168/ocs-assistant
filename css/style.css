@@ -1073,3 +1073,104 @@ footer {
   .classified-stamp { display: none; }
   .header-text h1 { font-size: 1.3rem; }
 }
+
+/* ============================================================
+   포격/폭격 페이지
+============================================================ */
+.barrage-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+.barrage-top .combat-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.barrage-type-btns {
+  display: flex;
+  gap: 4px;
+}
+.btype-btn, .bobs-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  flex: 1;
+  padding: 6px 4px;
+  background: rgba(0,0,0,0.05);
+  color: var(--ink-faded);
+  border: 2px solid var(--border);
+  border-bottom: 3px solid var(--ink);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.btype-btn:hover, .bobs-btn:hover { background: var(--paper-dark); color: var(--ink); }
+.btype-btn.active, .bobs-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* 화력 컬럼 표시 */
+.barrage-col-card { }
+.barrage-col-display {
+  background: var(--ink);
+  padding: 14px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.bcol-main {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--paper);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.bcol-cost {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--khaki);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+.bcol-cost span {
+  font-weight: 700;
+  color: var(--paper);
+}
+.barrage-breakdown {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-faded);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* BRT 결과 색상 */
+.brt-none      { color: var(--ink-faded) !important; }
+.brt-dg        { color: #e08020 !important; }
+.brt-half-cond { color: #2060a0 !important; }
+.brt-half      { color: #c84020 !important; }
+.brt-step      { color: #8b1a1a !important; }
+
+/* 포격 결과 로그 */
+.barrage-log-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.barrage-log-section .log-entries {
+  min-height: 60px;
+  max-height: 120px;
+}
+.barrage-log-section .log-clear-btn {
+  align-self: flex-end;
+}
+
+@media (max-width: 700px) {
+  .barrage-top { grid-template-columns: 1fr; }
+}

@@ -36,6 +36,7 @@
   <nav>
     <button class="active" onclick="showPage('turn', this)">턴 트래커</button>
     <button onclick="showPage('combat', this)">전투 계산기</button>
+    <button onclick="showPage('barrage', this)">포격/폭격</button>
   </nav>
 
   <!-- ========================================================
@@ -260,6 +261,109 @@
 
   </div><!-- /combat -->
 
+  <!-- ========================================================
+       PAGE: 포격/폭격
+  ======================================================== -->
+  <div id="barrage" class="page">
+
+    <div class="barrage-top">
+
+      <!-- 포격력 입력 -->
+      <div class="card combat-card">
+        <div class="card-title"><span class="icon">💥</span> 포격력 (Barrage Strength)</div>
+
+        <div class="field-group">
+          <label class="field-label">총 포격력</label>
+          <input class="field-input" type="number" id="barrageStr" value="8" min="0" step="0.5" oninput="calcBarrage()">
+        </div>
+
+        <div class="field-group" style="margin-top:12px;">
+          <label class="field-label">포격 유형</label>
+          <div class="barrage-type-btns">
+            <button class="btype-btn active" onclick="setBarrageType('artillery', this)">포병</button>
+            <button class="btype-btn"        onclick="setBarrageType('air', this)">항공</button>
+            <button class="btype-btn"        onclick="setBarrageType('naval', this)">함선</button>
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-top:12px;">
+          <label class="field-label">관측 유닛</label>
+          <div class="barrage-type-btns">
+            <button class="bobs-btn active" onclick="setBarrageObs(true, this)">있음</button>
+            <button class="bobs-btn"        onclick="setBarrageObs(false, this)">없음</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 화력 컬럼 / 비용 -->
+      <div class="card combat-card barrage-col-card">
+        <div class="card-title"><span class="icon">📊</span> 화력 컬럼</div>
+        <div class="barrage-col-display">
+          <div class="bcol-main" id="bColLabel">—</div>
+          <div class="bcol-cost">공급 비용 <span id="bColCost">—</span></div>
+        </div>
+        <div class="barrage-breakdown" id="barrageBreakdown"></div>
+      </div>
+
+      <!-- 대상 조건 -->
+      <div class="card combat-card">
+        <div class="card-title"><span class="icon">🎯</span> 대상 조건</div>
+
+        <div class="field-group">
+          <label class="field-label">Hedgehog</label>
+          <div class="fort-select">
+            <button class="fort-btn active" data-val="0" onclick="setBarrageFort(0, this)">없음</button>
+            <button class="fort-btn" data-val="1" onclick="setBarrageFort(1, this)">1</button>
+            <button class="fort-btn" data-val="2" onclick="setBarrageFort(2, this)">2</button>
+            <button class="fort-btn" data-val="3" onclick="setBarrageFort(3, this)">3</button>
+            <button class="fort-btn" data-val="4" onclick="setBarrageFort(4, this)">4</button>
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-top:12px;">
+          <label class="supply-toggle">
+            <input type="checkbox" id="barrageHalf" onchange="calcBarrage()">
+            <span class="supply-check-label">화력 절반 적용 (지형/조건)</span>
+          </label>
+        </div>
+      </div>
+
+    </div><!-- /barrage-top -->
+
+    <!-- 주사위 굴림 -->
+    <div class="card combat-dice-card">
+      <div class="card-title"><span class="icon">🎲</span> 포격 굴림 (2d6)</div>
+      <div class="combat-dice-inner">
+        <div class="combat-dice-controls">
+          <div class="combat-roll-btns">
+            <button class="dice-roll-btn combat-btn" style="width:100%;" onclick="rollBarrage()">
+              <span class="roll-label">포격 굴림</span>
+              <span class="roll-formula">2d6</span>
+            </button>
+          </div>
+        </div>
+        <div class="combat-dice-result-wrap">
+          <div class="dice-result-area combat-dice-result" id="barrageDiceResult">
+            <span class="dice-placeholder">버튼을 눌러 굴리세요</span>
+          </div>
+          <div class="dice-result-tag" id="barrageDiceTag"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 포격 결과 기록 -->
+    <div class="card combat-log-card">
+      <div class="card-title"><span class="icon">📋</span> 포격 결과 기록</div>
+      <div class="barrage-log-section">
+        <div class="log-entries" id="barrageLog">
+          <div class="log-empty">포격 굴림 결과가 여기에 기록됩니다</div>
+        </div>
+        <button class="log-clear-btn" onclick="clearBarrageLog()">초기화</button>
+      </div>
+    </div>
+
+  </div><!-- /barrage -->
+
   <footer>
     GRID REF: OCS-ASSIST-v1.0 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
   </footer>
@@ -268,6 +372,7 @@
 <script src="js/turn.js"></script>
 <script src="js/dice.js"></script>
 <script src="js/combat.js"></script>
+<script src="js/barrage.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
