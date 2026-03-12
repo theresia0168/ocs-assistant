@@ -1,0 +1,255 @@
+// ============================================================
+// 턴 트래커 — 계층형 시퀀스 (3단계: 그룹 > 페이즈 > 단계)
+// ============================================================
+// type: 'solo'   = 단독 페이즈 (날씨, 선플레이어 결정)
+//       'player' = 선/후 플레이어 페이즈 묶음
+// phases 내 steps 배열이 있으면 해당 페이즈는 단계로 세분화
+
+const PLAYER_PHASES = (prefix) => [
+  {
+    id: `${prefix}_air`,
+    label: '항공 정비 페이즈',
+    en: 'Aircraft Refit Phase',
+    steps: null,
+  },
+  {
+    id: `${prefix}_reinf`,
+    label: '증원 페이즈',
+    en: 'Reinforcement Phase',
+    steps: null,
+  },
+  {
+    id: `${prefix}_move`,
+    label: '이동 페이즈',
+    en: 'Movement Phase',
+    steps: [
+      { id: `${prefix}_move_withdraw`, label: '탈출 단계',         en: 'Breakout'          },
+      { id: `${prefix}_move_move`,     label: '이동 단계',         en: 'Movement'          },
+      { id: `${prefix}_move_bombard`,  label: '항공/해군 포격 단계', en: 'Air/Naval Barrage' },
+    ],
+  },
+  {
+    id: `${prefix}_supply`,
+    label: '보급 페이즈',
+    en: 'Supply Phase',
+    steps: null,
+  },
+  {
+    id: `${prefix}_reaction`,
+    label: '반응 페이즈',
+    en: 'Reaction Phase',
+    steps: [
+      { id: `${prefix}_react_move`,    label: '이동 단계', en: 'Movement' },
+      { id: `${prefix}_react_fire`,    label: '포격 단계', en: 'Barrage'  },
+    ],
+  },
+  {
+    id: `${prefix}_combat`,
+    label: '전투 페이즈',
+    en: 'Combat Phase',
+    steps: [
+      { id: `${prefix}_combat_arty`,   label: '포병 포격 단계', en: 'Artillery Barrage' },
+      { id: `${prefix}_combat_combat`, label: '전투 단계',      en: 'Combat'            },
+    ],
+  },
+  {
+    id: `${prefix}_exploit`,
+    label: '돌파 페이즈',
+    en: 'Exploitation Phase',
+    steps: [
+      { id: `${prefix}_exploit_move`,   label: '이동 단계', en: 'Movement' },
+      { id: `${prefix}_exploit_fire`,   label: '포격 단계', en: 'Barrage'  },
+      { id: `${prefix}_exploit_combat`, label: '전투 단계', en: 'Combat'   },
+    ],
+  },
+  {
+    id: `${prefix}_clean`,
+    label: '정리 페이즈',
+    en: 'Clean Phase',
+    steps: null,
+  },
+];
+
+const SEQUENCE = [
+  { type: 'solo',   id: 'weather',    label: '날씨 결정 페이즈',       en: 'Weather Determination',      icon: '🌦' },
+  { type: 'solo',   id: 'initiative', label: '선 플레이어 결정 페이즈', en: 'First Player Determination', icon: '🎲' },
+  { type: 'player', id: 'first',      label: '선 플레이어', en: 'First Player',  icon: '①', phases: PLAYER_PHASES('f') },
+  { type: 'player', id: 'second',     label: '후 플레이어', en: 'Second Player', icon: '②', phases: PLAYER_PHASES('s') },
+];
+
+// 평탄화: { gi, pi, si, label, en, groupLabel, phaseLabel, isStep }
+function buildFlatSteps() {
+  const steps = [];
+  SEQUENCE.forEach((grp, gi) => {
+    if (grp.type === 'solo') {
+      steps.push({ gi, pi: -1, si: -1, label: grp.label, en: grp.en, icon: grp.icon, groupLabel: null, phaseLabel: null, isStep: false });
+    } else {
+      grp.phases.forEach((ph, pi) => {
+        if (!ph.steps) {
+          steps.push({ gi, pi, si: -1, label: ph.label, en: ph.en, icon: grp.icon, groupLabel: grp.label, phaseLabel: null, isStep: false });
+        } else {
+          ph.steps.forEach((st, si) => {
+            steps.push({ gi, pi, si, label: st.label, en: st.en, icon: grp.icon, groupLabel: grp.label, phaseLabel: ph.label, isStep: true });
+          });
+        }
+      });
+    }
+  });
+  return steps;
+}
+
+const FLAT = buildFlatSteps();
+
+let state = {
+  turn: 1,
+  maxTurn: 12,
+  step: 0,        // FLAT 인덱스
+  collapsed: {},  // { 'first': true/false, 'second': true/false }
+};
+
+function getPlayerStepRange(grpId) {
+  // 해당 플레이어 그룹의 FLAT 첫/마지막 인덱스 반환
+  let first = -1, last = -1, flatIdx = 0;
+  SEQUENCE.forEach((grp) => {
+    if (grp.type === 'solo') { flatIdx++; return; }
+    const start = flatIdx;
+    grp.phases.forEach((ph) => {
+      if (!ph.steps) flatIdx++;
+      else flatIdx += ph.steps.length;
+    });
+    if (grp.id === grpId) { first = start; last = flatIdx - 1; }
+  });
+  return { first, last };
+}
+
+function toggleCollapse(grpId) {
+  state.collapsed[grpId] = !state.collapsed[grpId];
+  renderPhases();
+}
+
+function renderPhases() {
+  const list = document.getElementById('phaseList');
+  list.innerHTML = '';
+
+  let flatIdx = 0;
+
+  SEQUENCE.forEach((grp) => {
+    if (grp.type === 'solo') {
+      const idx = flatIdx++;
+      const li = document.createElement('li');
+      li.className = 'phase-item solo-phase' +
+        (idx < state.step   ? ' done'    : '') +
+        (idx === state.step ? ' current' : '');
+      li.innerHTML = `<span class="phase-num">${grp.icon}</span><span class="phase-name">${grp.label}</span><span class="phase-en">${grp.en}</span>`;
+      li.onclick = ((i) => () => { state.step = i; updateTurnUI(); })(idx);
+      list.appendChild(li);
+    } else {
+      const { first, last } = getPlayerStepRange(grp.id);
+      const allDone    = last < state.step;
+      const isActive   = state.step >= first && state.step <= last;
+      const isCollapsed = state.collapsed[grp.id] !== undefined
+        ? state.collapsed[grp.id]
+        : allDone; // 완료된 그룹은 기본 접힘
+
+      // 플레이어 그룹 헤더 (클릭으로 접기/펼치기)
+      const header = document.createElement('li');
+      header.className = 'phase-group-header' +
+        (allDone  ? ' group-done'   : '') +
+        (isActive ? ' group-active' : '');
+      header.innerHTML = `
+        <span class="group-icon">${grp.icon}</span>
+        <span class="group-label-text">${grp.label}</span>
+        <span class="group-en">${grp.en}</span>
+        <span class="collapse-toggle">${isCollapsed ? '▶' : '▼'}</span>`;
+      header.onclick = () => toggleCollapse(grp.id);
+      list.appendChild(header);
+
+      if (!isCollapsed) {
+        grp.phases.forEach((ph) => {
+          if (!ph.steps) {
+            const idx = flatIdx++;
+            const li = document.createElement('li');
+            li.className = 'phase-item sub-phase' +
+              (idx < state.step   ? ' done'    : '') +
+              (idx === state.step ? ' current' : '');
+            li.innerHTML = `<span class="phase-num">${ph.en.substring(0,3).toUpperCase()}</span><span class="phase-name">${ph.label}</span><span class="phase-en">${ph.en}</span>`;
+            li.onclick = ((i) => () => { state.step = i; updateTurnUI(); })(idx);
+            list.appendChild(li);
+          } else {
+            const firstIdx  = flatIdx;
+            const lastIdx   = flatIdx + ph.steps.length - 1;
+            const phAllDone = lastIdx < state.step;
+            const phActive  = state.step >= firstIdx && state.step <= lastIdx;
+
+            const phHeader = document.createElement('li');
+            phHeader.className = 'phase-sub-header' +
+              (phAllDone ? ' done'    : '') +
+              (phActive  ? ' current' : '');
+            phHeader.innerHTML = `<span class="phase-num">${ph.en.substring(0,3).toUpperCase()}</span><span class="phase-name">${ph.label}</span><span class="phase-en">${ph.en}</span>`;
+            list.appendChild(phHeader);
+
+            ph.steps.forEach((st) => {
+              const idx = flatIdx++;
+              const li = document.createElement('li');
+              li.className = 'phase-item step-phase' +
+                (idx < state.step   ? ' done'    : '') +
+                (idx === state.step ? ' current' : '');
+              li.innerHTML = `<span class="phase-num step-dot">·</span><span class="phase-name">${st.label}</span><span class="phase-en">${st.en}</span>`;
+              li.onclick = ((i) => () => { state.step = i; updateTurnUI(); })(idx);
+              list.appendChild(li);
+            });
+          }
+        });
+      } else {
+        // 접혀 있을 때는 flatIdx만 전진
+        grp.phases.forEach((ph) => {
+          if (!ph.steps) flatIdx++;
+          else flatIdx += ph.steps.length;
+        });
+      }
+    }
+  });
+}
+
+function updateTurnUI() {
+  const cur = FLAT[state.step];
+  let phaseText = cur ? cur.label : '턴 완료';
+  if (cur && cur.phaseLabel) phaseText = cur.phaseLabel + ' › ' + cur.label;
+  if (cur && cur.groupLabel) phaseText = cur.groupLabel + ' › ' + phaseText;
+
+  document.getElementById('turnNum').textContent       = state.turn;
+  document.getElementById('maxTurn').textContent       = state.maxTurn;
+  document.getElementById('curPhaseLabel').textContent = phaseText;
+  document.getElementById('progressLabel').textContent = (state.step + 1) + ' / ' + FLAT.length;
+  renderPhases();
+}
+
+function nextPhase() {
+  if (state.step < FLAT.length - 1) {
+    state.step++;
+    updateTurnUI();
+  } else {
+    newTurn();
+  }
+}
+
+function prevPhase() {
+  if (state.step > 0) { state.step--; updateTurnUI(); }
+}
+
+function resetTurn() {
+  state.step = 0;
+  state.collapsed = {};
+  updateTurnUI();
+}
+
+function newTurn() {
+  if (state.turn >= state.maxTurn) {
+    alert('게임 종료! 마지막 턴입니다.');
+    return;
+  }
+  state.turn++;
+  state.step = 0;
+  state.collapsed = {};
+  updateTurnUI();
+}
