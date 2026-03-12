@@ -46,5 +46,6 @@ function showPage(id, btn) {
 // ============================================================
 updateTurnUI();
 calcOdds();
+calcBarrage();
 setInterval(updateClock, 1000);
 updateClock();

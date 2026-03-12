@@ -109,7 +109,7 @@ function setBarrageObs(val, btn) {
 
 function setBarrageFort(val, btn) {
   barrageFort = val;
-  document.querySelectorAll('#barrage .fort-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.barrage-fort-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   calcBarrage();
 }
