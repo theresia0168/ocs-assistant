@@ -37,8 +37,8 @@ function showPage(id, btn) {
 }
 
 // 초기화
-updateStartDayOptions();   // 날짜 선택 드롭다운 채우기
-applyStartDate();          // 기본값으로 시작 날짜 적용 후 UI 갱신
+updateStartDayOptions();  // 날짜 드롭다운 채우기
+updateTurnUI();           // 기본 UI 렌더링 (날짜 미설정 상태)
 calcOdds();
 calcBarrage();
 setInterval(updateClock, 1000);
