@@ -1077,6 +1077,32 @@ footer {
 /* ============================================================
    포격/폭격 페이지
 ============================================================ */
+/* 포격 페이지 2x2 그리드 설정 */
+.barrage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2열 구조 */
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* 카드 내부 구성 요소 최적화 */
+.barrage-target-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.barrage-col-display {
+  padding: 10px !important;
+}
+
+/* 모바일 대응: 작은 화면에서는 다시 1열로 */
+@media (max-width: 768px) {
+  .barrage-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .barrage-top {
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
