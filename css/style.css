@@ -384,7 +384,21 @@ nav button.active::before { opacity: 1; }
 /* ============================================================
    전투 계산기
 ============================================================ */
-.combat-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.combat-inputs {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; 
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: stretch; 
+}
+
+.combat-inputs > .card, 
+.combat-inputs > .combat-result-inner {
+  height: 100%;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 .combat-result-bar { margin-bottom: 12px; }
 .combat-result-inner { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center; }
