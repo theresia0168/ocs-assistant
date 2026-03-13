@@ -44,8 +44,10 @@ function showPage(id, btn) {
 // ============================================================
 // 초기화
 // ============================================================
-updateTurnUI();
-calcOdds();
-calcBarrage();
-setInterval(updateClock, 1000);
-updateClock();
+document.addEventListener('DOMContentLoaded', function() {
+  updateTurnUI();
+  calcOdds();
+  calcBarrage();
+  setInterval(updateClock, 1000);
+  updateClock();
+});

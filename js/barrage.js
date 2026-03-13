@@ -48,7 +48,23 @@ const BRT = [
   ['DG','HALF','HALF','HALF','HALF','1','1','1','1','2','3'],
 ];
 
-// 결과 표시 텍스트
+// 밀집도별 컬럼 보정
+const DENSITY_SHIFT = {
+  le1: -1,  // 1 RE 이하: 1L
+  le3:  0,  // 3 RE 이하: No Effect
+  le4: +1,  // 4 RE 이하: 1R
+  le5: +2,  // 5 RE 이하: 2R
+  le6: +3,  // 6 RE 이하: 3R
+  gt6: +4,  // 6 RE 초과: 4R
+};
+const DENSITY_LABEL = {
+  le1: '1 RE 이하 (1L)',
+  le3: '3 RE 이하 (No Effect)',
+  le4: '4 RE 이하 (1R)',
+  le5: '5 RE 이하 (2R)',
+  le6: '6 RE 이하 (3R)',
+  gt6: '6 RE 초과 (4R)',
+};
 const BRT_RESULT_LABEL = {
   '-':        { text: '효과 없음',   cls: 'brt-none' },
   'DG':       { text: 'DG',         cls: 'brt-dg'   },
@@ -92,6 +108,7 @@ function getBarrageColIndex(str) {
 let barrageType    = 'artillery';
 let barrageHasObs  = true;
 let barrageFort    = 0;
+let barrageDensity = 'le3'; // 기본값: 3 RE 이하 (No Effect)
 
 function setBarrageType(type, btn) {
   barrageType = type;
@@ -114,15 +131,23 @@ function setBarrageFort(val, btn) {
   calcBarrage();
 }
 
+function setDensity(val, btn) {
+  barrageDensity = val;
+  document.querySelectorAll('.density-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calcBarrage();
+}
+
 // ============================================================
 // 화력 컬럼 계산 및 표시
 // ============================================================
 function calcBarrage() {
-  const raw     = parseFloat(document.getElementById('barrageStr').value) || 0;
-  const isHalf  = document.getElementById('barrageHalf').checked;
-  const effStr  = isHalf ? raw * 0.5 : raw;
-  const colIdx  = getBarrageColIndex(effStr);
-  const col     = BRT_COLS[colIdx];
+  if (!document.getElementById('barrageStr')) return;
+  const raw        = parseFloat(document.getElementById('barrageStr').value) || 0;
+  const baseColIdx = getBarrageColIndex(raw);
+  const densShift  = DENSITY_SHIFT[barrageDensity];
+  const colIdx     = Math.max(0, Math.min(BRT_COLS.length - 1, baseColIdx + densShift));
+  const col        = BRT_COLS[colIdx];
 
   document.getElementById('bColLabel').textContent = col.label;
   document.getElementById('bColCost').textContent  = col.cost;
@@ -130,7 +155,8 @@ function calcBarrage() {
   // 브레이크다운
   const TYPE_LABEL = { artillery: '포병', air: '항공', naval: '함선' };
   const rows = [['포격력', raw, '']];
-  if (isHalf) rows.push(['지형/조건 절반', effStr % 1 === 0 ? effStr : effStr.toFixed(1), '×½']);
+  rows.push(['밀집도', DENSITY_LABEL[barrageDensity], '']);
+  if (densShift !== 0) rows.push(['컬럼 보정', `${densShift > 0 ? '+' : ''}${densShift}`, '']);
   if (barrageFort > 0) rows.push(['Hedgehog', `Lv.${barrageFort}`, '']);
   rows.push(['포격 유형', TYPE_LABEL[barrageType], '']);
   rows.push(['관측 유닛', barrageHasObs ? '있음' : '없음', '']);
@@ -155,11 +181,11 @@ function rollBarrage() {
   const [v1, v2] = [r(), r()];
   const diceVal  = v1 + v2;
 
-  const raw    = parseFloat(document.getElementById('barrageStr').value) || 0;
-  const isHalf = document.getElementById('barrageHalf').checked;
-  const effStr = isHalf ? raw * 0.5 : raw;
-  const colIdx = getBarrageColIndex(effStr);
-  const col    = BRT_COLS[colIdx];
+  const raw        = parseFloat(document.getElementById('barrageStr').value) || 0;
+  const baseColIdx = getBarrageColIndex(raw);
+  const densShift  = DENSITY_SHIFT[barrageDensity];
+  const colIdx     = Math.max(0, Math.min(BRT_COLS.length - 1, baseColIdx + densShift));
+  const col        = BRT_COLS[colIdx];
 
   // 행 인덱스: 주사위 2~12 → 0~10
   const rowIdx = Math.min(Math.max(diceVal - 2, 0), 10);
@@ -170,21 +196,44 @@ function rollBarrage() {
   area.appendChild(makeDie(v1, 'ivory'));
   area.appendChild(makeDie(v2, 'ivory'));
 
+  // 1/2 결과면 손실 굴림 1d6 자동 추가
+  let lossRollVal = null;
+  let lossResult  = null;
+  const needsLossRoll = (rawResult === 'HALF' || rawResult === 'HALF_COND') && display === '1/2';
+  if (needsLossRoll) {
+    lossRollVal = r();
+    lossResult  = lossRollVal >= 4 ? '1 스텝 손실 + DG' : 'DG만';
+  }
+
   // 결과
   const modDiv = document.createElement('div');
   modDiv.className = 'dice-modified-total';
+
+  let lossHtml = '';
+  if (needsLossRoll) {
+    const lossClass = lossRollVal >= 4 ? 'brt-step' : 'brt-dg';
+    lossHtml = `
+      <div class="loss-roll-row">
+        <span class="loss-roll-label">손실 굴림</span>
+        <span class="loss-die-val">${lossRollVal}</span>
+        <span class="loss-roll-result ${lossClass}">${lossResult}</span>
+      </div>`;
+  }
+
   modDiv.innerHTML = `
     <div class="crt-result ${cls}">${display}</div>
     <div class="drm-line">${diceVal} → ${col.label} 컬럼</div>
-    ${desc ? `<div class="crt-col-label">${desc}</div>` : ''}`;
+    ${desc ? `<div class="crt-col-label">${desc}</div>` : ''}
+    ${lossHtml}`;
   area.appendChild(modDiv);
 
   const TYPE_LABEL = { artillery: '포병', air: '항공', naval: '함선' };
   tag.textContent = `포격 굴림 — ${TYPE_LABEL[barrageType]}`;
   tag.className = 'dice-result-tag combat';
 
-  // 로그 저장
-  saveBarrageLog(display, `${TYPE_LABEL[barrageType]} ｜ ${col.label} 컬럼 (${col.cost}) ｜ 주사위 ${diceVal}${desc ? ' ｜ ' + desc : ''}`, cls);
+  const densDesc = densShift !== 0 ? ` (밀집도 ${densShift > 0 ? '+' : ''}${densShift})` : '';
+  const lossDesc = needsLossRoll ? ` ｜ 손실굴림 ${lossRollVal} → ${lossResult}` : '';
+  saveBarrageLog(display, `${TYPE_LABEL[barrageType]} ｜ ${col.label} 컬럼 (${col.cost})${densDesc} ｜ 주사위 ${diceVal}${desc ? ' ｜ ' + desc : ''}${lossDesc}`, cls);
 }
 
 // ============================================================

@@ -23,10 +23,10 @@ function setFort(val, btn) {
   // 이미 선택된 버튼 누르면 해제
   if (fortLevel === val && val !== 0) {
     fortLevel = 0;
-    document.querySelectorAll('.fort-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#combat .fort-btn:not(.barrage-fort-btn)').forEach(b => b.classList.remove('active'));
   } else {
     fortLevel = val;
-    document.querySelectorAll('.fort-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#combat .fort-btn:not(.barrage-fort-btn)').forEach(b => b.classList.remove('active'));
     if (val !== 0) btn.classList.add('active');
   }
   calcOdds();
