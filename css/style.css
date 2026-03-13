@@ -505,9 +505,12 @@ nav button.active::before { opacity: 1; }
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 12px;
-  align-items: start;
+  align-items: stretch;
 }
-.barrage-row1 .card { margin-bottom: 0; }
+.barrage-row1 .card {
+  margin-bottom: 0; 
+  height: 100%;
+}
 
 /* 행 2 내부: Hedgehog+밀집도(좌) | 구분선 | 체크리스트(우) */
 .target-inner-grid {
