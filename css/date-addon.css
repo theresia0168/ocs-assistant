@@ -1,0 +1,63 @@
+/* ============================================================
+   날짜 입력 블록 (턴 트래커)
+============================================================ */
+.date-setup-block {
+  margin-bottom: 4px;
+}
+.date-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  flex-wrap: nowrap;
+}
+.date-input-year {
+  width: 72px !important;
+  flex: 0 0 72px;
+  padding: 6px 6px !important;
+  font-size: 0.88rem !important;
+}
+.date-input-month,
+.date-input-day {
+  flex: 0 0 auto;
+  padding: 6px 4px !important;
+  font-size: 0.88rem !important;
+  cursor: pointer;
+}
+.date-sep {
+  font-size: 0.78rem;
+  color: var(--ink-faded);
+  flex-shrink: 0;
+}
+.date-apply-btn {
+  flex: 0 0 auto !important;
+  padding: 6px 14px !important;
+  font-size: 0.78rem !important;
+  white-space: nowrap;
+}
+
+/* 현재 턴 날짜 표시 — 강조 */
+.turn-date-display {
+  font-size: 0.82rem !important;
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--ink);
+  letter-spacing: 0.2px;
+}
+
+/* 다음 턴 날짜 — 흐리게 */
+.info-value-faded {
+  font-size: 0.82rem !important;
+  color: var(--ink-faded) !important;
+  font-weight: 500 !important;
+}
+
+/* select 요소 기본 스타일 통일 */
+select.field-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a4a32'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px !important;
+}

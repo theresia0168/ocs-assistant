@@ -1,3 +1,40 @@
+// ============================================================
+// OCS 날짜 턴 시스템
+// ============================================================
+
+// OCS 턴 내의 날짜 순서 (월별로 최대 9턴)
+const OCS_TURN_DAYS = [1, 5, 8, 12, 15, 19, 22, 26, 29];
+
+// 해당 연월에서 유효한 턴 날짜 배열 반환
+function getValidDaysForMonth(year, month) {
+  // 2월은 29일 제외 (8턴)
+  if (month === 2) return OCS_TURN_DAYS.slice(0, 8);
+  return OCS_TURN_DAYS.slice();
+}
+
+// 다음 턴의 날짜 정보 반환 { year, month, day }
+function getNextTurnDate(year, month, day) {
+  const validDays = getValidDaysForMonth(year, month);
+  const idx = validDays.indexOf(day);
+  if (idx !== -1 && idx < validDays.length - 1) {
+    return { year, month, day: validDays[idx + 1] };
+  }
+  // 다음 달로 넘어감
+  let nextMonth = month + 1;
+  let nextYear  = year;
+  if (nextMonth > 12) { nextMonth = 1; nextYear++; }
+  return { year: nextYear, month: nextMonth, day: getValidDaysForMonth(nextYear, nextMonth)[0] };
+}
+
+// 날짜 표시 문자열
+function formatTurnDate(year, month, day) {
+  return `${year}년 ${month}월 ${day}일`;
+}
+
+// ============================================================
+// 페이즈 정의
+// ============================================================
+
 const PLAYER_PHASES = (prefix) => [
   { id: `${prefix}_air`,      label: '항공 정비 페이즈', en: 'Aircraft Refit Phase',       steps: null },
   { id: `${prefix}_reinf`,    label: '증원 페이즈',      en: 'Reinforcement Phase',        steps: null },
@@ -36,16 +73,16 @@ const SEQUENCE = [
 
 function buildFlatSteps() {
   const steps = [];
-  SEQUENCE.forEach((grp, gi) => {
+  SEQUENCE.forEach((grp) => {
     if (grp.type === 'solo') {
-      steps.push({ gi, pi: -1, si: -1, label: grp.label, en: grp.en, icon: grp.icon, groupLabel: null, phaseLabel: null, isStep: false });
+      steps.push({ label: grp.label, en: grp.en, icon: grp.icon, groupLabel: null, groupId: null, phaseLabel: null, isStep: false });
     } else {
-      grp.phases.forEach((ph, pi) => {
+      grp.phases.forEach((ph) => {
         if (!ph.steps) {
-          steps.push({ gi, pi, si: -1, label: ph.label, en: ph.en, icon: grp.icon, groupLabel: grp.label, phaseLabel: null, isStep: false });
+          steps.push({ label: ph.label, en: ph.en, icon: grp.icon, groupLabel: grp.label, groupId: grp.id, phaseLabel: null, isStep: false });
         } else {
-          ph.steps.forEach((st, si) => {
-            steps.push({ gi, pi, si, label: st.label, en: st.en, icon: grp.icon, groupLabel: grp.label, phaseLabel: ph.label, isStep: true });
+          ph.steps.forEach((st) => {
+            steps.push({ label: st.label, en: st.en, icon: grp.icon, groupLabel: grp.label, groupId: grp.id, phaseLabel: ph.label, isStep: true });
           });
         }
       });
@@ -56,7 +93,76 @@ function buildFlatSteps() {
 
 const FLAT = buildFlatSteps();
 
-let state = { turn: 1, maxTurn: 12, step: 0, collapsed: {} };
+// 현재 step이 어느 플레이어 턴인지 반환
+function getPlayerForStep(stepIdx) {
+  const s = FLAT[stepIdx];
+  if (!s) return null;
+  if (s.groupId === 'first')  return 'first';
+  if (s.groupId === 'second') return 'second';
+  return null;
+}
+
+function getPlayerLabel(stepIdx) {
+  const p = getPlayerForStep(stepIdx);
+  if (p === 'first')  return '선 플레이어 턴';
+  if (p === 'second') return '후 플레이어 턴';
+  return null;
+}
+
+// 페이즈 > 단계 계층만 (그룹/플레이어 레벨 제외)
+function getCurrentPhaseLabel(stepIdx) {
+  const cur = FLAT[stepIdx];
+  if (!cur) return '턴 완료';
+  if (cur.isStep && cur.phaseLabel) {
+    return `${cur.phaseLabel} › ${cur.label}`;
+  }
+  return cur.label;
+}
+
+// ============================================================
+// 상태
+// ============================================================
+
+let state = {
+  year:  1950,
+  month: 6,
+  day:   1,
+  step:  0,
+  collapsed: {},
+};
+
+// ============================================================
+// 날짜 입력 UI
+// ============================================================
+
+function updateStartDayOptions() {
+  const monthEl = document.getElementById('startMonth');
+  const dayEl   = document.getElementById('startDay');
+  if (!monthEl || !dayEl) return;
+  const month = parseInt(monthEl.value);
+  const year  = parseInt(document.getElementById('startYear').value) || 1950;
+  const valid = getValidDaysForMonth(year, month);
+  const prev  = parseInt(dayEl.value);
+  dayEl.innerHTML = valid.map(d => `<option value="${d}"${d === prev ? ' selected' : ''}>${d}일</option>`).join('');
+  if (valid.includes(prev)) dayEl.value = prev;
+  else dayEl.value = valid[0];
+}
+
+function applyStartDate() {
+  const year  = parseInt(document.getElementById('startYear').value) || 1950;
+  const month = parseInt(document.getElementById('startMonth').value) || 1;
+  const day   = parseInt(document.getElementById('startDay').value)   || 1;
+  state.year    = year;
+  state.month   = month;
+  state.day     = day;
+  state.step    = 0;
+  state.collapsed = {};
+  updateTurnUI();
+}
+
+// ============================================================
+// 렌더링
+// ============================================================
 
 function getPlayerStepRange(grpId) {
   let first = -1, last = -1, flatIdx = 0;
@@ -88,7 +194,7 @@ function renderPhases() {
       list.appendChild(li);
     } else {
       const { first, last } = getPlayerStepRange(grp.id);
-      const allDone = last < state.step;
+      const allDone  = last < state.step;
       const isActive = state.step >= first && state.step <= last;
       const isCollapsed = state.collapsed[grp.id] !== undefined ? state.collapsed[grp.id] : allDone;
       const header = document.createElement('li');
@@ -130,14 +236,19 @@ function renderPhases() {
 }
 
 function updateTurnUI() {
-  const cur = FLAT[state.step];
-  let phaseText = cur ? cur.label : '턴 완료';
-  if (cur && cur.phaseLabel) phaseText = cur.phaseLabel + ' › ' + cur.label;
-  if (cur && cur.groupLabel) phaseText = cur.groupLabel + ' › ' + phaseText;
-  document.getElementById('turnNum').textContent       = state.turn;
-  document.getElementById('maxTurn').textContent       = state.maxTurn;
-  document.getElementById('curPhaseLabel').textContent = phaseText;
+  const playerLabel = getPlayerLabel(state.step);
+  const phaseLabel  = getCurrentPhaseLabel(state.step);
+  const datePart    = formatTurnDate(state.year, state.month, state.day);
+  const turnDisplay = playerLabel ? `${datePart}  ${playerLabel}` : datePart;
+
+  document.getElementById('turnDate').textContent      = turnDisplay;
+  document.getElementById('curPhaseLabel').textContent = phaseLabel;
   document.getElementById('progressLabel').textContent = (state.step + 1) + ' / ' + FLAT.length;
+
+  const next   = getNextTurnDate(state.year, state.month, state.day);
+  const nextEl = document.getElementById('nextTurnDate');
+  if (nextEl) nextEl.textContent = formatTurnDate(next.year, next.month, next.day);
+
   renderPhases();
 }
 
@@ -149,6 +260,11 @@ function prevPhase() {
 }
 function resetTurn() { state.step = 0; state.collapsed = {}; updateTurnUI(); }
 function newTurn() {
-  if (state.turn >= state.maxTurn) { alert('게임 종료! 마지막 턴입니다.'); return; }
-  state.turn++; state.step = 0; state.collapsed = {}; updateTurnUI();
+  const next = getNextTurnDate(state.year, state.month, state.day);
+  state.year  = next.year;
+  state.month = next.month;
+  state.day   = next.day;
+  state.step  = 0;
+  state.collapsed = {};
+  updateTurnUI();
 }

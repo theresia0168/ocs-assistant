@@ -9,6 +9,7 @@
   <meta property="og:description" content="Operational Combat Series 플레이 보조 시스템">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/date-addon.css">
 </head>
 <body>
 <div class="page-wrap">
@@ -23,7 +24,7 @@
       <div class="header-emblem">⚔</div>
       <div class="header-text">
         <h1>OCS Assistant</h1>
-        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0.8</div>
+        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.1.0</div>
       </div>
       <div class="classified-stamp">Classified</div>
     </div>
@@ -43,23 +44,52 @@
     <div class="turn-grid">
       <div class="card">
         <div class="card-title"><span class="icon">📋</span> 작전 현황</div>
+
+        <!-- 시작 날짜 설정 -->
+        <div class="date-setup-block">
+          <div class="field-label">시작 날짜 설정</div>
+          <div class="date-input-row">
+            <input class="field-input date-input-year"
+                   type="number" id="startYear" value="1950" min="1900" max="2100"
+                   onchange="updateStartDayOptions()">
+            <span class="date-sep">년</span>
+            <select class="field-input date-input-month" id="startMonth" onchange="updateStartDayOptions()">
+              <option value="1">1월</option><option value="2">2월</option>
+              <option value="3">3월</option><option value="4">4월</option>
+              <option value="5">5월</option><option value="6" selected>6월</option>
+              <option value="7">7월</option><option value="8">8월</option>
+              <option value="9">9월</option><option value="10">10월</option>
+              <option value="11">11월</option><option value="12">12월</option>
+            </select>
+            <select class="field-input date-input-day" id="startDay">
+              <option value="1">1일</option>
+            </select>
+            <button class="btn btn-primary date-apply-btn" onclick="applyStartDate()">적용</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 현재 턴 정보 -->
         <div class="info-row">
           <span class="info-label">현재 턴</span>
-          <span class="info-value" id="turnNum">1</span>
+          <span class="info-value turn-date-display" id="turnDate">—</span>
         </div>
         <div class="info-row">
-          <span class="info-label">최대 턴</span>
-          <span class="info-value" id="maxTurn">12</span>
+          <span class="info-label">다음 턴</span>
+          <span class="info-value info-value-faded" id="nextTurnDate">—</span>
         </div>
         <div class="info-row">
           <span class="info-label">현재 페이즈</span>
-          <span class="info-value" id="curPhaseLabel">날씨 결정</span>
+          <span class="info-value" id="curPhaseLabel">날씨 결정 페이즈</span>
         </div>
         <div class="info-row">
           <span class="info-label">진행도</span>
           <span class="info-value" id="progressLabel">0 / 8</span>
         </div>
+
         <div class="divider"></div>
+
         <div class="btn-row">
           <button class="btn btn-primary"   onclick="nextPhase()">다음 페이즈 ▶</button>
           <button class="btn btn-secondary" onclick="prevPhase()">◀ 이전</button>
@@ -68,7 +98,9 @@
           <button class="btn btn-danger"    onclick="resetTurn()">턴 리셋</button>
           <button class="btn btn-secondary" onclick="newTurn()">새 턴 시작</button>
         </div>
+
         <div class="divider"></div>
+
         <div class="dice-section">
           <div class="dice-title">🎲 주사위</div>
           <div class="dice-btn-row">
@@ -81,11 +113,13 @@
           </div>
         </div>
       </div>
+
       <div class="card">
         <div class="card-title"><span class="icon">🗂</span> 페이즈 순서</div>
         <ul class="phase-list" id="phaseList"></ul>
       </div>
     </div>
+
     <div class="card">
       <div class="card-title"><span class="icon">✏</span> 작전 메모</div>
       <textarea class="field-input" rows="4" placeholder="작전 상황, 공급 현황, 특이사항 등 기록..." style="resize:vertical;"></textarea>
@@ -221,16 +255,10 @@
 
   <!-- ========================================================
        PAGE: 포격/폭격
-
-       행 1: [화력 입력] [화력 컬럼]          ← 2열 그리드
-       행 2: [대상 조건]                       ← 1열, 내부 2열(좌:Hedgehog+밀집도 | 우:체크리스트)
-       행 3: [포격 굴림]                       ← 1열
   ======================================================== -->
   <div id="barrage" class="page">
 
-    <!-- 행 1: 화력 입력 | 화력 컬럼 (2열) -->
     <div class="barrage-row1">
-
       <div class="card">
         <div class="card-title"><span class="icon">💥</span> 화력</div>
         <div class="field-group">
@@ -265,15 +293,11 @@
         </div>
         <div class="barrage-breakdown" id="barrageBreakdown"></div>
       </div>
+    </div>
 
-    </div><!-- /barrage-row1 -->
-
-    <!-- 행 2: 대상 조건 (1열 카드, 내부 2열) -->
     <div class="card">
       <div class="card-title"><span class="icon">🎯</span> 대상 조건</div>
       <div class="target-inner-grid">
-
-        <!-- 좌: Hedgehog + 밀집도 -->
         <div>
           <div class="field-group">
             <label class="field-label">Hedgehog</label>
@@ -297,11 +321,7 @@
             </div>
           </div>
         </div>
-
-        <!-- 구분선 -->
         <div class="target-col-divider"></div>
-
-        <!-- 우: 체크리스트 -->
         <div>
           <label class="field-label">컬럼 수정 체크리스트</label>
           <div class="barrage-checklist" style="margin-top:8px;">
@@ -342,11 +362,9 @@
             </label>
           </div>
         </div>
+      </div>
+    </div>
 
-      </div><!-- /target-inner-grid -->
-    </div><!-- /대상 조건 카드 -->
-
-    <!-- 행 3: 포격 굴림 (1열) -->
     <div class="card">
       <div class="card-title"><span class="icon">🎲</span> 포격 굴림 (2d6)</div>
       <div class="combat-dice-inner">
@@ -370,7 +388,7 @@
   </div><!-- /barrage -->
 
   <footer>
-    GRID REF: OCS-ASSIST-v1.0.8 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
+    GRID REF: OCS-ASSIST-v1.0.7 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
   </footer>
 </div><!-- /page-wrap -->
 

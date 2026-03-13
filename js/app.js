@@ -36,7 +36,9 @@ function showPage(id, btn) {
   else document.querySelector(`nav button[onclick*="${id}"]`).classList.add('active');
 }
 
-updateTurnUI();
+// 초기화
+updateStartDayOptions();   // 날짜 선택 드롭다운 채우기
+applyStartDate();          // 기본값으로 시작 날짜 적용 후 UI 갱신
 calcOdds();
 calcBarrage();
 setInterval(updateClock, 1000);
