@@ -26,7 +26,7 @@
       <div class="header-emblem">⚔</div>
       <div class="header-text">
         <h1>OCS Assistant</h1>
-        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0</div>
+        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0.6</div>
       </div>
       <div class="classified-stamp">Classified</div>
     </div>
@@ -321,10 +321,15 @@
         </div>
 
         <div class="field-group" style="margin-top:12px;">
-          <label class="supply-toggle">
-            <input type="checkbox" id="barrageHalf" onchange="calcBarrage()">
-            <span class="supply-check-label">화력 절반 적용 (지형/조건)</span>
-          </label>
+          <label class="field-label">밀집도 (Density)</label>
+          <div class="density-select">
+            <button class="density-btn" onclick="setDensity('le1', this)">1 RE<br>이하</button>
+            <button class="density-btn active" onclick="setDensity('le3', this)">3 RE<br>이하</button>
+            <button class="density-btn" onclick="setDensity('le4', this)">4 RE<br>이하</button>
+            <button class="density-btn" onclick="setDensity('le5', this)">5 RE<br>이하</button>
+            <button class="density-btn" onclick="setDensity('le6', this)">6 RE<br>이하</button>
+            <button class="density-btn" onclick="setDensity('gt6', this)">6 RE<br>초과</button>
+          </div>
         </div>
       </div>
 
