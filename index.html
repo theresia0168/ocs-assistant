@@ -4,17 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OCS Assistant</title>
-
   <meta property="og:type"        content="website">
   <meta property="og:title"       content="OCS Assistant">
   <meta property="og:description" content="Operational Combat Series 플레이 보조 시스템">
-
-  <!-- WWII 테마 폰트: 
-       - Share Tech Mono : 군용 모노스페이스, 무전기 타이핑 느낌
-       - Bebas Neue       : 강인한 압축 디스플레이 (헤더/제목)
-       - Raleway          : 간결하고 군더더기 없는 레이블
-  -->
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -30,7 +23,7 @@
       <div class="header-emblem">⚔</div>
       <div class="header-text">
         <h1>OCS Assistant</h1>
-        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0.7</div>
+        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0.8</div>
       </div>
       <div class="classified-stamp">Classified</div>
     </div>
@@ -47,11 +40,9 @@
        PAGE: 턴 트래커
   ======================================================== -->
   <div id="turn" class="page active">
-
     <div class="turn-grid">
       <div class="card">
         <div class="card-title"><span class="icon">📋</span> 작전 현황</div>
-
         <div class="info-row">
           <span class="info-label">현재 턴</span>
           <span class="info-value" id="turnNum">1</span>
@@ -68,9 +59,7 @@
           <span class="info-label">진행도</span>
           <span class="info-value" id="progressLabel">0 / 8</span>
         </div>
-
         <div class="divider"></div>
-
         <div class="btn-row">
           <button class="btn btn-primary"   onclick="nextPhase()">다음 페이즈 ▶</button>
           <button class="btn btn-secondary" onclick="prevPhase()">◀ 이전</button>
@@ -79,9 +68,7 @@
           <button class="btn btn-danger"    onclick="resetTurn()">턴 리셋</button>
           <button class="btn btn-secondary" onclick="newTurn()">새 턴 시작</button>
         </div>
-
         <div class="divider"></div>
-
         <div class="dice-section">
           <div class="dice-title">🎲 주사위</div>
           <div class="dice-btn-row">
@@ -94,18 +81,15 @@
           </div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="icon">🗂</span> 페이즈 순서</div>
         <ul class="phase-list" id="phaseList"></ul>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><span class="icon">✏</span> 작전 메모</div>
-      <textarea class="field-input" rows="4" placeholder="작전 상황, 공급 현황, 특이사항 등 기록..." style="resize:vertical;font-size:0.9rem;"></textarea>
+      <textarea class="field-input" rows="4" placeholder="작전 상황, 공급 현황, 특이사항 등 기록..." style="resize:vertical;"></textarea>
     </div>
-
   </div><!-- /turn -->
 
 
@@ -113,9 +97,7 @@
        PAGE: 전투 계산기
   ======================================================== -->
   <div id="combat" class="page">
-
     <div class="combat-inputs">
-
       <div class="card">
         <div class="card-title"><span class="icon">⚔</span> 공격자 (Attacker)</div>
         <div class="field-group">
@@ -127,7 +109,6 @@
           <input class="field-input" type="number" id="atkAR" value="1" step="1" oninput="calcOdds()">
         </div>
       </div>
-
       <div class="card">
         <div class="card-title"><span class="icon">🛡</span> 방어자 (Defender)</div>
         <div class="field-group">
@@ -155,12 +136,10 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="card combat-result-bar">
       <div class="combat-result-inner">
-
         <div>
           <label class="field-label">지형 유형 (Terrain Type)</label>
           <div class="terrain-select" style="margin-top:6px;">
@@ -170,7 +149,6 @@
             <button class="terrain-btn active" data-val="open" onclick="setTerrain('open', this)">Open</button>
           </div>
         </div>
-
         <div class="odds-display-bar">
           <div class="odds-raw-row">
             <div class="odds-col"><div class="odds-label-sm">ATK</div><div class="odds-num" id="oddsAtk">6</div></div>
@@ -180,16 +158,13 @@
           <div class="odds-arrow">↓</div>
           <div class="odds-final" id="oddsFinal">2 : 1</div>
         </div>
-
         <div class="odds-breakdown" id="oddsBreakdown"></div>
-
       </div>
     </div>
 
-    <div class="card combat-dice-card">
+    <div class="card">
       <div class="card-title"><span class="icon">🎲</span> 주사위 굴림</div>
       <div class="combat-dice-inner">
-
         <div class="combat-dice-controls">
           <div class="combat-type-row">
             <span class="field-label" style="margin-bottom:0;">전투 유형</span>
@@ -198,7 +173,6 @@
               <button class="ctype-btn"        id="ctypeOverrun" onclick="setCombatType('overrun', this)">오버런 전투</button>
             </div>
           </div>
-
           <div class="combat-roll-btns">
             <button class="dice-roll-btn surprise-btn" onclick="rollCombatDice('surprise')">
               <span class="roll-label">기습 굴림</span>
@@ -210,23 +184,20 @@
             </button>
           </div>
         </div>
-
         <div class="combat-dice-result-wrap">
           <div class="dice-result-area combat-dice-result" id="combatDiceResult">
             <span class="dice-placeholder">버튼을 눌러 굴리세요</span>
           </div>
           <div class="dice-result-tag" id="combatDiceTag"></div>
         </div>
-
       </div>
     </div>
 
     <div id="surpriseIndicator" class="surprise-indicator"></div>
 
-    <div class="card combat-log-card">
+    <div class="card">
       <div class="card-title"><span class="icon">📋</span> 전투 결과 기록</div>
       <div class="combat-log-grid">
-
         <div class="log-section">
           <div class="log-section-title surprise-title">기습 결과</div>
           <div class="log-entries" id="surpriseLog">
@@ -234,7 +205,6 @@
           </div>
           <button class="log-clear-btn" onclick="clearLog('surprise')">초기화</button>
         </div>
-
         <div class="log-section">
           <div class="log-section-title combat-title">전투 결과</div>
           <div class="log-entries" id="combatLog">
@@ -242,150 +212,140 @@
           </div>
           <button class="log-clear-btn" onclick="clearLog('combat')">초기화</button>
         </div>
-
       </div>
     </div>
-
   </div><!-- /combat -->
 
 
   <!-- ========================================================
-       PAGE: 포격/폭격 — 새 레이아웃
-       [화력+컬럼 | 대상조건(Hedgehog+밀집도 좌/체크리스트 우)]
-       [포격 굴림 (전체 너비)]
+       PAGE: 포격/폭격
+
+       행 1: [화력 입력] [화력 컬럼]          ← 2열 그리드
+       행 2: [대상 조건]                       ← 1열, 내부 2열(좌:Hedgehog+밀집도 | 우:체크리스트)
+       행 3: [포격 굴림]                       ← 1열
   ======================================================== -->
   <div id="barrage" class="page">
 
-    <!-- 1행: 화력/컬럼 좌 + 대상조건 우 -->
-    <div class="barrage-top-row">
+    <!-- 행 1: 화력 입력 | 화력 컬럼 (2열) -->
+    <div class="barrage-row1">
 
-      <!-- 좌: 화력 입력 + 컬럼 결과 -->
-      <div class="barrage-col-left">
+      <div class="card">
+        <div class="card-title"><span class="icon">💥</span> 화력</div>
+        <div class="field-group">
+          <label class="field-label">총 화력 (Barrage Strength)</label>
+          <input class="field-input" type="number" id="barrageStr" value="8" min="0" step="0.5" oninput="calcBarrage()">
+        </div>
+        <div class="field-group" style="margin-top:12px;">
+          <label class="field-label">포격 유형</label>
+          <div class="barrage-type-btns">
+            <button class="btype-btn active" onclick="setBarrageType('artillery', this)">포병</button>
+            <button class="btype-btn"        onclick="setBarrageType('air', this)">항공</button>
+            <button class="btype-btn"        onclick="setBarrageType('naval', this)">함선</button>
+          </div>
+        </div>
+      </div>
 
-        <div class="card">
-          <div class="card-title"><span class="icon">💥</span> 화력 (Barrage Strength)</div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> 화력 컬럼</div>
+        <div class="barrage-col-display">
+          <div class="bcol-row">
+            <div class="bcol-block">
+              <div class="bcol-sublabel">최초 컬럼</div>
+              <div class="bcol-main" id="bBaseColLabel">—</div>
+              <div class="bcol-cost">보급 <span id="bColCost">—</span></div>
+            </div>
+            <div class="bcol-arrow">→</div>
+            <div class="bcol-block">
+              <div class="bcol-sublabel">최종 컬럼</div>
+              <div class="bcol-main bcol-final" id="bColLabel">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="barrage-breakdown" id="barrageBreakdown"></div>
+      </div>
+
+    </div><!-- /barrage-row1 -->
+
+    <!-- 행 2: 대상 조건 (1열 카드, 내부 2열) -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> 대상 조건</div>
+      <div class="target-inner-grid">
+
+        <!-- 좌: Hedgehog + 밀집도 -->
+        <div>
           <div class="field-group">
-            <label class="field-label">총 화력</label>
-            <input class="field-input" type="number" id="barrageStr" value="8" min="0" step="0.5" oninput="calcBarrage()">
+            <label class="field-label">Hedgehog</label>
+            <div class="fort-select">
+              <button class="fort-btn barrage-fort-btn active" data-val="0" onclick="setBarrageFort(0, this)">없음</button>
+              <button class="fort-btn barrage-fort-btn" data-val="1" onclick="setBarrageFort(1, this)">1</button>
+              <button class="fort-btn barrage-fort-btn" data-val="2" onclick="setBarrageFort(2, this)">2</button>
+              <button class="fort-btn barrage-fort-btn" data-val="3" onclick="setBarrageFort(3, this)">3</button>
+              <button class="fort-btn barrage-fort-btn" data-val="4" onclick="setBarrageFort(4, this)">4</button>
+            </div>
           </div>
-          <div class="field-group" style="margin-top:12px;">
-            <label class="field-label">포격 유형</label>
-            <div class="barrage-type-btns">
-              <button class="btype-btn active" onclick="setBarrageType('artillery', this)">포병</button>
-              <button class="btype-btn"        onclick="setBarrageType('air', this)">항공</button>
-              <button class="btype-btn"        onclick="setBarrageType('naval', this)">함선</button>
+          <div class="field-group" style="margin-top:14px;">
+            <label class="field-label">밀집도 (Density)</label>
+            <div class="density-select">
+              <button class="density-btn"        onclick="setDensity('le1', this)">1 RE 이하</button>
+              <button class="density-btn active" onclick="setDensity('le3', this)">3 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('le4', this)">4 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('le5', this)">5 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('le6', this)">6 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('gt6', this)">6 RE 초과</button>
             </div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-title"><span class="icon">📊</span> 화력 컬럼</div>
-          <div class="barrage-col-display">
-            <div class="bcol-row">
-              <div class="bcol-block">
-                <div class="bcol-sublabel">최초 컬럼</div>
-                <div class="bcol-main" id="bBaseColLabel">—</div>
-                <div class="bcol-cost">보급 소모량 <span id="bColCost">—</span></div>
-              </div>
-              <div class="bcol-arrow">→</div>
-              <div class="bcol-block">
-                <div class="bcol-sublabel">최종 컬럼</div>
-                <div class="bcol-main bcol-final" id="bColLabel">—</div>
-              </div>
-            </div>
+        <!-- 구분선 -->
+        <div class="target-col-divider"></div>
+
+        <!-- 우: 체크리스트 -->
+        <div>
+          <label class="field-label">컬럼 수정 체크리스트</label>
+          <div class="barrage-checklist" style="margin-top:8px;">
+            <label class="bcl-item">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-L">1L</span>
+              <span class="bcl-desc">아무 레벨의 진지 존재</span>
+            </label>
+            <label class="bcl-item">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-L">1L</span>
+              <span class="bcl-desc">Close / Very Close 헥스</span>
+            </label>
+            <label class="bcl-item">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-L">2L</span>
+              <span class="bcl-desc">Extr Close 헥스</span>
+            </label>
+            <label class="bcl-item">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-R">3R</span>
+              <span class="bcl-desc">목표 헥스 내 유닛이 전략 이동 모드</span>
+            </label>
+            <label class="bcl-item">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-R">1R</span>
+              <span class="bcl-desc">모든 항공 유닛이 10헥스 이내 기지 출격</span>
+            </label>
+            <label class="bcl-item bcl-optional">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-L">1L</span>
+              <span class="bcl-desc">항공 유닛이 항속 거리 절반 이상 이동 <span class="bcl-opt-tag">옵션</span></span>
+            </label>
+            <label class="bcl-item">
+              <input type="checkbox" onchange="calcBarrage()">
+              <span class="bcl-shift bcl-no-obs">3L</span>
+              <span class="bcl-desc">관측 유닛 없음</span>
+            </label>
           </div>
-          <div class="barrage-breakdown" id="barrageBreakdown"></div>
         </div>
 
-      </div><!-- /barrage-col-left -->
+      </div><!-- /target-inner-grid -->
+    </div><!-- /대상 조건 카드 -->
 
-      <!-- 우: 대상 조건 -->
-      <div class="barrage-col-right">
-        <div class="card" style="height:100%;">
-          <div class="card-title"><span class="icon">🎯</span> 대상 조건</div>
-
-          <!-- 대상조건 내부: 좌(Hedgehog+밀집도) / 우(체크리스트) -->
-          <div class="target-inner-grid">
-
-            <!-- 좌: Hedgehog + 밀집도 -->
-            <div class="target-left-col">
-              <div class="field-group">
-                <label class="field-label">Hedgehog</label>
-                <div class="fort-select">
-                  <button class="fort-btn barrage-fort-btn active" data-val="0" onclick="setBarrageFort(0, this)">없음</button>
-                  <button class="fort-btn barrage-fort-btn" data-val="1" onclick="setBarrageFort(1, this)">1</button>
-                  <button class="fort-btn barrage-fort-btn" data-val="2" onclick="setBarrageFort(2, this)">2</button>
-                  <button class="fort-btn barrage-fort-btn" data-val="3" onclick="setBarrageFort(3, this)">3</button>
-                  <button class="fort-btn barrage-fort-btn" data-val="4" onclick="setBarrageFort(4, this)">4</button>
-                </div>
-              </div>
-
-              <div class="field-group" style="margin-top:14px;">
-                <label class="field-label">밀집도 (Density)</label>
-                <div class="density-select">
-                  <button class="density-btn" onclick="setDensity('le1', this)">1 RE 이하</button>
-                  <button class="density-btn active" onclick="setDensity('le3', this)">3 RE 이하</button>
-                  <button class="density-btn" onclick="setDensity('le4', this)">4 RE 이하</button>
-                  <button class="density-btn" onclick="setDensity('le5', this)">5 RE 이하</button>
-                  <button class="density-btn" onclick="setDensity('le6', this)">6 RE 이하</button>
-                  <button class="density-btn" onclick="setDensity('gt6', this)">6 RE 초과</button>
-                </div>
-              </div>
-            </div><!-- /target-left-col -->
-
-            <div class="target-col-divider"></div>
-
-            <!-- 우: 체크리스트 -->
-            <div class="target-right-col">
-              <label class="field-label">컬럼 수정 체크리스트</label>
-              <div class="barrage-checklist" style="margin-top:8px;">
-                <label class="bcl-item">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-L">1L</span>
-                  <span class="bcl-desc">아무 레벨의 진지 존재</span>
-                </label>
-                <label class="bcl-item">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-L">1L</span>
-                  <span class="bcl-desc">Close / Very Close 헥스</span>
-                </label>
-                <label class="bcl-item">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-L">2L</span>
-                  <span class="bcl-desc">Extr Close 헥스</span>
-                </label>
-                <label class="bcl-item">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-R">3R</span>
-                  <span class="bcl-desc">목표 헥스 내 유닛이 전략 이동 모드</span>
-                </label>
-                <label class="bcl-item">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-R">1R</span>
-                  <span class="bcl-desc">모든 항공 유닛이 10헥스 이내 기지 출격</span>
-                </label>
-                <label class="bcl-item bcl-optional">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-L">1L</span>
-                  <span class="bcl-desc">항공 유닛이 항속 거리 절반 이상 이동 <span class="bcl-opt-tag">옵션</span></span>
-                </label>
-                <label class="bcl-item">
-                  <input type="checkbox" onchange="calcBarrage()">
-                  <span class="bcl-shift bcl-no-obs">3L</span>
-                  <span class="bcl-desc">관측 유닛 없음</span>
-                </label>
-              </div>
-            </div><!-- /target-right-col -->
-
-          </div><!-- /target-inner-grid -->
-
-        </div>
-      </div><!-- /barrage-col-right -->
-
-    </div><!-- /barrage-top-row -->
-
-    <!-- 2행: 포격 굴림 (전체 너비) -->
-    <div class="card combat-dice-card">
+    <!-- 행 3: 포격 굴림 (1열) -->
+    <div class="card">
       <div class="card-title"><span class="icon">🎲</span> 포격 굴림 (2d6)</div>
       <div class="combat-dice-inner">
         <div class="combat-dice-controls">
@@ -408,7 +368,7 @@
   </div><!-- /barrage -->
 
   <footer>
-    GRID REF: OCS-ASSIST-v1.0.7 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
+    GRID REF: OCS-ASSIST-v1.0.8 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
   </footer>
 </div><!-- /page-wrap -->
 
