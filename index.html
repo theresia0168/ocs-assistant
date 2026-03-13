@@ -24,7 +24,7 @@
       <div class="header-emblem">⚔</div>
       <div class="header-text">
         <h1>OCS Assistant</h1>
-        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0.7</div>
+        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.1.0</div>
       </div>
       <div class="classified-stamp">Classified</div>
     </div>
@@ -46,30 +46,32 @@
         <div class="card-title"><span class="icon">📋</span> 작전 현황</div>
 
         <!-- 시작 날짜 설정 -->
-        <div class="date-setup-block">
+        <div style="margin-bottom:4px;">
           <div class="field-label">시작 날짜 설정</div>
-          <div class="date-input-row">
-            <div class="date-input-row-top">
-              <input class="field-input date-input-year"
-                     type="number" id="startYear" placeholder="연도" min="1900" max="2100"
-                     onchange="updateStartDayOptions()">
-              <span class="date-sep">년</span>
-            </div>
-            <div class="date-input-row-bottom">
-              <select class="field-input date-input-month" id="startMonth" onchange="updateStartDayOptions()">
-                <option value="" disabled selected>월</option>
-                <option value="1">1월</option><option value="2">2월</option>
-                <option value="3">3월</option><option value="4">4월</option>
-                <option value="5">5월</option><option value="6">6월</option>
-                <option value="7">7월</option><option value="8">8월</option>
-                <option value="9">9월</option><option value="10">10월</option>
-                <option value="11">11월</option><option value="12">12월</option>
-              </select>
-              <select class="field-input date-input-day" id="startDay">
-                <option value="" disabled selected>일</option>
-              </select>
-              <button class="btn btn-primary date-apply-btn" onclick="applyStartDate()">적용</button>
-            </div>
+          <div style="display:flex; align-items:center; gap:5px; margin-top:6px; flex-wrap:nowrap;">
+            <input class="field-input" type="number" id="startYear"
+                   placeholder="연도" min="1900" max="2100"
+                   style="width:80px; flex-shrink:0; padding:6px 4px; font-size:0.85rem;"
+                   onchange="updateStartDayOptions()">
+            <span style="font-size:0.75rem; color:var(--ink-faded); flex-shrink:0;">년</span>
+            <select class="field-input" id="startMonth"
+                    style="flex:1; min-width:0; padding:6px 18px 6px 5px; font-size:0.82rem; cursor:pointer;"
+                    onchange="updateStartDayOptions()">
+              <option value="" disabled selected>월</option>
+              <option value="1">1월</option><option value="2">2월</option>
+              <option value="3">3월</option><option value="4">4월</option>
+              <option value="5">5월</option><option value="6">6월</option>
+              <option value="7">7월</option><option value="8">8월</option>
+              <option value="9">9월</option><option value="10">10월</option>
+              <option value="11">11월</option><option value="12">12월</option>
+            </select>
+            <select class="field-input" id="startDay"
+                    style="flex:1; min-width:0; padding:6px 18px 6px 5px; font-size:0.82rem; cursor:pointer;">
+              <option value="" disabled selected>일</option>
+            </select>
+            <button class="btn btn-primary"
+                    style="flex-shrink:0; padding:6px 10px; font-size:0.72rem; white-space:nowrap; letter-spacing:0;"
+                    onclick="applyStartDate()">적용</button>
           </div>
         </div>
 
@@ -88,10 +90,7 @@
           <span class="info-label">현재 페이즈</span>
           <span class="info-value" id="curPhaseLabel">날씨 결정 페이즈</span>
         </div>
-        <div class="info-row">
-          <span class="info-label">진행도</span>
-          <span class="info-value" id="progressLabel">0 / 8</span>
-        </div>
+
 
         <div class="divider"></div>
 
@@ -393,7 +392,7 @@
   </div><!-- /barrage -->
 
   <footer>
-    GRID REF: OCS-ASSIST-v1.0.7 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
+    GRID REF: OCS-ASSIST-v1.1.0 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
   </footer>
 </div><!-- /page-wrap -->
 

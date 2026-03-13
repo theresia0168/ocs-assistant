@@ -250,7 +250,6 @@ function updateTurnUI() {
   }
 
   document.getElementById('curPhaseLabel').textContent = phaseLabel;
-  document.getElementById('progressLabel').textContent = (state.step + 1) + ' / ' + FLAT.length;
 
   renderPhases();
 }
