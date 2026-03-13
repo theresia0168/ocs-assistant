@@ -154,7 +154,7 @@ function calcBarrage() {
 
   // 브레이크다운
   const TYPE_LABEL = { artillery: '포병', air: '항공', naval: '함선' };
-  const rows = [['포격력', raw, '']];
+  const rows = [['화력', raw, '']];
   rows.push(['밀집도', DENSITY_LABEL[barrageDensity], '']);
   if (densShift !== 0) rows.push(['컬럼 보정', `${densShift > 0 ? '+' : ''}${densShift}`, '']);
   if (barrageFort > 0) rows.push(['Hedgehog', `Lv.${barrageFort}`, '']);
