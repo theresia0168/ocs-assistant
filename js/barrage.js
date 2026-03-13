@@ -106,20 +106,30 @@ function getBarrageColIndex(str) {
 // 상태 변수
 // ============================================================
 let barrageType    = 'artillery';
-let barrageHasObs  = true;
 let barrageFort    = 0;
-let barrageDensity = 'le3'; // 기본값: 3 RE 이하 (No Effect)
+let barrageDensity = 'le3';
+
+// 체크리스트 항목 정의: [shift, description]
+const CHECKLIST = [
+  { shift: -1, desc: '아무 레벨의 진지 존재 (1L)' },
+  { shift: -1, desc: 'Close / Very Close 헥스 (1L)' },
+  { shift: -2, desc: 'Extr Close 헥스 (2L)' },
+  { shift: +3, desc: '목표 헥스 내 유닛 전략 이동 모드 (3R)' },
+  { shift: +1, desc: '모든 항공 유닛이 10헥스 이내 기지 출격 (1R)' },
+  { shift: -1, desc: '항공 유닛 항속 거리 절반 이상 이동 (1L, 옵션)' },
+  { shift: -3, desc: '관측 유닛 없음 (3L)' },
+];
+
+function getChecklistShift() {
+  const checks = document.querySelectorAll('.bcl-item input[type=checkbox]');
+  let total = 0;
+  checks.forEach((cb, i) => { if (cb.checked) total += CHECKLIST[i].shift; });
+  return total;
+}
 
 function setBarrageType(type, btn) {
   barrageType = type;
   document.querySelectorAll('.btype-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  calcBarrage();
-}
-
-function setBarrageObs(val, btn) {
-  barrageHasObs = val;
-  document.querySelectorAll('.bobs-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   calcBarrage();
 }
@@ -143,23 +153,47 @@ function setDensity(val, btn) {
 // ============================================================
 function calcBarrage() {
   if (!document.getElementById('barrageStr')) return;
-  const raw        = parseFloat(document.getElementById('barrageStr').value) || 0;
-  const baseColIdx = getBarrageColIndex(raw);
-  const densShift  = DENSITY_SHIFT[barrageDensity];
-  const colIdx     = Math.max(0, Math.min(BRT_COLS.length - 1, baseColIdx + densShift));
-  const col        = BRT_COLS[colIdx];
+  const raw         = parseFloat(document.getElementById('barrageStr').value) || 0;
+  const baseColIdx  = getBarrageColIndex(raw);
+  const densShift   = DENSITY_SHIFT[barrageDensity];
+  const checkShift  = getChecklistShift();
+  const totalShift  = densShift + checkShift;
+  const finalColIdx = Math.max(0, Math.min(BRT_COLS.length - 1, baseColIdx + totalShift));
+  const baseCol     = BRT_COLS[baseColIdx];
+  const finalCol    = BRT_COLS[finalColIdx];
 
-  document.getElementById('bColLabel').textContent = col.label;
-  document.getElementById('bColCost').textContent  = col.cost;
+  // 포병만 보급 소모량 표시
+  const showCost = barrageType === 'artillery';
+
+  document.getElementById('bBaseColLabel').textContent = baseCol.label;
+  document.getElementById('bColLabel').textContent     = finalCol.label;
+  document.getElementById('bColCost').textContent      = showCost ? baseCol.cost : '—';
+
+  // 보급 소모량 행 표시/숨김
+  const costEl = document.getElementById('bColCost').closest('.bcol-cost');
+  if (costEl) costEl.style.display = showCost ? '' : 'none';
 
   // 브레이크다운
   const TYPE_LABEL = { artillery: '포병', air: '항공', naval: '함선' };
-  const rows = [['화력', raw, '']];
-  rows.push(['밀집도', DENSITY_LABEL[barrageDensity], '']);
-  if (densShift !== 0) rows.push(['컬럼 보정', `${densShift > 0 ? '+' : ''}${densShift}`, '']);
-  if (barrageFort > 0) rows.push(['Hedgehog', `Lv.${barrageFort}`, '']);
-  rows.push(['포격 유형', TYPE_LABEL[barrageType], '']);
-  rows.push(['관측 유닛', barrageHasObs ? '있음' : '없음', '']);
+  const rows = [
+    ['화력', raw, ''],
+    ['포격 유형', TYPE_LABEL[barrageType], ''],
+    ['밀집도', DENSITY_LABEL[barrageDensity], ''],
+  ];
+  if (densShift !== 0)
+    rows.push(['밀집도 컬럼 보정', `${densShift > 0 ? '+' : ''}${densShift}`, '']);
+
+  // 체크된 항목 보정 표시
+  const checks = document.querySelectorAll('.bcl-item input[type=checkbox]');
+  checks.forEach((cb, i) => {
+    if (cb.checked) {
+      const s = CHECKLIST[i].shift;
+      rows.push([CHECKLIST[i].desc, `${s > 0 ? '+' : ''}${s}`, '']);
+    }
+  });
+
+  if (totalShift !== 0)
+    rows.push(['총 컬럼 보정', `${totalShift > 0 ? '+' : ''}${totalShift}`, '']);
 
   document.getElementById('barrageBreakdown').innerHTML = rows.map(([label, val, note]) =>
     `<div class="bd-row">
@@ -181,22 +215,28 @@ function rollBarrage() {
   const [v1, v2] = [r(), r()];
   const diceVal  = v1 + v2;
 
-  const raw        = parseFloat(document.getElementById('barrageStr').value) || 0;
-  const baseColIdx = getBarrageColIndex(raw);
-  const densShift  = DENSITY_SHIFT[barrageDensity];
-  const colIdx     = Math.max(0, Math.min(BRT_COLS.length - 1, baseColIdx + densShift));
-  const col        = BRT_COLS[colIdx];
+  const raw         = parseFloat(document.getElementById('barrageStr').value) || 0;
+  const baseColIdx  = getBarrageColIndex(raw);
+  const densShift   = DENSITY_SHIFT[barrageDensity];
+  const checkShift  = getChecklistShift();
+  const totalShift  = densShift + checkShift;
+  const finalColIdx = Math.max(0, Math.min(BRT_COLS.length - 1, baseColIdx + totalShift));
+  const baseCol     = BRT_COLS[baseColIdx];
+  const finalCol    = BRT_COLS[finalColIdx];
 
-  // 행 인덱스: 주사위 2~12 → 0~10
-  const rowIdx = Math.min(Math.max(diceVal - 2, 0), 10);
-  const rawResult = BRT[rowIdx][colIdx];
-  const { display, desc, cls } = getBRTResultDesc(rawResult, barrageType, barrageHasObs, barrageFort);
+  // 관측 없음 여부: 체크리스트 마지막(인덱스 6)
+  const obsCheck = document.querySelectorAll('.bcl-item input[type=checkbox]')[6];
+  const hasNoObs = obsCheck && obsCheck.checked;
+
+  const rowIdx    = Math.min(Math.max(diceVal - 2, 0), 10);
+  const rawResult = BRT[rowIdx][finalColIdx];
+  const { display, desc, cls } = getBRTResultDesc(rawResult, barrageType, !hasNoObs, barrageFort);
 
   // 주사위 렌더
   area.appendChild(makeDie(v1, 'ivory'));
   area.appendChild(makeDie(v2, 'ivory'));
 
-  // 1/2 결과면 손실 굴림 1d6 자동 추가
+  // 1/2 손실 굴림
   let lossRollVal = null;
   let lossResult  = null;
   const needsLossRoll = (rawResult === 'HALF' || rawResult === 'HALF_COND') && display === '1/2';
@@ -204,10 +244,6 @@ function rollBarrage() {
     lossRollVal = r();
     lossResult  = lossRollVal >= 4 ? '1 스텝 손실 + DG' : 'DG만';
   }
-
-  // 결과
-  const modDiv = document.createElement('div');
-  modDiv.className = 'dice-modified-total';
 
   let lossHtml = '';
   if (needsLossRoll) {
@@ -220,9 +256,15 @@ function rollBarrage() {
       </div>`;
   }
 
+  const colDesc = baseColIdx !== finalColIdx
+    ? `${baseCol.label} → ${finalCol.label} (${totalShift > 0 ? '+' : ''}${totalShift})`
+    : finalCol.label;
+
+  const modDiv = document.createElement('div');
+  modDiv.className = 'dice-modified-total';
   modDiv.innerHTML = `
     <div class="crt-result ${cls}">${display}</div>
-    <div class="drm-line">${diceVal} → ${col.label} 컬럼</div>
+    <div class="drm-line">주사위 ${diceVal} → ${colDesc} 컬럼</div>
     ${desc ? `<div class="crt-col-label">${desc}</div>` : ''}
     ${lossHtml}`;
   area.appendChild(modDiv);
@@ -231,9 +273,13 @@ function rollBarrage() {
   tag.textContent = `포격 굴림 — ${TYPE_LABEL[barrageType]}`;
   tag.className = 'dice-result-tag combat';
 
-  const densDesc = densShift !== 0 ? ` (밀집도 ${densShift > 0 ? '+' : ''}${densShift})` : '';
   const lossDesc = needsLossRoll ? ` ｜ 손실굴림 ${lossRollVal} → ${lossResult}` : '';
-  saveBarrageLog(display, `${TYPE_LABEL[barrageType]} ｜ ${col.label} 컬럼 (${col.cost})${densDesc} ｜ 주사위 ${diceVal}${desc ? ' ｜ ' + desc : ''}${lossDesc}`, cls);
+  const costDesc = barrageType === 'artillery' ? ` (${baseCol.cost})` : '';
+  saveBarrageLog(
+    display,
+    `${TYPE_LABEL[barrageType]} ｜ ${colDesc} 컬럼${costDesc} ｜ 주사위 ${diceVal}${desc ? ' ｜ ' + desc : ''}${lossDesc}`,
+    cls
+  );
 }
 
 // ============================================================
