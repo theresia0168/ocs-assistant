@@ -227,3 +227,4 @@ function lookupCRT(diceVal, terrain, ratioNum) {
   const colLabel = CRT_COL_LABELS[terrain][colIdx];
   const result   = CRT[terrain][rowIdx][colIdx];
   return { result, colLabel, rowIdx, colIdx };
+}
