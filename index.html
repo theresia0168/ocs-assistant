@@ -109,8 +109,9 @@
           <input class="field-input" type="number" id="atkAR" value="1" step="1" oninput="calcOdds()">
         </div>
       </div>
-      <div class="combat-result-inner">
-        <div>
+      <div class="card">
+        <div class="card-title">최종 전력비</div>
+        <div class="field-group">
           <label class="field-label">지형 유형 (Terrain Type)</label>
           <div class="terrain-select" style="margin-top:6px;">
             <button class="terrain-btn" data-val="extr_close" onclick="setTerrain('extr_close', this)">Extr<br>Close</button>
@@ -119,16 +120,20 @@
             <button class="terrain-btn active" data-val="open" onclick="setTerrain('open', this)">Open</button>
           </div>
         </div>
-        <div class="odds-display-bar">
-          <div class="odds-raw-row">
-            <div class="odds-col"><div class="odds-label-sm">ATK</div><div class="odds-num" id="oddsAtk">6</div></div>
-            <div class="odds-vsep">:</div>
-            <div class="odds-col"><div class="odds-label-sm">DEF</div><div class="odds-num" id="oddsDef">3</div></div>
+        <div class="field-group">
+          <div class="odds-display-bar">
+            <div class="odds-raw-row">
+              <div class="odds-col"><div class="odds-label-sm">ATK</div><div class="odds-num" id="oddsAtk">6</div></div>
+              <div class="odds-vsep">:</div>
+              <div class="odds-col"><div class="odds-label-sm">DEF</div><div class="odds-num" id="oddsDef">3</div></div>
+            </div>
+            <div class="odds-arrow">↓</div>
+            <div class="odds-final" id="oddsFinal">2 : 1</div>
           </div>
-          <div class="odds-arrow">↓</div>
-          <div class="odds-final" id="oddsFinal">2 : 1</div>
         </div>
-        <div class="odds-breakdown" id="oddsBreakdown"></div>
+        <div class="field-group">
+          <div class="odds-breakdown" id="oddsBreakdown"></div>
+        </div>
       </div>
       <div class="card">
         <div class="card-title"><span class="icon">🛡</span> 방어자 (Defender)</div>
