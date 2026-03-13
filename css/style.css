@@ -1079,9 +1079,9 @@ footer {
 ============================================================ */
 .barrage-top {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr;
   gap: 12px;
-  align-items: stretch;
+  align-items: start;
   margin-bottom: 12px;
 }
 .barrage-top .combat-card {
@@ -1317,3 +1317,22 @@ footer {
   vertical-align: middle;
 }
 .bcl-item input:checked ~ .bcl-desc { color: var(--ink); font-weight: 700; }
+
+/* 대상 조건 카드 내부 2열 */
+.barrage-target-card { }
+.barrage-target-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.barrage-target-col { }
+
+@media (max-width: 900px) {
+  .barrage-top { grid-template-columns: 1fr 1fr; }
+  .barrage-target-card { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .barrage-top { grid-template-columns: 1fr; }
+  .barrage-target-inner { grid-template-columns: 1fr; }
+}
