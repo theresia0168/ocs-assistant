@@ -1,4 +1,3 @@
-
 // ============================================================
 // 전투 결과 기록
 // ============================================================
@@ -6,7 +5,6 @@
 function saveToLog(type, mainText, detailText, entryClass) {
   const logId = type === 'surprise' ? 'surpriseLog' : 'combatLog';
   const log = document.getElementById(logId);
-
   log.innerHTML = `
     <div class="log-entry ${entryClass}">
       <div class="log-main">${mainText}</div>
@@ -30,9 +28,6 @@ function updateClock() {
     now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
-// ============================================================
-// 탭 전환
-// ============================================================
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -41,9 +36,6 @@ function showPage(id, btn) {
   else document.querySelector(`nav button[onclick*="${id}"]`).classList.add('active');
 }
 
-// ============================================================
-// 초기화
-// ============================================================
 updateTurnUI();
 calcOdds();
 calcBarrage();
