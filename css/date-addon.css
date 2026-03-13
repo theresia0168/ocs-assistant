@@ -4,18 +4,38 @@
 .date-setup-block {
   margin-bottom: 4px;
 }
+
+/* 2행 레이아웃: 1행 = 연도+년, 2행 = 월+일+적용 */
 .date-input-row {
-  display: grid;
-  grid-template-columns: 62px 16px 1fr 1fr 44px;
-  align-items: center;
-  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   margin-top: 6px;
 }
+
+.date-input-row-top {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.date-input-row-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 5px;
+}
+
 .date-input-year {
-  width: 100% !important;
-  min-width: 0;
+  width: 90px !important;
+  flex-shrink: 0;
   padding: 6px 4px !important;
   font-size: 0.85rem !important;
+}
+.date-sep {
+  font-size: 0.75rem;
+  color: var(--ink-faded);
+  flex-shrink: 0;
 }
 .date-input-month,
 .date-input-day {
@@ -25,14 +45,9 @@
   font-size: 0.82rem !important;
   cursor: pointer;
 }
-.date-sep {
-  font-size: 0.75rem;
-  color: var(--ink-faded);
-  text-align: center;
-}
 .date-apply-btn {
-  width: 100% !important;
-  padding: 6px 4px !important;
+  flex-shrink: 0;
+  padding: 6px 12px !important;
   font-size: 0.72rem !important;
   white-space: nowrap;
   letter-spacing: 0 !important;

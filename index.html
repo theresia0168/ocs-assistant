@@ -49,36 +49,40 @@
         <div class="date-setup-block">
           <div class="field-label">시작 날짜 설정</div>
           <div class="date-input-row">
-            <input class="field-input date-input-year"
-                   type="number" id="startYear" placeholder="연도" min="1900" max="2100"
-                   onchange="updateStartDayOptions()">
-            <span class="date-sep">년</span>
-            <select class="field-input date-input-month" id="startMonth" onchange="updateStartDayOptions()">
-              <option value="" disabled selected>월</option>
-              <option value="1">1월</option><option value="2">2월</option>
-              <option value="3">3월</option><option value="4">4월</option>
-              <option value="5">5월</option><option value="6">6월</option>
-              <option value="7">7월</option><option value="8">8월</option>
-              <option value="9">9월</option><option value="10">10월</option>
-              <option value="11">11월</option><option value="12">12월</option>
-            </select>
-            <select class="field-input date-input-day" id="startDay">
-              <option value="" disabled selected>일</option>
-            </select>
-            <button class="btn btn-primary date-apply-btn" onclick="applyStartDate()">적용</button>
+            <div class="date-input-row-top">
+              <input class="field-input date-input-year"
+                     type="number" id="startYear" placeholder="연도" min="1900" max="2100"
+                     onchange="updateStartDayOptions()">
+              <span class="date-sep">년</span>
+            </div>
+            <div class="date-input-row-bottom">
+              <select class="field-input date-input-month" id="startMonth" onchange="updateStartDayOptions()">
+                <option value="" disabled selected>월</option>
+                <option value="1">1월</option><option value="2">2월</option>
+                <option value="3">3월</option><option value="4">4월</option>
+                <option value="5">5월</option><option value="6">6월</option>
+                <option value="7">7월</option><option value="8">8월</option>
+                <option value="9">9월</option><option value="10">10월</option>
+                <option value="11">11월</option><option value="12">12월</option>
+              </select>
+              <select class="field-input date-input-day" id="startDay">
+                <option value="" disabled selected>일</option>
+              </select>
+              <button class="btn btn-primary date-apply-btn" onclick="applyStartDate()">적용</button>
+            </div>
           </div>
         </div>
 
         <div class="divider"></div>
 
         <!-- 현재 턴 정보 -->
-        <div class="info-row">
+        <div class="info-row" id="rowTurnDate" style="display:none;">
           <span class="info-label">현재 턴</span>
-          <span class="info-value turn-date-display" id="turnDate">—</span>
+          <span class="info-value turn-date-display" id="turnDate"></span>
         </div>
-        <div class="info-row">
+        <div class="info-row" id="rowNextTurnDate" style="display:none;">
           <span class="info-label">다음 턴</span>
-          <span class="info-value info-value-faded" id="nextTurnDate">—</span>
+          <span class="info-value info-value-faded" id="nextTurnDate"></span>
         </div>
         <div class="info-row">
           <span class="info-label">현재 페이즈</span>

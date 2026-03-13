@@ -232,24 +232,25 @@ function updateTurnUI() {
   const playerLabel = getPlayerLabel(state.step);
   const phaseLabel  = getCurrentPhaseLabel(state.step);
 
-  // 날짜가 설정되지 않은 경우 — 대시 표시
-  let turnDisplay, nextDisplay;
-  if (state.year && state.month && state.day) {
+  const hasDate = !!(state.year && state.month && state.day);
+
+  // 현재 턴 / 다음 턴 행 show/hide
+  const rowTurn = document.getElementById('rowTurnDate');
+  const rowNext = document.getElementById('rowNextTurnDate');
+  if (rowTurn) rowTurn.style.display = hasDate ? '' : 'none';
+  if (rowNext) rowNext.style.display = hasDate ? '' : 'none';
+
+  if (hasDate) {
     const datePart = formatTurnDate(state.year, state.month, state.day);
-    turnDisplay = playerLabel ? `${datePart}  ${playerLabel}` : datePart;
-    const next  = getNextTurnDate(state.year, state.month, state.day);
-    nextDisplay = formatTurnDate(next.year, next.month, next.day);
-  } else {
-    turnDisplay = '—';
-    nextDisplay = '—';
+    const turnDisplay = playerLabel ? `${datePart}  ${playerLabel}` : datePart;
+    document.getElementById('turnDate').textContent = turnDisplay;
+    const next = getNextTurnDate(state.year, state.month, state.day);
+    const nextEl = document.getElementById('nextTurnDate');
+    if (nextEl) nextEl.textContent = formatTurnDate(next.year, next.month, next.day);
   }
 
-  document.getElementById('turnDate').textContent      = turnDisplay;
   document.getElementById('curPhaseLabel').textContent = phaseLabel;
   document.getElementById('progressLabel').textContent = (state.step + 1) + ' / ' + FLAT.length;
-
-  const nextEl = document.getElementById('nextTurnDate');
-  if (nextEl) nextEl.textContent = nextDisplay;
 
   renderPhases();
 }
