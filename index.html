@@ -308,71 +308,78 @@
       </div>
 
       <!-- 대상 조건 -->
-      <div class="card combat-card">
+      <div class="card combat-card barrage-target-card">
         <div class="card-title"><span class="icon">🎯</span> 대상 조건</div>
+        <div class="barrage-target-inner">
 
-        <div class="field-group">
-          <label class="field-label">Hedgehog</label>
-          <div class="fort-select">
-            <button class="fort-btn barrage-fort-btn active" data-val="0" onclick="setBarrageFort(0, this)">없음</button>
-            <button class="fort-btn barrage-fort-btn" data-val="1" onclick="setBarrageFort(1, this)">1</button>
-            <button class="fort-btn barrage-fort-btn" data-val="2" onclick="setBarrageFort(2, this)">2</button>
-            <button class="fort-btn barrage-fort-btn" data-val="3" onclick="setBarrageFort(3, this)">3</button>
-            <button class="fort-btn barrage-fort-btn" data-val="4" onclick="setBarrageFort(4, this)">4</button>
-          </div>
-        </div>
+          <!-- 왼쪽: Hedgehog + 밀집도 -->
+          <div class="barrage-target-col">
+            <div class="field-group">
+              <label class="field-label">Hedgehog</label>
+              <div class="fort-select">
+                <button class="fort-btn barrage-fort-btn active" data-val="0" onclick="setBarrageFort(0, this)">없음</button>
+                <button class="fort-btn barrage-fort-btn" data-val="1" onclick="setBarrageFort(1, this)">1</button>
+                <button class="fort-btn barrage-fort-btn" data-val="2" onclick="setBarrageFort(2, this)">2</button>
+                <button class="fort-btn barrage-fort-btn" data-val="3" onclick="setBarrageFort(3, this)">3</button>
+                <button class="fort-btn barrage-fort-btn" data-val="4" onclick="setBarrageFort(4, this)">4</button>
+              </div>
+            </div>
 
-        <div class="field-group" style="margin-top:12px;">
-          <label class="field-label">밀집도 (Density)</label>
-          <div class="density-select">
-            <button class="density-btn" onclick="setDensity('le1', this)">1 RE 이하</button>
-            <button class="density-btn active" onclick="setDensity('le3', this)">3 RE 이하</button>
-            <button class="density-btn" onclick="setDensity('le4', this)">4 RE 이하</button>
-            <button class="density-btn" onclick="setDensity('le5', this)">5 RE 이하</button>
-            <button class="density-btn" onclick="setDensity('le6', this)">6 RE 이하</button>
-            <button class="density-btn" onclick="setDensity('gt6', this)">6 RE 초과</button>
+            <div class="field-group" style="margin-top:12px;">
+              <label class="field-label">밀집도 (Density)</label>
+              <div class="density-select">
+                <button class="density-btn" onclick="setDensity('le1', this)">1 RE 이하</button>
+                <button class="density-btn active" onclick="setDensity('le3', this)">3 RE 이하</button>
+                <button class="density-btn" onclick="setDensity('le4', this)">4 RE 이하</button>
+                <button class="density-btn" onclick="setDensity('le5', this)">5 RE 이하</button>
+                <button class="density-btn" onclick="setDensity('le6', this)">6 RE 이하</button>
+                <button class="density-btn" onclick="setDensity('gt6', this)">6 RE 초과</button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="field-group" style="margin-top:14px;">
-          <label class="field-label">컬럼 수정 체크리스트</label>
-          <div class="barrage-checklist">
-            <label class="bcl-item">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-L">1L</span>
-              <span class="bcl-desc">아무 레벨의 진지 존재</span>
-            </label>
-            <label class="bcl-item">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-L">1L</span>
-              <span class="bcl-desc">Close / Very Close 헥스</span>
-            </label>
-            <label class="bcl-item">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-L">2L</span>
-              <span class="bcl-desc">Extr Close 헥스</span>
-            </label>
-            <label class="bcl-item">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-R">3R</span>
-              <span class="bcl-desc">목표 헥스 내 유닛이 전략 이동 모드</span>
-            </label>
-            <label class="bcl-item">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-R">1R</span>
-              <span class="bcl-desc">모든 항공 유닛이 10헥스 이내 기지 출격</span>
-            </label>
-            <label class="bcl-item bcl-optional">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-L">1L</span>
-              <span class="bcl-desc">항공 유닛이 항속 거리 절반 이상 이동 <span class="bcl-opt-tag">옵션</span></span>
-            </label>
-            <label class="bcl-item">
-              <input type="checkbox" onchange="calcBarrage()">
-              <span class="bcl-shift bcl-no-obs">3L</span>
-              <span class="bcl-desc">관측 유닛 없음</span>
-            </label>
+          <!-- 오른쪽: 체크리스트 -->
+          <div class="barrage-target-col">
+            <label class="field-label">컬럼 수정 체크리스트</label>
+            <div class="barrage-checklist">
+              <label class="bcl-item">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-L">1L</span>
+                <span class="bcl-desc">아무 레벨의 진지 존재</span>
+              </label>
+              <label class="bcl-item">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-L">1L</span>
+                <span class="bcl-desc">Close / Very Close 헥스</span>
+              </label>
+              <label class="bcl-item">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-L">2L</span>
+                <span class="bcl-desc">Extr Close 헥스</span>
+              </label>
+              <label class="bcl-item">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-R">3R</span>
+                <span class="bcl-desc">목표 헥스 내 유닛이 전략 이동 모드</span>
+              </label>
+              <label class="bcl-item">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-R">1R</span>
+                <span class="bcl-desc">모든 항공 유닛이 10헥스 이내 기지 출격</span>
+              </label>
+              <label class="bcl-item bcl-optional">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-L">1L</span>
+                <span class="bcl-desc">항공 유닛이 항속 거리 절반 이상 이동 <span class="bcl-opt-tag">옵션</span></span>
+              </label>
+              <label class="bcl-item">
+                <input type="checkbox" onchange="calcBarrage()">
+                <span class="bcl-shift bcl-no-obs">3L</span>
+                <span class="bcl-desc">관측 유닛 없음</span>
+              </label>
+            </div>
           </div>
+
         </div>
       </div>
 
