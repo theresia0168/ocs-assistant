@@ -1093,7 +1093,7 @@ footer {
   display: flex;
   gap: 4px;
 }
-.btype-btn, .bobs-btn {
+.btype-btn {
   font-family: 'Oswald', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
@@ -1107,8 +1107,8 @@ footer {
   cursor: pointer;
   transition: all 0.1s;
 }
-.btype-btn:hover, .bobs-btn:hover { background: var(--paper-dark); color: var(--ink); }
-.btype-btn.active, .bobs-btn.active {
+.btype-btn:hover { background: var(--paper-dark); color: var(--ink); }
+.btype-btn.active {
   background: var(--ink);
   color: var(--paper);
   border-color: var(--ink);
@@ -1238,3 +1238,82 @@ footer {
   font-weight: 700;
   letter-spacing: 1px;
 }
+
+/* 최초/최종 컬럼 표시 */
+.bcol-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bcol-block {
+  flex: 1;
+  text-align: center;
+}
+.bcol-sublabel {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  color: var(--khaki);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.bcol-arrow {
+  font-size: 1.2rem;
+  color: var(--khaki);
+  flex-shrink: 0;
+}
+.bcol-final {
+  color: var(--paper) !important;
+  background: var(--red-stamp);
+  padding: 2px 6px;
+}
+
+/* 체크리스트 */
+.barrage-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.bcl-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  transition: background 0.1s;
+}
+.bcl-item:hover { background: rgba(0,0,0,0.05); }
+.bcl-item input[type=checkbox] { flex-shrink: 0; width: 14px; height: 14px; cursor: pointer; accent-color: var(--ink); }
+.bcl-shift {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  min-width: 28px;
+  text-align: center;
+  padding: 1px 4px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+.bcl-L        { color: #2060a0; border-color: #2060a0; background: rgba(32,96,160,0.08); }
+.bcl-R        { color: #8b1a1a; border-color: #8b1a1a; background: rgba(139,26,26,0.08); }
+.bcl-no-obs   { color: #8b1a1a; border-color: #8b1a1a; background: rgba(139,26,26,0.12); }
+.bcl-desc {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-faded);
+  line-height: 1.3;
+}
+.bcl-item.bcl-optional .bcl-desc { color: var(--khaki); }
+.bcl-opt-tag {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: var(--khaki);
+  border: 1px solid var(--khaki);
+  padding: 0 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.bcl-item input:checked ~ .bcl-desc { color: var(--ink); font-weight: 700; }
