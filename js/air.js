@@ -13,7 +13,7 @@
 const AIR_ACTIONS = [
   { id: 'bombing',   label: '폭격 + 힙샷',  en: 'Bombing + Hip Shoot', icon: '💣', available: true  },
   { id: 'interdict', label: '항공 저지',     en: 'Interdiction',        icon: '🚫', available: false },
-  { id: 'transfer',  label: '기지 이동',     en: 'Base Transfer',       icon: '✈',  available: false },
+  { id: 'transfer',  label: '기지 이동',     en: 'Base Transfer',       icon: '✈',  available: true },
   { id: 'airdrop',   label: '공수 강하',     en: 'Airborne Drop',       icon: '🪂',  available: false },
   { id: 'airlift',   label: '항공 수송',     en: 'Air Transport',       icon: '📦', available: false },
   { id: 'cap',       label: '전투기 초계',   en: 'CAP',                 icon: '🛡',  available: true  },
@@ -29,6 +29,7 @@ function airUI() {
   if      (!airAction)            el.innerHTML = renderActionSelect();
   else if (airAction === 'cap')   el.innerHTML = renderCAP();
   else if (airAction === 'bombing') el.innerHTML = renderBombing();
+  else if (airAction === 'transfer')  el.innerHTML = renderTransfer();
 }
 
 // app.js에서 호출하는 초기화 별칭
@@ -57,6 +58,7 @@ function selectAirAction(id) {
   airAction = id;
   if (id === 'cap')     { capInit();  }
   if (id === 'bombing') { bombInit(); }
+  if (id === 'transfer') { transferInit(); }
   airUI();
 }
 
@@ -1085,4 +1087,207 @@ function makeDieFaceHTML(value, color) {
   const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
   let c=''; for(let i=0;i<9;i++) c+=`<div>${P[value]?.includes(i)?'<div class="pip"></div>':''}</div>`;
   return `<div class="die-face ${color}">${c}</div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// ██  기지 이동 (Base Transfer)
+// ─────────────────────────────────────────────────────────────
+// 절차:
+//   STEP 1. 항공 유닛을 임무 목표 헥스(신규 기지)로 이동
+//   STEP 2. 적 경계 영공 진입 여부 확인
+//     2-1. 예 → 요격 실시 (icStart)
+//     2-2. 아니오 → STEP 3
+//   STEP 3. 대공 사격 실시 (aaStart)
+//   STEP 4. 항속 거리 이상 이동 시 항공 유닛 비활성화
+
+const TRANSFER_STEPS = [
+  { id:'move',       label:'유닛 이동',     en:'Move Unit'            },
+  { id:'airspace',   label:'경계 영공 확인', en:'Alert Airspace Check' },
+  { id:'aa',         label:'대공 사격',      en:'AA Fire'              },
+  { id:'deactivate', label:'비활성화',       en:'Deactivate'           },
+];
+
+let transferState = {};
+
+function transferInit() {
+  transferState = {
+    step: 'move',
+    units: [{ id: 0, name: '유닛 1', airStr: 1, aborted: false }],
+    inEnemyAirspace: false,
+    overRange: false,
+  };
+  icReset(); aaReset();
+}
+
+function renderTransfer() {
+  const si = renderStepIndicator(TRANSFER_STEPS, TRANSFER_STEPS.findIndex(s => s.id === transferState.step));
+  const hdr = `<div class="card">
+    <div class="card-title"><span class="icon">✈</span> 기지 이동 (Base Transfer)
+      <button class="air-back-btn" onclick="backToAirSelect()">◀ 임무 선택</button>
+    </div>${si}</div>`;
+
+  // 하위 모듈 활성
+  if (icState) return hdr + renderInterception();
+  if (aaState) return hdr + renderAA();
+
+  let body = '';
+  switch (transferState.step) {
+    case 'move':       body = renderTransferMove();       break;
+    case 'airspace':   body = renderTransferAirspace();   break;
+    case 'aa':         transferStartAA(); return renderTransfer();
+    case 'deactivate': body = renderTransferDeactivate(); break;
+  }
+  return hdr + body;
+}
+
+// STEP 1 — 유닛 이동 / 편성
+function renderTransferMove() {
+  const units = transferState.units;
+  const rows = units.map((u, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i + 1}</div>
+      <div class="bom-unit-fields">
+        <div class="field-group">
+          <label class="field-label">유닛 이름</label>
+          <input class="field-input" type="text" id="trName_${i}" value="${u.name}" style="width:110px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">공대공 전력</label>
+          <input class="field-input" type="number" id="trAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:70px;">
+        </div>
+      </div>
+      ${units.length > 1 ? `<button class="bom-unit-remove" onclick="transferRemoveUnit(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 1</span>
+        <span class="air-step-title">유닛 이동 / 편성</span>
+        <span class="air-step-en">Move Unit to New Base</span>
+      </div>
+      <div class="air-manual-desc">
+        <p>이동할 항공 유닛을 <strong>새 기지 헥스</strong>로 이동시키세요. 유닛 정보를 입력하세요.</p>
+      </div>
+      <div class="bom-unit-list" id="transferUnitList">${rows}</div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn btn-secondary" onclick="transferAddUnit()">+ 유닛 추가</button>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="transferSaveMove()">다음 ▶</button>
+      </div>
+    </div>`;
+}
+
+function transferAddUnit() {
+  transferSaveUnits();
+  const id = transferState.units.length;
+  transferState.units.push({ id, name: `유닛 ${id + 1}`, airStr: 1, aborted: false });
+  airUI();
+}
+
+function transferRemoveUnit(idx) {
+  transferSaveUnits();
+  transferState.units.splice(idx, 1);
+  transferState.units.forEach((u, i) => { u.id = i; });
+  airUI();
+}
+
+function transferSaveUnits() {
+  transferState.units.forEach((u, i) => {
+    const nameEl   = document.getElementById(`trName_${i}`);
+    const airStrEl = document.getElementById(`trAirStr_${i}`);
+    if (nameEl)   u.name   = nameEl.value || u.name;
+    if (airStrEl) u.airStr = parseFloat(airStrEl.value) || 0;
+  });
+}
+
+function transferSaveMove() {
+  transferSaveUnits();
+  transferState.step = 'airspace';
+  airUI();
+}
+
+// STEP 2 — 경계 영공 확인
+function renderTransferAirspace() {
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🚨</span> STEP 2 — 적 경계 영공 확인</div>
+      <div class="df-info-box">
+        <p>이동 경로가 <strong>적 경계 영공(Enemy Alert Airspace)</strong>을 통과합니까?</p>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-secondary" onclick="transferNoAirspace()">아니오 — 대공 사격으로 ▶</button>
+        <button class="btn btn-primary"   onclick="transferYesAirspace()">예 — 요격 절차 진행 ▶</button>
+      </div>
+    </div>`;
+}
+
+function transferNoAirspace() {
+  transferState.inEnemyAirspace = false;
+  transferState.step = 'deactivate'; // 대공 사격 없이 바로 비활성화
+  airUI();
+}
+
+function transferYesAirspace() {
+  transferState.inEnemyAirspace = true;
+  icStart({
+    missionUnits: transferState.units.filter(u => !u.aborted),
+    onDone: () => { transferState.step = 'aa'; airUI(); }, // 요격 후 → 대공 사격
+    onBack: () => { icReset(); transferState.step = 'airspace'; airUI(); },
+  });
+  airUI();
+}
+
+// STEP 3 — 대공 사격
+function transferStartAA() {
+  const alive = transferState.units.filter(u => !u.aborted);
+  aaStart({
+    missionUnits: alive.map(u => ({
+      id: u.id,
+      name: u.name,
+      airStr: u.airStr,
+      groundStr: u.airStr,
+      str: u.airStr,
+    })),
+    inEnemyAirspace: transferState.inEnemyAirspace,
+    onDone: () => {
+      transferState.step = 'deactivate';
+      airUI();
+    },
+  });
+}
+
+// STEP 4 — 비활성화
+function renderTransferDeactivate() {
+  const alive = transferState.units.filter(u => !u.aborted);
+  const dead  = transferState.units.filter(u => u.aborted);
+
+  const statusRows = [
+    ...alive.map(u => `<div class="df-result-row brt-none">${u.name} — 이동 완료</div>`),
+    ...dead .map(u => `<div class="df-result-row atk-loss">${u.name} — 임무 중 손실</div>`),
+  ];
+
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 4</span>
+        <span class="air-step-title">비활성화</span>
+        <span class="air-step-en">Deactivate</span>
+      </div>
+      ${statusRows.length ? `<div class="df-result-summary" style="margin-bottom:12px;">${statusRows.join('')}</div>` : ''}
+      <div class="df-info-box">
+        <p>항속 거리를 <strong>초과</strong>하여 이동했습니까?</p>
+        <p style="margin-top:6px;font-size:0.8rem;color:var(--ink-faded);">초과 이동한 경우 해당 항공 유닛은 즉시 <strong>비활성화</strong>됩니다.</p>
+      </div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-secondary" onclick="transferDone(false)">아니오 — 이동 완료 (활성 유지) ✓</button>
+        <button class="btn btn-danger"    onclick="transferDone(true)">예 — 항속 거리 초과 → 비활성화</button>
+      </div>
+    </div>`;
+}
+
+function transferDone(overRange) {
+  transferState.overRange = overRange;
+  backToAirSelect();
 }
