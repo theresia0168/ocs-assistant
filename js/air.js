@@ -12,7 +12,7 @@
 
 const AIR_ACTIONS = [
   { id: 'bombing',   label: '폭격 + 힙샷',  en: 'Bombing + Hip Shoot', icon: '💣', available: true  },
-  { id: 'interdict', label: '항공 저지',     en: 'Interdiction',        icon: '🚫', available: false },
+  { id: 'interdict', label: '항공 저지',     en: 'Interdiction',        icon: '🚫', available: true },
   { id: 'transfer',  label: '기지 이동',     en: 'Base Transfer',       icon: '✈',  available: true },
   { id: 'airdrop',   label: '공수 강하',     en: 'Airborne Drop',       icon: '🪂',  available: false },
   { id: 'airlift',   label: '항공 수송',     en: 'Air Transport',       icon: '📦', available: false },
@@ -30,6 +30,7 @@ function airUI() {
   else if (airAction === 'cap')   el.innerHTML = renderCAP();
   else if (airAction === 'bombing') el.innerHTML = renderBombing();
   else if (airAction === 'transfer')  el.innerHTML = renderTransfer();
+  else if (airAction === 'interdict') el.innerHTML = renderInterdict();
 }
 
 // app.js에서 호출하는 초기화 별칭
@@ -59,6 +60,7 @@ function selectAirAction(id) {
   if (id === 'cap')     { capInit();  }
   if (id === 'bombing') { bombInit(); }
   if (id === 'transfer') { transferInit(); }
+  if (id === 'interdict') { interdictInit(); }
   airUI();
 }
 
@@ -500,9 +502,9 @@ function renderIcAsk() {
 function icDecline() { icState.phase='done'; airUI(); }
 
 function icAccept() {
-  // 요격: 요격기가 "공격자"(수 입력), 임무 수행 중인 유닛이 "방어자"(preset)
+  // 요격: 요격기는 항상 1기로 고정, 임무 수행 중인 유닛이 "방어자"(preset)
   dfStart({
-    attackerUnits: null,   // 요격기 수는 setup 화면에서 입력
+    attackerUnits: [{ id: 0, name: '요격기 1', str: 1, aborted: false }],
     presetDefender: icState.missionUnits.map(u => ({
       id: u.id, name: u.name, str: u.airStr ?? u.str ?? 1, aborted: false
     })),
@@ -874,9 +876,10 @@ function renderBombing() {
     case 'setup':        body = renderBombSetup();        break;
     case 'dogfight':     body = renderBombDogfightCheck(); break;
     case 'interception': body = renderBombAirspaceCheck(); break;
-    case 'aa':           /* aaStart가 airUI() 전에 호출되므로 이 분기는 즉시 처리 */ bombStartAA(); return renderBombing();
+    case 'aa':           bombStartAA(); return renderBombing();
     case 'bombing':      body = renderBombRoll();         break;
     case 'return':       body = renderBombReturn();       break;
+    case 'aborted':      body = renderMissionAborted('공중전/요격'); break;  // ← 추가
   }
   return hdr + body;
 }
@@ -947,12 +950,21 @@ function bombNoEnemyAir() { bombState.step='interception'; airUI(); }
 
 function bombYesEnemyAir() {
   dfStart({
-    attackerUnits: bombState.units.map(u=>({id:u.id,name:u.name,str:u.airStr})),
+    attackerUnits: bombState.units.map(u => ({ id:u.id, name:u.name, str:u.airStr })),
     onDone: (snap) => {
-      if (snap?.attackerUnits) snap.attackerUnits.forEach(du=>{const u=bombState.units.find(u=>u.id===du.id);if(u&&du.aborted)u.aborted=true;});
-      bombState.step='interception'; airUI();
+      if (snap?.attackerUnits) snap.attackerUnits.forEach(du => {
+        const u = bombState.units.find(u => u.id === du.id);
+        if (u && du.aborted) u.aborted = true;
+      });
+      // 임무 유닛 전원 중단 체크
+      if (missionAliveCount(bombState.units) === 0) {
+        bombState.step = 'aborted';
+      } else {
+        bombState.step = 'interception';
+      }
+      airUI();
     },
-    onBack: () => { dfReset(); bombState.step='dogfight'; airUI(); },
+    onBack: () => { dfReset(); bombState.step = 'dogfight'; airUI(); },
   });
   airUI();
 }
@@ -974,10 +986,17 @@ function bombNoAirspace() { bombState.inEnemyAirspace = false; bombState.step = 
 
 function bombYesAirspace() {
   bombState.inEnemyAirspace = true;
-  // filter로 새 배열을 만들면 참조가 끊기므로 bombState.units의 객체를 직접 참조
   icStart({
     missionUnits: bombState.units.filter(u => !u.aborted),
-    onDone: () => { bombState.step = 'aa'; airUI(); },
+    onDone: () => {
+      // 임무 유닛 전원 중단 체크
+      if (missionAliveCount(bombState.units) === 0) {
+        bombState.step = 'aborted';
+      } else {
+        bombState.step = 'aa';
+      }
+      airUI();
+    },
     onBack: () => { icReset(); bombState.step = 'interception'; airUI(); },
   });
   airUI();
@@ -1068,6 +1087,278 @@ function renderBombReturn() {
 }
 
 // ─────────────────────────────────────────────────────────────
+// ██  항공 저지 (Interdiction)
+// ─────────────────────────────────────────────────────────────
+
+const INTERDICT_STEPS = [
+  { id:'move',         label:'임무 목표 헥스로 이동', en:'Move to Target Hex'  },
+  { id:'dogfight',     label:'공중전',               en:'Air Combat'          },
+  { id:'interception', label:'요격',                 en:'Interception'        },
+  { id:'aa',           label:'대공 사격',             en:'AA Fire'             },
+  { id:'bombing',      label:'대시설 폭격',           en:'Facility Bombing'    },
+  { id:'return',       label:'복귀 / 비활성화',       en:'Return & Deactivate' },
+];
+
+let interdictState = {};
+
+function interdictInit() {
+  interdictState = {
+    step: 'move',
+    units: [{ id:0, name:'유닛 1', airStr:1, groundStr:2, isFighter:false, aborted:false, stepLost:false }],
+    inEnemyAirspace: false,
+    aaResult: null,
+    finalGroundStr: 0,
+  };
+  dfReset(); icReset(); aaReset();
+}
+
+function renderInterdict() {
+  const si = renderStepIndicator(INTERDICT_STEPS, INTERDICT_STEPS.findIndex(s => s.id === interdictState.step));
+  const hdr = `<div class="card">
+    <div class="card-title"><span class="icon">🚫</span> 항공 저지 (Interdiction)
+      <button class="air-back-btn" onclick="backToAirSelect()">◀ 임무 선택</button>
+    </div>${si}</div>`;
+
+  // 하위 모듈 활성
+  if (dfState)  return hdr + renderDogfight();
+  if (icState)  return hdr + renderInterception();
+  if (aaState)  return hdr + renderAA();
+
+  let body = '';
+  switch (interdictState.step) {
+    case 'move':         body = renderInterdictMove();          break;
+    case 'dogfight':     body = renderInterdictDogfightCheck(); break;
+    case 'interception': body = renderInterdictAirspaceCheck(); break;
+    case 'aa':           interdictStartAA(); return renderInterdict();
+    case 'bombing':      body = renderInterdictBombing();       break;
+    case 'return':       body = renderInterdictReturn();        break;
+    case 'aborted':      body = renderMissionAborted('공중전/요격'); break;  // ← 추가
+  }
+  return hdr + body;
+}
+
+// STEP 1 — 이동 + 유닛 편성
+function renderInterdictMove() {
+  const units = interdictState.units;
+  const rows = units.map((u, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i+1}</div>
+      <div class="bom-unit-fields">
+        <div class="field-group">
+          <label class="field-label">공대공 전력</label>
+          <input class="field-input" type="number" id="iAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:70px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">공대지 화력</label>
+          <input class="field-input" type="number" id="iGndStr_${i}" value="${u.groundStr}" min="0" step="0.5" style="width:70px;">
+        </div>
+        <label class="bom-fighter-check">
+          <input type="checkbox" id="iFighter_${i}" ${u.isFighter ? 'checked' : ''}>
+          <span class="field-label" style="margin:0;">전투기</span>
+        </label>
+      </div>
+      ${units.length > 1 ? `<button class="bom-del-btn" onclick="interdictRemoveUnit(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">✈</span> STEP 1 — 임무 목표 헥스로 이동</div>
+      <div class="air-manual-desc" style="margin-bottom:12px;">
+        <p>항공 저지 유닛을 <strong>임무 목표 헥스</strong>로 이동시킨 뒤, 각 유닛의 전력을 입력하세요.</p>
+      </div>
+      <div class="bom-unit-list">${rows}</div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn btn-secondary" onclick="interdictAddUnit()">+ 유닛 추가</button>
+      </div>
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="interdictSaveSetup()">다음 ▶</button>
+      </div>
+    </div>`;
+}
+
+function interdictAddUnit() {
+  interdictSaveUnits();
+  const i = interdictState.units.length;
+  interdictState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, groundStr:2, isFighter:false, aborted:false, stepLost:false });
+  airUI();
+}
+
+function interdictRemoveUnit(i) {
+  interdictSaveUnits();
+  interdictState.units.splice(i, 1);
+  interdictState.units.forEach((u, idx) => { u.id = idx; u.name = `유닛 ${idx+1}`; });
+  airUI();
+}
+
+function interdictSaveUnits() {
+  interdictState.units.forEach((u, i) => {
+    const as = document.getElementById(`iAirStr_${i}`);
+    const gs = document.getElementById(`iGndStr_${i}`);
+    const fn = document.getElementById(`iFighter_${i}`);
+    if (as) u.airStr    = parseFloat(as.value) || 0;
+    if (gs) u.groundStr = parseFloat(gs.value) || 0;
+    if (fn) u.isFighter = fn.checked;
+  });
+}
+
+function interdictSaveSetup() {
+  interdictSaveUnits();
+  interdictState.step = 'dogfight';
+  airUI();
+}
+
+// STEP 2 — 적 활성 항공 유닛 확인
+function renderInterdictDogfightCheck() {
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">✈</span> STEP 2 — 적 활성 항공 유닛 확인</div>
+      <div class="df-info-box"><p>임무 목표 헥스 인근에 <strong>적 활성 항공 유닛</strong>이 존재합니까?</p></div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-secondary" onclick="interdictNoDogfight()">아니오 — 공중전 없음 ▶</button>
+        <button class="btn btn-primary"   onclick="interdictYesDogfight()">예 — 공중전 수행 ▶</button>
+      </div>
+    </div>`;
+}
+
+function interdictNoDogfight() {
+  interdictState.step = 'interception';
+  airUI();
+}
+
+function interdictYesDogfight() {
+  dfStart({
+    attackerUnits: interdictState.units.map(u => ({ id:u.id, name:u.name, str:u.airStr })),
+    onDone: (snap) => {
+      if (snap?.attackerUnits) snap.attackerUnits.forEach(du => {
+        const u = interdictState.units.find(u => u.id === du.id);
+        if (u && du.aborted) u.aborted = true;
+      });
+      // 임무 유닛 전원 중단 체크
+      if (missionAliveCount(interdictState.units) === 0) {
+        interdictState.step = 'aborted';
+      } else {
+        interdictState.step = 'interception';
+      }
+      airUI();
+    },
+    onBack: () => { dfReset(); interdictState.step = 'dogfight'; airUI(); },
+  });
+  airUI();
+}
+
+// STEP 3 — 적 경계 영공 / 요격
+function renderInterdictAirspaceCheck() {
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🚨</span> STEP 3 — 적 경계 영공 / 요격</div>
+      <div class="df-info-box"><p>임무 목표가 <strong>적 경계 영공(Enemy Alert Airspace)</strong> 내에 있습니까?</p></div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-secondary" onclick="interdictNoAirspace()">아니오 — 요격 없음 ▶</button>
+        <button class="btn btn-primary"   onclick="interdictYesAirspace()">예 — 요격 절차 진행 ▶</button>
+      </div>
+    </div>`;
+}
+
+function interdictNoAirspace() {
+  interdictState.inEnemyAirspace = false;
+  interdictState.step = 'aa';
+  airUI();
+}
+
+function interdictYesAirspace() {
+  interdictState.inEnemyAirspace = true;
+  icStart({
+    missionUnits: interdictState.units.filter(u => !u.aborted),
+    onDone: () => {
+      // 임무 유닛 전원 중단 체크
+      if (missionAliveCount(interdictState.units) === 0) {
+        interdictState.step = 'aborted';
+      } else {
+        interdictState.step = 'aa';
+      }
+      airUI();
+    },
+    onBack: () => { icReset(); interdictState.step = 'interception'; airUI(); },
+  });
+  airUI();
+}
+
+// STEP 4 — 대공 사격
+function interdictStartAA() {
+  const aliveUnits = interdictState.units.filter(u => !u.aborted);
+  aaStart({
+    missionUnits: aliveUnits,
+    inEnemyAirspace: interdictState.inEnemyAirspace,
+    onDone: () => {
+      interdictState.finalGroundStr = interdictState.units
+        .filter(u => !u.aborted && !u.destroyed)
+        .reduce((s, u) => s + u.groundStr, 0);
+      interdictState.step = 'bombing';
+      airUI();
+    },
+  });
+}
+
+// STEP 5 — 대시설 폭격
+function renderInterdictBombing() {
+  const allUnits   = interdictState.units;
+  const destroyed  = allUnits.filter(u => u.destroyed);
+  const damaged    = allUnits.filter(u => u.stepLost && !u.destroyed);
+  const alive      = allUnits.filter(u => !u.aborted && !u.destroyed);
+  const str = alive.reduce((s, u) => s + u.groundStr, 0);
+  interdictState.finalGroundStr = str;
+
+  const statusRows = [];
+  if (destroyed.length)
+    statusRows.push(`<div class="df-result-row atk-loss" style="margin:0 0 4px;">💀 파괴: ${destroyed.map(u=>u.name).join(', ')}</div>`);
+  if (damaged.length)
+    statusRows.push(`<div class="df-result-row no-effect" style="margin:0 0 4px;">⚠ 손실 후 계속: ${damaged.map(u=>`${u.name} (화력 ${u.groundStr})`).join(', ')}</div>`);
+
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🏭</span> STEP 5 — 대시설 폭격</div>
+      <div class="df-info-box" style="margin-bottom:14px;">
+        <p>최종 공대지 화력이 산출되었습니다. <strong>대시설 폭격 테이블</strong>에서 결과를 처리한 뒤 돌아오세요.</p>
+      </div>
+      ${statusRows.length ? `<div class="df-result-summary" style="margin-bottom:12px;">${statusRows.join('')}</div>` : ''}
+      <div class="bom-str-display">
+        <div class="bom-str-label">최종 공대지 화력 (Ground Str)</div>
+        <div class="bom-str-value">${str}</div>
+        <div class="bom-str-breakdown">
+          ${alive.map(u=>`<span>${u.name}: ${u.groundStr}</span>`).join(' + ')}
+          ${alive.length === 0 ? '<span style="color:var(--border);">임무 유닛 없음</span>' : ''}
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="interdictBombingDone()">폭격 완료 — 복귀 ▶</button>
+      </div>
+    </div>`;
+}
+
+function interdictBombingDone() {
+  interdictState.step = 'return';
+  airUI();
+}
+
+// STEP 6 — 복귀 / 비활성화
+function renderInterdictReturn() {
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 6</span>
+        <span class="air-step-title">복귀 / 비활성화</span>
+        <span class="air-step-en">Return &amp; Deactivate</span>
+      </div>
+      <div class="air-manual-desc"><p>임무에 참가한 모든 항공 유닛을 <strong>아무 항공 기지로 복귀</strong>시키고 <strong>비활성화</strong>하세요.</p></div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="backToAirSelect()">임무 완료 ✓</button>
+      </div>
+    </div>`;
+}
+
+
+// ─────────────────────────────────────────────────────────────
 // ██  공통 유틸
 // ─────────────────────────────────────────────────────────────
 
@@ -1087,6 +1378,28 @@ function makeDieFaceHTML(value, color) {
   const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
   let c=''; for(let i=0;i<9;i++) c+=`<div>${P[value]?.includes(i)?'<div class="pip"></div>':''}</div>`;
   return `<div class="die-face ${color}">${c}</div>`;
+}
+
+// 임무 유닛 배열에서 생존(비중단, 비파괴) 유닛 수를 반환
+function missionAliveCount(units) {
+  return units.filter(u => !u.aborted && !u.destroyed).length;
+}
+
+// label: 어느 단계에서 중단됐는지 표시용 텍스트
+function renderMissionAborted(label) {
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🚫</span> 임무 중단</div>
+      <div class="df-info-box">
+        <p><strong>${label}</strong> 단계에서 임무 수행 유닛이 전원 임무 중단되었습니다.</p>
+        <p style="margin-top:6px;font-size:0.8rem;color:var(--ink-faded);">
+          모든 항공 유닛을 아무 항공 기지로 복귀시키고 비활성화하세요.
+        </p>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="backToAirSelect()">임무 종료 ✓</button>
+      </div>
+    </div>`;
 }
 
 // ─────────────────────────────────────────────────────────────
