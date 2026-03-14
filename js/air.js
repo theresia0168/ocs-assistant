@@ -89,7 +89,9 @@ function dfStart(opts) {
   dfState = {
     // 공격자가 없으면 setup, 공격자만 있으면 setup_def_only
     // 요격처럼 방어자만 preset인 경우도 setup (공격자 수 입력 필요)
-    phase: (opts.attackerUnits && !hasPresetDef) ? 'setup_def_only' : 'setup',
+    phase: (opts.attackerUnits && !hasPresetDef) ? 'setup_def_only'
+         : (opts.attackerUnits &&  hasPresetDef && opts.presetAttacker) ? 'voluntary'
+         : 'setup',
     round: 0,
     attackerUnits: opts.attackerUnits
       ? opts.attackerUnits.map(u => ({ ...u, aborted: false }))
@@ -505,6 +507,7 @@ function icAccept() {
   // 요격: 요격기는 항상 1기로 고정, 임무 수행 중인 유닛이 "방어자"(preset)
   dfStart({
     attackerUnits: [{ id: 0, name: '요격기 1', str: 1, aborted: false }],
+    presetAttacker: true,   // 공격자도 preset — setup 화면 건너뜀
     presetDefender: icState.missionUnits.map(u => ({
       id: u.id, name: u.name, str: u.airStr ?? u.str ?? 1, aborted: false
     })),
