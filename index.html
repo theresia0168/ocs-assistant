@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/date-addon.css">
+  <link rel="stylesheet" href="css/air.css">
 </head>
 <body>
 <div class="page-wrap">
@@ -24,7 +25,7 @@
       <div class="header-emblem">⚔</div>
       <div class="header-text">
         <h1>OCS Assistant</h1>
-        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.1.0</div>
+        <div class="subtitle">Operational Combat Series ∙ Play Aid System ∙ Ver. 1.0.8</div>
       </div>
       <div class="classified-stamp">Classified</div>
     </div>
@@ -35,6 +36,7 @@
     <button class="active" onclick="showPage('turn', this)">턴 트래커</button>
     <button onclick="showPage('combat', this)">전투 계산기</button>
     <button onclick="showPage('barrage', this)">포격/폭격</button>
+    <button onclick="showPage('air', this)">항공 임무</button>
   </nav>
 
   <!-- ========================================================
@@ -46,7 +48,7 @@
         <div class="card-title"><span class="icon">📋</span> 작전 현황</div>
 
         <!-- 시작 날짜 설정 -->
-        <div style="margin-bottom:4px;">
+        <div class="date-setup-block">
           <div class="field-label">시작 날짜 설정</div>
           <div style="display:flex; align-items:center; gap:5px; margin-top:6px; flex-wrap:nowrap;">
             <input class="field-input" type="number" id="startYear"
@@ -90,7 +92,6 @@
           <span class="info-label">현재 페이즈</span>
           <span class="info-value" id="curPhaseLabel">날씨 결정 페이즈</span>
         </div>
-
 
         <div class="divider"></div>
 
@@ -391,8 +392,17 @@
 
   </div><!-- /barrage -->
 
+
+  <!-- ========================================================
+       PAGE: 항공 임무
+  ======================================================== -->
+  <div id="air" class="page">
+    <div id="airContent"></div>
+  </div><!-- /air -->
+
+
   <footer>
-    GRID REF: OCS-ASSIST-v1.1.0 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
+    GRID REF: OCS-ASSIST-v1.0.8 ∙ FOR AUTHORIZED PLAY USE ONLY ∙ ALL RIGHTS RESERVED
   </footer>
 </div><!-- /page-wrap -->
 
@@ -400,6 +410,7 @@
 <script src="js/dice.js"></script>
 <script src="js/combat.js"></script>
 <script src="js/barrage.js"></script>
+<script src="js/air.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
