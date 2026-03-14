@@ -128,3 +128,147 @@ function lookupCRT(diceVal, terrain, ratioNum) {
   const result   = CRT[terrain][rowIdx][colIdx];
   return { result, colLabel, rowIdx, colIdx };
 }
+
+
+
+// ============================================================
+// CRT 결과 파싱 & 해설 렌더링
+// ============================================================
+
+/**
+ * CRT 결과 문자열을 파싱해 구조체로 반환
+ * 예) "Ao1 e4 DL1o2 DG"
+ *   → { atk: { loss:0, option:1, eliteMin:4, dg:false },
+ *        def: { loss:1, option:2, eliteMin:null, dg:true } }
+ *
+ * 토큰 규칙:
+ *   A / D   : 이하 토큰이 공격자/방어자 영역
+ *   L#      : # 손실
+ *   o#      : # 옵션
+ *   e#      : 돌파 (부대 등급 # 이상)  ← A 영역에만 나타남
+ *   DG      : 방어 유닛 전체 DG  ← D 접두가 있으면 def.dg, 단독이면 def.dg
+ *
+ * 주의: "AL2" → A + L2 (공격자 2손실),  "DL1o2" → D + L1 + o2
+ */
+function parseCRTResult(str) {
+  const atk = { loss: 0, option: 0, eliteMin: null, dg: false };
+  const def = { loss: 0, option: 0, eliteMin: null, dg: false };
+
+  // 먼저 단독 DG (접두 없이 뒤에 오는 경우 포함) 를 처리하기 위해
+  // 전체 문자열에서 D-접두 없이 나오는 DG를 def.dg로 간주.
+  // 파싱은 문자 단위로 진행.
+
+  let i = 0;
+  let side = null; // 'A' | 'D'
+
+  while (i < str.length) {
+    // 공백 스킵
+    if (str[i] === ' ') { i++; continue; }
+
+    // 'A' : 공격자 사이드 전환
+    if (str[i] === 'A') {
+      side = 'A'; i++; continue;
+    }
+
+    // 'D' 처리 — 뒤에 'G'가 오면 DG, 아니면 방어자 사이드 전환
+    if (str[i] === 'D') {
+      if (str[i+1] === 'G') {
+        def.dg = true; i += 2; continue;
+      } else {
+        side = 'D'; i++; continue;
+      }
+    }
+
+    // 'L' — 손실
+    if (str[i] === 'L') {
+      i++;
+      const m = str.slice(i).match(/^(\d+)/);
+      const n = m ? parseInt(m[1]) : 1;
+      if (m) i += m[1].length;
+      if (side === 'A') atk.loss = n;
+      else              def.loss = n;
+      continue;
+    }
+
+    // 'o' — 옵션
+    if (str[i] === 'o') {
+      i++;
+      const m = str.slice(i).match(/^(\d+)/);
+      const n = m ? parseInt(m[1]) : 1;
+      if (m) i += m[1].length;
+      if (side === 'A') atk.option = n;
+      else              def.option = n;
+      continue;
+    }
+
+    // 'e' — 돌파
+    if (str[i] === 'e') {
+      i++;
+      const m = str.slice(i).match(/^(\d+)/);
+      const n = m ? parseInt(m[1]) : null;
+      if (m) i += m[1].length;
+      if (side === 'A') atk.eliteMin = n;
+      continue;
+    }
+
+    i++; // 알 수 없는 문자 건너뜀
+  }
+
+  return { atk, def };
+}
+
+/**
+ * 파싱된 결과를 해설 HTML 줄들로 변환
+ * 반환: HTML string (해설 라인들)
+ */
+function renderCRTExplain(raw, combatType) {
+  const { atk, def } = parseCRTResult(raw);
+  const isOverrun = combatType === 'overrun';
+  const canExploit = !isOverrun; // 전투 페이즈 전투 단계에서만 돌파 가능
+
+  const lines = [];
+
+  // ── 공격자 ──────────────────────────────────────────────
+  const atkParts = [];
+  if (atk.loss > 0)  atkParts.push(`<strong>${atk.loss} 손실</strong> 적용`);
+  if (atk.option > 0) atkParts.push(`<strong>${atk.option} 옵션</strong> 적용 <span class="crt-explain-opt">(손실+후퇴=${atk.option})</span>`);
+  if (atk.eliteMin !== null) {
+    if (canExploit) {
+      atkParts.push(`AR <strong>${atk.eliteMin}+</strong> 유닛 <span class="crt-explain-exploit">돌파 획득</span>`);
+    } else {
+      atkParts.push(`<span class="crt-explain-muted">AR ${atk.eliteMin}+ 돌파 — 오버런 시 무효</span>`);
+    }
+  }
+
+  if (atkParts.length > 0) {
+    lines.push(`<div class="crt-explain-row crt-atk-row">
+      <span class="crt-explain-side crt-side-atk">공격</span>
+      <span class="crt-explain-text">${atkParts.join(' · ')}</span>
+    </div>`);
+  } else {
+    lines.push(`<div class="crt-explain-row crt-atk-row">
+      <span class="crt-explain-side crt-side-atk">공격</span>
+      <span class="crt-explain-text crt-explain-muted">효과 없음</span>
+    </div>`);
+  }
+
+  // ── 방어자 ──────────────────────────────────────────────
+  const defParts = [];
+  if (def.loss > 0)   defParts.push(`<strong>${def.loss} 손실</strong> 적용`);
+  if (def.option > 0) defParts.push(`<strong>${def.option} 옵션</strong> 적용 <span class="crt-explain-opt">(손실+후퇴=${def.option})</span>`);
+  if (def.dg)         defParts.push(`모든 방어 유닛 <span class="crt-explain-dg">DG</span>`);
+
+  if (defParts.length > 0) {
+    lines.push(`<div class="crt-explain-row crt-def-row">
+      <span class="crt-explain-side crt-side-def">방어</span>
+      <span class="crt-explain-text">${defParts.join(' · ')}</span>
+    </div>`);
+  } else {
+    lines.push(`<div class="crt-explain-row crt-def-row">
+      <span class="crt-explain-side crt-side-def">방어</span>
+      <span class="crt-explain-text crt-explain-muted">효과 없음</span>
+    </div>`);
+  }
+
+  return lines.join('');
+}

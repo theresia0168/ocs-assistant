@@ -258,3 +258,131 @@ function rollBarrage() {
   tag.textContent = `포격 굴림 — ${TYPE_LABEL[barrageType]}`;
   tag.className = 'dice-result-tag combat';
 }
+
+
+// ============================================================
+// 시설 포격/폭격 (Facility Barrage/Bombing)
+// ============================================================
+
+// 화력 컬럼: 1이하, 2, 3-4, 5-10, 11-20, 21-40, 41-80, 81+
+// 보급 소모: 1T, 1T, 1T, 1T, 2T, 4T, 6T, 8T
+const FBRT_COLS = [
+  { max: 1,        label: '1 이하', cost: '1T' },
+  { max: 2,        label: '2',      cost: '1T' },
+  { max: 4,        label: '3-4',    cost: '1T' },
+  { max: 10,       label: '5-10',   cost: '1T' },
+  { max: 20,       label: '11-20',  cost: '2T' },
+  { max: 40,       label: '21-40',  cost: '4T' },
+  { max: 80,       label: '41-80',  cost: '6T' },
+  { max: Infinity, label: '81+',    cost: '8T' },
+];
+
+// 시설 포격/폭격 결과 테이블
+// 행: 주사위 1~6 (인덱스 0~5), 열: 화력 컬럼 0~7
+// 셀 표기: '-' 효과없음, '*' 철도방해, 숫자 시설손실, '(N)' 항공유닛확인, 조합 가능
+const FBRT_RAW = [
+  // 주사위 1
+  ['-',   '-',   '-',   '-',   '-',   '-',  '-(5)', '1(5)'    ],
+  // 주사위 2
+  ['-',   '-',   '-',   '-',   '-',   '-(5)',  '1(4)', '1(4)' ],
+  // 주사위 3
+  ['-',   '-',   '-',   '-',   '-(5)','1(5)',  '1(4)', '1(4)' ],
+  // 주사위 4
+  ['-',   '-',   '-',   '*(6)','1*(5)','1*(4)', '1*(4)','2*(4)'],
+  // 주사위 5
+  ['-',   '-(6)','*(6)','1*(5)','1*(4)','2*(4)','2*(4)','2*(3)'],
+  // 주사위 6
+  ['(6)', '*(5)','1*(5)','1*(4)','1*(4)','2*(4)','2*(3)','2*(3)'],
+];
+
+function parseFBRTCell(cell) {
+  let num   = null;
+  let star  = false;
+  let paren = null;
+
+  const parenMatch = cell.match(/\((\d+)\)/);
+  if (parenMatch) paren = parseInt(parenMatch[1]);
+
+  const core = cell.replace(/\(\d+\)/, '').trim();
+
+  if      (core === '2*' || core === '*2') { num = 2; star = true; }
+  else if (core === '1*' || core === '*1') { num = 1; star = true; }
+  else if (core === '2')                   { num = 2; }
+  else if (core === '1')                   { num = 1; }
+  else if (core === '*')                   { star = true; }
+  // '-' 또는 '' → num/star 모두 null/false
+
+  return { num, star, paren };
+}
+
+function getFBRTColIndex(str) {
+  for (let i = 0; i < FBRT_COLS.length; i++) {
+    if (str <= FBRT_COLS[i].max) return i;
+  }
+  return FBRT_COLS.length - 1;
+}
+
+// ── 탭 전환 ──────────────────────────────────────────────────
+let barrageTab = 'normal';
+
+function setBarrageTab(tab) {
+  barrageTab = tab;
+  document.getElementById('barrageTabNormal').classList.toggle('active', tab === 'normal');
+  document.getElementById('barrageTabFacility').classList.toggle('active', tab === 'facility');
+  document.getElementById('barrageNormalContent').style.display    = tab === 'normal'   ? '' : 'none';
+  document.getElementById('barrageFacilityContent').style.display  = tab === 'facility' ? '' : 'none';
+  if (tab === 'facility') calcFacility();
+}
+
+// ── 시설 화력 컬럼 계산 ──────────────────────────────────────
+function calcFacility() {
+  const el = document.getElementById('facilityStr');
+  if (!el) return;
+  const raw    = parseFloat(el.value) || 0;
+  const colIdx = getFBRTColIndex(raw);
+  const col    = FBRT_COLS[colIdx];
+  document.getElementById('fColLabel').textContent = col.label;
+  document.getElementById('fColCost').textContent  = col.cost;
+}
+
+// ── 시설 포격 굴림 ──────────────────────────────────────────
+function rollFacility() {
+  const el = document.getElementById('facilityStr');
+  if (!el) return;
+  const raw    = parseFloat(el.value) || 0;
+  const colIdx = getFBRTColIndex(raw);
+  const col    = FBRT_COLS[colIdx];
+
+  const diceVal = Math.floor(Math.random() * 6) + 1;
+  const cell    = FBRT_RAW[diceVal - 1][colIdx];
+  const parsed  = parseFBRTCell(cell);
+
+  const area = document.getElementById('facilityDiceResult');
+  const tag  = document.getElementById('facilityDiceTag');
+  area.innerHTML = '';
+
+  // 주사위 면 렌더링
+  area.appendChild(makeDie(diceVal, 'ivory'));
+
+  const { num, star, paren } = parsed;
+  const noEffect = !num && !star && !paren;
+
+  let html = '';
+  if (noEffect) {
+    html += `<div class="fac-result-line fac-none">— 효과 없음</div>`;
+  } else {
+    if (star) html += `<div class="fac-result-line fac-star">★ 철도방해(항공 저지) 성공</div>`;
+    if (num)  html += `<div class="fac-result-line fac-num">시설 ${num} 손실</div>`;
+    if (paren) html += `<div class="fac-result-line fac-paren">항공 유닛 개별 확인 (${paren}+)</div>`;
+  }
+
+  const modDiv = document.createElement('div');
+  modDiv.className = 'dice-modified-total';
+  modDiv.innerHTML = `
+    <div class="fac-result-box">${html}</div>
+    <div class="drm-line">주사위 ${diceVal} / 화력 컬럼: ${col.label} (보급 ${col.cost})</div>`;
+  area.appendChild(modDiv);
+
+  tag.textContent = '시설 포격/폭격 굴림';
+  tag.className   = 'dice-result-tag combat';
+}

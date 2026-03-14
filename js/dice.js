@@ -135,7 +135,13 @@ function rollCombatDice(mode) {
     const colLabel = CRT_COL_LABELS[terrainType][shiftedColIdx];
     const baseColLabel = CRT_COL_LABELS[terrainType][baseColIdx];
     const shiftDesc = colShift !== 0 ? ` <span class="col-shift-note">(${baseColLabel} ${colShift>0?'+':''}${colShift}컬럼)</span>` : '';
-    modDiv.innerHTML = `<div class="crt-result">${result}</div><div class="drm-line">${drmDesc}</div><div class="crt-col-label">${TERRAIN_LABEL[terrainType]} / ${colLabel} 컬럼${shiftDesc}</div>`;
+    modDiv.innerHTML = `
+      <div class="crt-result-raw">${result}</div>
+      <div class="crt-explain-block">
+        ${renderCRTExplain(result, combatType)}
+      </div>
+      <div class="drm-line">${drmDesc}</div>
+      <div class="crt-col-label">${TERRAIN_LABEL[terrainType]} / ${colLabel} 컬럼${shiftDesc}</div>`;
     area.appendChild(modDiv);
     tag.textContent = `전투 굴림 — ${combatType === 'overrun' ? '오버런 전투' : '정규 전투'}`;
     tag.className = 'dice-result-tag combat';

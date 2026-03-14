@@ -511,6 +511,128 @@ nav button.active::before { opacity: 1; }
 .log-clear-btn:hover { background: var(--paper-dark); color: var(--ink); }
 
 /* ============================================================
+   CRT 결과 해설 (인라인)
+============================================================ */
+.crt-result-raw {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: var(--ink-faded);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  font-family: monospace;
+}
+
+.crt-explain-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.crt-explain-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.crt-atk-row { border-left: 3px solid #c84020; background: rgba(200,64,32,0.06); }
+.crt-def-row { border-left: 3px solid #2060a0; background: rgba(32,96,160,0.06); }
+
+.crt-explain-side {
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  min-width: 30px;
+  padding: 1px 4px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.crt-side-atk { color: #c84020; border: 1px solid #c84020; background: rgba(200,64,32,0.08); }
+.crt-side-def { color: #2060a0; border: 1px solid #2060a0; background: rgba(32,96,160,0.08); }
+
+.crt-explain-text {
+  color: var(--ink);
+  line-height: 1.5;
+  font-size: 0.8rem;
+}
+.crt-explain-text strong { font-weight: 900; }
+
+.crt-explain-opt    { font-size: 0.68rem; color: var(--ink-faded); }
+.crt-explain-muted  { color: var(--ink-faded); font-size: 0.75rem; }
+.crt-explain-exploit {
+  font-weight: 900;
+  color: #806000;
+  background: rgba(128,96,0,0.1);
+  padding: 0 4px;
+  border: 1px solid rgba(128,96,0,0.3);
+  font-size: 0.76rem;
+}
+.crt-explain-dg {
+  font-weight: 900;
+  color: #c87020;
+  background: rgba(200,112,32,0.1);
+  padding: 0 4px;
+  border: 1px solid rgba(200,112,32,0.3);
+  font-size: 0.76rem;
+}
+
+/* ============================================================
+   전투 결과 해설 카드 (하단 범례)
+============================================================ */
+.crt-legend-card { margin-top: 12px; }
+
+.crt-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.crt-legend-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 8px;
+  border-bottom: 1px dashed var(--border);
+}
+.crt-legend-row:last-child { border-bottom: none; }
+
+.crt-legend-key {
+  font-size: 0.78rem;
+  font-weight: 900;
+  min-width: 34px;
+  text-align: center;
+  padding: 2px 5px;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+.crt-key-loss  { color: #8b1a1a; border: 1px solid #8b1a1a; background: rgba(139,26,26,0.07); }
+.crt-key-opt   { color: #805000; border: 1px solid #a06800; background: rgba(128,80,0,0.07); }
+.crt-key-elite { color: #806000; border: 1px solid rgba(128,96,0,0.5); background: rgba(128,96,0,0.07); }
+.crt-key-dg    { color: #c87020; border: 1px solid rgba(200,112,32,0.5); background: rgba(200,112,32,0.07); }
+.crt-key-note  { font-size: 0.65rem; color: var(--khaki); }
+
+.crt-legend-desc {
+  font-size: 0.78rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.crt-legend-desc strong { font-weight: 900; }
+
+.crt-legend-note {
+  font-size: 0.72rem;
+  color: var(--ink-faded);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--olive);
+  padding: 7px 10px;
+  line-height: 1.6;
+}
+.crt-legend-note strong { font-weight: 900; color: var(--ink); }
+
+
+/* ============================================================
    포격/폭격 — 3행 레이아웃
    행1: [화력 입력] [화력 컬럼]  ← 2열 그리드
    행2: [대상 조건]               ← 1열 카드 (내부 2열)
@@ -616,6 +738,102 @@ nav button.active::before { opacity: 1; }
   width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .loss-roll-result { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; }
+
+/* ============================================================
+   포격/폭격 탭 바
+============================================================ */
+.barrage-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+.barrage-tab {
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 8px 20px;
+  background: rgba(0,0,0,0.04);
+  color: var(--ink-faded);
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: -2px;
+}
+.barrage-tab:hover { background: var(--paper-dark); color: var(--ink); }
+.barrage-tab.active {
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom: 3px solid var(--ink);
+}
+
+/* ============================================================
+   시설 포격/폭격 전용
+============================================================ */
+.fac-note {
+  font-size: 0.72rem;
+  color: var(--ink-faded);
+  background: rgba(0,0,0,0.04);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  letter-spacing: 0.3px;
+}
+
+/* 결과 박스 */
+.fac-result-box {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+.fac-result-line {
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  letter-spacing: 0.5px;
+}
+.fac-none  { color: var(--ink-faded); }
+.fac-star  { color: #2060a0; background: rgba(32,96,160,0.08); border-left: 3px solid #2060a0; }
+.fac-num   { color: var(--red-stamp); background: rgba(180,30,20,0.07); border-left: 3px solid var(--red-stamp); }
+.fac-paren { color: #805000; background: rgba(128,80,0,0.08); border-left: 3px solid #a06800; }
+
+/* 결과 해설 카드 */
+.fac-legend-card { margin-top: 12px; }
+.fac-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fac-legend-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 8px;
+  border-bottom: 1px dashed var(--border);
+}
+.fac-legend-row:last-child { border-bottom: none; }
+.fac-legend-key {
+  font-size: 0.8rem;
+  font-weight: 900;
+  min-width: 32px;
+  text-align: center;
+  padding: 2px 5px;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+.fac-legend-key.fac-none  { color: var(--ink-faded); border: 1px solid var(--border); }
+.fac-legend-key.fac-star  { color: #2060a0; border: 1px solid #2060a0; background: rgba(32,96,160,0.08); }
+.fac-legend-key.fac-num   { color: var(--red-stamp); border: 1px solid var(--red-stamp); background: rgba(180,30,20,0.07); }
+.fac-legend-key.fac-paren { color: #805000; border: 1px solid #a06800; background: rgba(128,80,0,0.08); }
+.fac-legend-desc {
+  font-size: 0.78rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.fac-legend-desc strong { font-weight: 900; }
+
 
 /* ============================================================
    푸터

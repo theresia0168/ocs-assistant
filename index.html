@@ -255,13 +255,56 @@
         </div>
       </div>
     </div>
+
+    <!-- 전투 결과 해설 -->
+    <div class="card crt-legend-card">
+      <div class="card-title"><span class="icon">📖</span> 전투 결과 해설</div>
+      <div class="crt-legend">
+        <div class="crt-legend-row">
+          <span class="crt-legend-key crt-side-atk">A</span>
+          <span class="crt-legend-desc">공격자 전투 결과</span>
+        </div>
+        <div class="crt-legend-row">
+          <span class="crt-legend-key crt-side-def">D</span>
+          <span class="crt-legend-desc">방어자 전투 결과</span>
+        </div>
+        <div class="crt-legend-row">
+          <span class="crt-legend-key crt-key-loss">L#</span>
+          <span class="crt-legend-desc"><strong>#</strong> 손실 적용</span>
+        </div>
+        <div class="crt-legend-row">
+          <span class="crt-legend-key crt-key-opt">o#</span>
+          <span class="crt-legend-desc"><strong>#</strong> 옵션 적용 — 손실 + 후퇴 = #이 되도록 조합</span>
+        </div>
+        <div class="crt-legend-row">
+          <span class="crt-legend-key crt-key-elite">e#</span>
+          <span class="crt-legend-desc">전투에 참가한 공격 유닛 중 부대 등급 <strong>#</strong> 이상인 유닛이 돌파 획득 <span class="crt-key-note">(전투 페이즈 전투 단계 한정)</span></span>
+        </div>
+        <div class="crt-legend-row">
+          <span class="crt-legend-key crt-key-dg">DG</span>
+          <span class="crt-legend-desc">모든 방어 유닛이 DG를 얻음</span>
+        </div>
+      </div>
+      <div class="crt-legend-note">
+        ⚠ <strong>9.10c</strong> — 공격 측이 후퇴하거나 옵션 결과를 모두 적용할 수 없는 경우, 방어 측은 방어자 옵션 결과를 무시할 수 있다
+      </div>
+    </div>
   </div><!-- /combat -->
 
 
   <!-- ========================================================
-       PAGE: 포격/폭격
-  ======================================================== -->
-  <div id="barrage" class="page">
+     PAGE: 포격/폭격
+======================================================== -->
+<div id="barrage" class="page">
+
+  <!-- 탭 헤더 -->
+  <div class="barrage-tab-bar">
+    <button id="barrageTabNormal"   class="barrage-tab active" onclick="setBarrageTab('normal')">💥 포격/폭격</button>
+    <button id="barrageTabFacility" class="barrage-tab"        onclick="setBarrageTab('facility')">🏭 시설 포격/폭격</button>
+  </div>
+
+  <!-- ── 일반 포격/폭격 컨텐츠 ── -->
+  <div id="barrageNormalContent">
 
     <div class="barrage-row1">
       <div class="card">
@@ -318,10 +361,10 @@
             <label class="field-label">밀집도 (Density)</label>
             <div class="density-select">
               <button class="density-btn"        onclick="setDensity('le1', this)">1 RE 이하</button>
-              <button class="density-btn active" onclick="setDensity('le3', this)">1 RE 초과 3 RE 이하</button>
-              <button class="density-btn"        onclick="setDensity('le4', this)">3 RE 초과 4 RE 이하</button>
-              <button class="density-btn"        onclick="setDensity('le5', this)">4 RE 초과 5 RE 이하</button>
-              <button class="density-btn"        onclick="setDensity('le6', this)">5 RE 초과 6 RE 이하</button>
+              <button class="density-btn active" onclick="setDensity('le3', this)">3 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('le4', this)">4 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('le5', this)">5 RE 이하</button>
+              <button class="density-btn"        onclick="setDensity('le6', this)">6 RE 이하</button>
               <button class="density-btn"        onclick="setDensity('gt6', this)">6 RE 초과</button>
             </div>
           </div>
@@ -390,7 +433,88 @@
       </div>
     </div>
 
-  </div><!-- /barrage -->
+  </div><!-- /barrageNormalContent -->
+
+  <!-- ── 시설 포격/폭격 컨텐츠 ── -->
+  <div id="barrageFacilityContent" style="display:none;">
+
+    <div class="barrage-row1">
+      <div class="card">
+        <div class="card-title"><span class="icon">🏭</span> 화력</div>
+        <div class="field-group">
+          <label class="field-label">총 화력 (Barrage Strength)</label>
+          <input class="field-input" type="number" id="facilityStr" value="8" min="0" step="1" oninput="calcFacility()">
+        </div>
+        <div class="fac-note" style="margin-top:10px;">
+          DRM·화력 보정·컬럼 쉬프트 없음
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> 화력 컬럼</div>
+        <div class="barrage-col-display">
+          <div class="bcol-row" style="justify-content:center;">
+            <div class="bcol-block">
+              <div class="bcol-sublabel">화력 컬럼</div>
+              <div class="bcol-main bcol-final" id="fColLabel">—</div>
+              <div class="bcol-cost">보급 <span id="fColCost">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎲</span> 시설 포격 굴림 (1d6)</div>
+      <div class="combat-dice-inner">
+        <div class="combat-dice-controls">
+          <div class="combat-roll-btns">
+            <button class="dice-roll-btn combat-btn" style="width:100%;" onclick="rollFacility()">
+              <span class="roll-label">시설 포격 굴림</span>
+              <span class="roll-formula">1d6</span>
+            </button>
+          </div>
+        </div>
+        <div class="combat-dice-result-wrap">
+          <div class="dice-result-area combat-dice-result" id="facilityDiceResult">
+            <span class="dice-placeholder">버튼을 눌러 굴리세요</span>
+          </div>
+          <div class="dice-result-tag" id="facilityDiceTag"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 결과 해설 -->
+    <div class="card fac-legend-card">
+      <div class="card-title"><span class="icon">📖</span> 결과 해설</div>
+      <div class="fac-legend">
+        <div class="fac-legend-row">
+          <span class="fac-legend-key fac-none">—</span>
+          <span class="fac-legend-desc">효과 없음</span>
+        </div>
+        <div class="fac-legend-row">
+          <span class="fac-legend-key fac-star">★</span>
+          <span class="fac-legend-desc">철도방해(항공 저지) 포격/폭격 성공</span>
+        </div>
+        <div class="fac-legend-row">
+          <span class="fac-legend-key fac-num">1</span>
+          <span class="fac-legend-desc">항공 기지 1레벨 감소(1레벨 미만 감소 불가), 또는 항구 1 손실(최대 4 손실)</span>
+        </div>
+        <div class="fac-legend-row">
+          <span class="fac-legend-key fac-num">2</span>
+          <span class="fac-legend-desc">항공 기지 2레벨 감소(1레벨 미만 감소 불가), 또는 항구 2 손실(최대 4 손실)</span>
+        </div>
+        <div class="fac-legend-row">
+          <span class="fac-legend-key fac-paren">(#)</span>
+          <span class="fac-legend-desc">항공기지가 목표인 경우 — 괄호 안의 숫자를 사용해 항공기지에 있는 각 항공 유닛을 대상으로 1d6을 굴려 <strong>#</strong> 이상의 값이 나오면 해당 유닛 1 스텝 손실</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /barrageFacilityContent -->
+
+</div><!-- /barrage -->
+
 
 
   <!-- ========================================================
