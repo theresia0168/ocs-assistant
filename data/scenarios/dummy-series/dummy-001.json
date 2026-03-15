@@ -1,0 +1,70 @@
+{
+  "id": "dummy-001",
+  "gameId": "dummy-series",
+  "series": "Dummy Series",
+  "title": "더미 시나리오",
+  "subtitle": "Tutorial: Basic Operations",
+
+  "startTurn": {
+    "year": 1944,
+    "month": 6,
+    "day": 6,
+    "firstPlayer": "axis",
+    "phase": "weather",
+    "note": "phase, note는 특수 지시가 없을 경우 생략 가능. phase는 turn.js FLAT 배열의 step id 사용."
+  },
+
+  "endTurn": {
+    "year": 1944,
+    "month": 8,
+    "day": 29,
+    "note": "특정 페이즈 종료 후라면 phase 필드 추가 가능"
+  },
+
+  "weather": {
+    "tableFile": "weather-tables/dummy-weather.json",
+    "initial": {
+      "air": "clear",
+      "ground": "dry"
+    },
+    "note": "tableFile이 null이면 날씨 굴림 없이 수동 변경만 허용"
+  },
+
+  "sides": {
+    "axis": {
+      "label": "추축군",
+      "en": "Axis",
+      "nations": ["Germany", "Italy"],
+      "supplyLevel": 3,
+      "replacementPoints": 4,
+      "note": ""
+    },
+    "allied": {
+      "label": "연합군",
+      "en": "Allied",
+      "nations": ["USA", "UK"],
+      "supplyLevel": 5,
+      "replacementPoints": 6,
+      "note": ""
+    }
+  },
+
+  "specialRules": [
+    {
+      "id": "sr-001",
+      "title": "첫 턴 제한 이동",
+      "appliesTo": "allied",
+      "appliesToTurn": { "year": 1944, "month": 6, "day": 6 },
+      "description": "첫 턴 연합군 이동 페이즈에서 모든 유닛의 이동력이 절반으로 제한된다."
+    },
+    {
+      "id": "sr-002",
+      "title": "특수 보급 규칙",
+      "appliesTo": "both",
+      "appliesToTurn": null,
+      "description": "보급선이 특정 도시를 경유해야 한다. 해당 도시 점령 시 규칙이 해제된다."
+    }
+  ],
+
+  "notes": "이것은 더미 시나리오입니다. 실제 시나리오 데이터로 교체하세요."
+}

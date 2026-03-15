@@ -69,14 +69,14 @@ function buildFlatSteps() {
   const steps = [];
   SEQUENCE.forEach((grp) => {
     if (grp.type === 'solo') {
-      steps.push({ label: grp.label, en: grp.en, icon: grp.icon, groupLabel: null, groupId: null, phaseLabel: null, isStep: false });
+      steps.push({ id: grp.id, label: grp.label, en: grp.en, icon: grp.icon, groupLabel: null, groupId: null, phaseLabel: null, isStep: false });
     } else {
       grp.phases.forEach((ph) => {
         if (!ph.steps) {
-          steps.push({ label: ph.label, en: ph.en, icon: grp.icon, groupLabel: grp.label, groupId: grp.id, phaseLabel: null, isStep: false });
+          steps.push({ id: ph.id, label: ph.label, en: ph.en, icon: grp.icon, groupLabel: grp.label, groupId: grp.id, phaseLabel: null, isStep: false });
         } else {
           ph.steps.forEach((st) => {
-            steps.push({ label: st.label, en: st.en, icon: grp.icon, groupLabel: grp.label, groupId: grp.id, phaseLabel: ph.label, isStep: true });
+            steps.push({ id: st.id, label: st.label, en: st.en, icon: grp.icon, groupLabel: grp.label, groupId: grp.id, phaseLabel: ph.label, isStep: true });
           });
         }
       });
@@ -112,7 +112,7 @@ function getCurrentPhaseLabel(stepIdx) {
 }
 
 // ============================================================
-// 상태 — 날짜는 적용 전까지 null
+// 상태 — 시나리오 로드 전까지 null
 // ============================================================
 
 let state = {
@@ -121,37 +121,13 @@ let state = {
   day:   null,
   step:  0,
   collapsed: {},
+  // 시나리오 로드 시 채워지는 필드
+  endYear:      null,
+  endMonth:     null,
+  endDay:       null,
+  totalTurns:   null,
+  currentTurnN: null,
 };
-
-// ============================================================
-// 날짜 입력 UI
-// ============================================================
-
-function updateStartDayOptions() {
-  const monthEl = document.getElementById('startMonth');
-  const dayEl   = document.getElementById('startDay');
-  if (!monthEl || !dayEl) return;
-  const month = parseInt(monthEl.value) || 1;
-  const year  = parseInt(document.getElementById('startYear').value) || 1950;
-  const valid = getValidDaysForMonth(year, month);
-  const prev  = parseInt(dayEl.value);
-  dayEl.innerHTML = valid.map(d => `<option value="${d}"${d === prev ? ' selected' : ''}>${d}일</option>`).join('');
-  if (valid.includes(prev)) dayEl.value = prev;
-  else dayEl.value = valid[0];
-}
-
-function applyStartDate() {
-  const year  = parseInt(document.getElementById('startYear').value);
-  const month = parseInt(document.getElementById('startMonth').value);
-  const day   = parseInt(document.getElementById('startDay').value);
-  if (!year || !month || !day) return;
-  state.year    = year;
-  state.month   = month;
-  state.day     = day;
-  state.step    = 0;
-  state.collapsed = {};
-  updateTurnUI();
-}
 
 // ============================================================
 // 렌더링
@@ -251,7 +227,28 @@ function updateTurnUI() {
 
   document.getElementById('curPhaseLabel').textContent = phaseLabel;
 
+  // 마지막 턴 / 진행도 업데이트
+  updateProgressUI();
+
   renderPhases();
+}
+
+function updateProgressUI() {
+  const rowEnd  = document.getElementById('rowEndTurnDate');
+  const endEl   = document.getElementById('endTurnDate');
+  const fillEl  = document.getElementById('turnProgressFill');
+  const countEl = document.getElementById('turnProgressCount');
+
+  const hasScenario = !!(state.endYear && state.totalTurns);
+
+  if (rowEnd)  rowEnd.style.display  = hasScenario ? '' : 'none';
+  if (!hasScenario) return;
+
+  if (endEl)   endEl.textContent   = formatTurnDate(state.endYear, state.endMonth, state.endDay);
+  if (countEl) countEl.textContent = `${state.currentTurnN} / ${state.totalTurns}`;
+
+  const pct = Math.round((state.currentTurnN / state.totalTurns) * 100);
+  if (fillEl)  fillEl.style.width = `${pct}%`;
 }
 
 function nextPhase() {
@@ -269,5 +266,7 @@ function newTurn() {
   state.day   = next.day;
   state.step  = 0;
   state.collapsed = {};
+  // 시나리오 진행도 증가
+  if (typeof onNewTurn === 'function') onNewTurn();
   updateTurnUI();
 }

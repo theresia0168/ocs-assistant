@@ -1,0 +1,321 @@
+/* ============================================================
+   로비 화면
+============================================================ */
+
+#lobbyScreen {
+  display: none;
+}
+
+.lobby-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+/* 로비 헤더 타이틀 */
+.lobby-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--olive);
+  border: 3px solid var(--ink);
+  border-bottom: 6px solid var(--ink);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+}
+.lobby-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.04) 10px, rgba(0,0,0,0.04) 20px);
+  pointer-events: none;
+}
+.lobby-header-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--khaki);
+  margin-bottom: 6px;
+}
+.lobby-header-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-shadow: 2px 2px 0 var(--ink);
+}
+
+/* 단계 레이블 */
+.lobby-stage-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 14px;
+  border-left: 3px solid var(--red-stamp);
+  padding-left: 8px;
+}
+
+/* 시나리오 단계 헤더 (뒤로가기 + 레이블) */
+.lobby-stage-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.lobby-stage-header .lobby-stage-label { margin-bottom: 0; }
+
+/* 뒤로가기 버튼 */
+.lobby-back-btn {
+  font-family: var(--font);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  background: transparent;
+  color: var(--ink-faded);
+  border: 2px solid var(--border);
+  border-bottom: 3px solid var(--ink);
+  cursor: pointer;
+  transition: all 0.1s;
+  flex-shrink: 0;
+}
+.lobby-back-btn:hover  { background: var(--paper-dark); color: var(--ink); }
+.lobby-back-btn:active { transform: translateY(1px); border-bottom-width: 2px; }
+
+/* ── 게임 목록 ── */
+.lobby-game-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.lobby-game-card {
+  background: var(--olive);
+  border: 2px solid var(--ink);
+  border-bottom: 5px solid var(--ink);
+  border-right: 4px solid var(--ink);
+  padding: 20px 22px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+.lobby-game-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.04) 10px, rgba(0,0,0,0.04) 20px);
+  pointer-events: none;
+}
+.lobby-game-card:hover  { transform: translateY(-2px); box-shadow: 4px 6px 0 rgba(0,0,0,0.5); }
+.lobby-game-card:active { transform: translateY(2px);  box-shadow: 1px 1px 0 rgba(0,0,0,0.4); }
+.lobby-game-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--paper);
+  letter-spacing: 1px;
+  line-height: 1.3;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  margin-bottom: 8px;
+}
+.lobby-game-meta {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--khaki);
+  text-transform: uppercase;
+}
+
+/* ── 시나리오 목록 ── */
+.lobby-scenario-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+/* 시나리오 카드 */
+.lobby-scenario-card {
+  background: var(--paper);
+  border: 2px solid var(--border);
+  border-bottom: 5px solid var(--ink);
+  border-right: 4px solid var(--ink);
+  padding: 16px 18px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+.lobby-scenario-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%23000' opacity='.06'/%3E%3C/svg%3E") repeat;
+  pointer-events: none;
+}
+.lobby-scenario-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 0 rgba(0,0,0,0.5);
+}
+.lobby-scenario-card:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+
+/* 카드 내부 요소 */
+.lobby-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.lobby-card-series {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red-stamp);
+  border-left: 2px solid var(--red-stamp);
+  padding-left: 6px;
+}
+.lobby-card-turns {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--khaki);
+  background: rgba(0,0,0,0.08);
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+}
+.lobby-card-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 1px;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.lobby-card-subtitle {
+  font-size: 0.68rem;
+  color: var(--ink-faded);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.lobby-card-meta {
+  margin: 8px 0;
+  padding: 6px 0;
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
+}
+.lobby-meta-date {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-faded);
+  letter-spacing: 0.5px;
+}
+.lobby-card-sides {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.lobby-side-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  background: var(--olive);
+  color: var(--paper-dark);
+  border: 1px solid var(--ink);
+}
+.lobby-card-rules {
+  margin-top: 6px;
+  font-size: 0.62rem;
+  color: var(--khaki);
+  letter-spacing: 0.5px;
+}
+
+/* 로딩 / 빈 상태 */
+.lobby-loading,
+.lobby-empty {
+  font-size: 0.78rem;
+  color: var(--ink-faded);
+  text-align: center;
+  padding: 40px;
+  letter-spacing: 1px;
+  border: 1px dashed var(--border);
+}
+
+/* ============================================================
+   턴 진행도 (메인 화면 — 작전 현황 카드 내)
+============================================================ */
+
+.turn-progress-block {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.turn-progress-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.turn-progress-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.turn-progress-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.turn-progress-bar-wrap {
+  height: 8px;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.turn-progress-bar-fill {
+  height: 100%;
+  background: var(--olive);
+  border-right: 2px solid var(--olive-lt);
+  transition: width 0.4s ease;
+}
+
+/* 마지막 턴 정보 행 */
+.info-value-end {
+  font-size: 0.82rem !important;
+  color: var(--red-stamp) !important;
+  font-weight: 700 !important;
+}
+
+/* 시나리오 변경 버튼 (작전 현황 카드 우상단) */
+.scenario-change-btn {
+  font-family: var(--font);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  background: transparent;
+  color: var(--ink-faded);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.1s;
+  float: right;
+  margin-top: 2px;
+}
+.scenario-change-btn:hover {
+  background: var(--paper-dark);
+  color: var(--ink);
+}

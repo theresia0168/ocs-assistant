@@ -37,10 +37,10 @@ function showPage(id, btn) {
 }
 
 // 초기화
-updateStartDayOptions();  // 날짜 드롭다운 채우기
 updateTurnUI();           // 기본 UI 렌더링 (날짜 미설정 상태)
 calcOdds();
 calcBarrage();
 renderAirActionSelect();  // 항공 임무 초기 화면
 setInterval(updateClock, 1000);
 updateClock();
+showLobby();              // 로비 화면으로 시작

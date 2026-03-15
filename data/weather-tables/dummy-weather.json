@@ -1,0 +1,112 @@
+{
+  "id": "dummy-weather",
+  "gameId": "dummy-series",
+  "series": "Dummy Series",
+  "description": "더미 날씨 테이블. 실제 게임 테이블로 교체하세요.",
+
+  "dice": "2d6",
+
+  "separated": true,
+
+  "airWeather": {
+    "label": "기상 상황",
+    "states": [
+      { "id": "clear",    "label": "맑음",     "en": "Clear"    },
+      { "id": "overcast", "label": "흐림",     "en": "Overcast" },
+      { "id": "storm",    "label": "폭풍",     "en": "Storm"    }
+    ],
+    "table": {
+      "clear": {
+        "2":  "overcast",
+        "3":  "clear",
+        "4":  "clear",
+        "5":  "clear",
+        "6":  "clear",
+        "7":  "clear",
+        "8":  "clear",
+        "9":  "overcast",
+        "10": "overcast",
+        "11": "overcast",
+        "12": "storm"
+      },
+      "overcast": {
+        "2":  "storm",
+        "3":  "overcast",
+        "4":  "overcast",
+        "5":  "clear",
+        "6":  "clear",
+        "7":  "clear",
+        "8":  "overcast",
+        "9":  "overcast",
+        "10": "storm",
+        "11": "storm",
+        "12": "storm"
+      },
+      "storm": {
+        "2":  "storm",
+        "3":  "storm",
+        "4":  "storm",
+        "5":  "overcast",
+        "6":  "overcast",
+        "7":  "overcast",
+        "8":  "overcast",
+        "9":  "storm",
+        "10": "storm",
+        "11": "storm",
+        "12": "storm"
+      }
+    }
+  },
+
+  "groundWeather": {
+    "label": "지면 상황",
+    "states": [
+      { "id": "dry",  "label": "건조", "en": "Dry"  },
+      { "id": "mud",  "label": "진창", "en": "Mud"  },
+      { "id": "snow", "label": "설지", "en": "Snow" }
+    ],
+    "table": {
+      "dry": {
+        "2":  "mud",
+        "3":  "dry",
+        "4":  "dry",
+        "5":  "dry",
+        "6":  "dry",
+        "7":  "dry",
+        "8":  "dry",
+        "9":  "dry",
+        "10": "mud",
+        "11": "mud",
+        "12": "mud"
+      },
+      "mud": {
+        "2":  "mud",
+        "3":  "mud",
+        "4":  "mud",
+        "5":  "mud",
+        "6":  "dry",
+        "7":  "dry",
+        "8":  "dry",
+        "9":  "mud",
+        "10": "mud",
+        "11": "snow",
+        "12": "snow"
+      },
+      "snow": {
+        "2":  "snow",
+        "3":  "snow",
+        "4":  "snow",
+        "5":  "mud",
+        "6":  "mud",
+        "7":  "dry",
+        "8":  "mud",
+        "9":  "snow",
+        "10": "snow",
+        "11": "snow",
+        "12": "snow"
+      }
+    }
+  },
+
+  "note": "separated가 false인 경우 airWeather만 사용하고 groundWeather는 무시. table의 키는 이전 날씨 id, 값의 키는 주사위 합계(문자열), 값은 결과 날씨 id."
+}
