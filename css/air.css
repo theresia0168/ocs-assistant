@@ -329,3 +329,38 @@
   .df-status-grid        { grid-template-columns: 1fr; }
   .bom-unit-fields       { flex-direction: column; }
 }
+
+/* 자발적 임무 중단 — 유닛 체크리스트 */
+.df-vol-unit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.df-vol-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.04);
+  cursor: pointer;
+}
+.df-vol-check-row:hover {
+  background: rgba(0,0,0,0.08);
+}
+.df-vol-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.df-vol-unit-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+}
+.df-vol-unit-str {
+  font-size: 0.75rem;
+  color: var(--ink-faded);
+}

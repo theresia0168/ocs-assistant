@@ -15,7 +15,7 @@ const AIR_ACTIONS = [
   { id: 'interdict', label: '항공 저지',     en: 'Interdiction',        icon: '🚫', available: true },
   { id: 'transfer',  label: '기지 이동',     en: 'Base Transfer',       icon: '✈',  available: true },
   { id: 'airdrop',   label: '공수 강하',     en: 'Airborne Drop',       icon: '🪂',  available: true },
-  { id: 'airlift',   label: '항공 수송',     en: 'Air Transport',       icon: '📦', available: false },
+  { id: 'airlift',   label: '항공 수송',     en: 'Air Transport',       icon: '📦', available: true },
   { id: 'cap',       label: '전투기 초계',   en: 'CAP',                 icon: '🛡',  available: true  },
 ];
 
@@ -32,6 +32,7 @@ function airUI() {
   else if (airAction === 'transfer')  el.innerHTML = renderTransfer();
   else if (airAction === 'interdict') el.innerHTML = renderInterdict();
   else if (airAction === 'airdrop')   el.innerHTML = renderAirdrop();
+  else if (airAction === 'airlift')   el.innerHTML = renderAirlift();
 }
 
 // app.js에서 호출하는 초기화 별칭
@@ -63,6 +64,7 @@ function selectAirAction(id) {
   else if (id === 'transfer')  transferInit();
   else if (id === 'interdict') interdictInit();
   else if (id === 'airdrop')   airdropInit();
+  else if (id === 'airlift')   airliftInit();
   airUI();
 }
 
@@ -212,22 +214,26 @@ function dfBegin() {
 
 function renderDfVoluntary() {
   const df = dfState;
-  const activeDefCount = df.defenderUnits.filter(u => !u.aborted).length;
+  const activeUnits = df.defenderUnits.filter(u => !u.aborted);
+  const checkboxRows = activeUnits.map(u => `
+    <label class="df-vol-check-row">
+      <input type="checkbox" class="df-vol-checkbox" value="${u.id}">
+      <span class="df-vol-unit-name">${u.name}</span>
+      <span class="df-vol-unit-str">전력 ${u.str}</span>
+    </label>`).join('');
   return `
     <div class="card">
       <div class="card-title"><span class="icon">⚠</span> 공중전 — 자발적 임무 중단</div>
       <div class="df-info-box">
-        <p>방어자의 항공 유닛이 <strong>${df.defenderUnits.length}기</strong>입니다.</p>
         <p>방어자는 <strong>자발적 임무 중단</strong>을 선택할 수 있습니다. (규칙 14.3d)</p>
+        <p style="margin-top:6px;font-size:0.8rem;color:var(--ink-faded);">중단할 유닛을 체크하세요. 아무것도 체크하지 않으면 전원 계속 임무를 수행합니다.</p>
       </div>
-      <div class="field-group" style="margin-top:14px;">
-        <label class="field-label">방어자 임무 중단 유닛 수</label>
-        <input class="field-input" type="number" id="dfVolAbortCount" value="0" min="0" max="${activeDefCount}" step="1">
-        <div style="font-size:0.7rem;color:var(--ink-faded);margin-top:4px;">0이면 중단 없이 진행</div>
+      <div class="df-vol-unit-list" style="margin-top:14px;">
+        ${checkboxRows}
       </div>
-      <div class="btn-row">
+      <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-secondary" onclick="dfVolSkip()">중단 없이 진행 ▶</button>
-        <button class="btn btn-primary"   onclick="dfVolApply()">임무 중단 적용 후 진행 ▶</button>
+        <button class="btn btn-primary"   onclick="dfVolApply()">선택 적용 후 진행 ▶</button>
       </div>
     </div>`;
 }
@@ -235,12 +241,13 @@ function renderDfVoluntary() {
 function dfVolSkip() { dfState.phase = 'select'; dfState.round = 1; airUI(); }
 
 function dfVolApply() {
-  const cnt = parseInt(document.getElementById('dfVolAbortCount').value) || 0;
   const df = dfState;
-  let aborted = 0;
-  for (let i = df.defenderUnits.length-1; i >= 0 && aborted < cnt; i--) {
-    if (!df.defenderUnits[i].aborted) { df.defenderUnits[i].aborted = true; aborted++; }
-  }
+  const checked = [...document.querySelectorAll('.df-vol-checkbox:checked')]
+    .map(el => parseInt(el.value));
+  checked.forEach(id => {
+    const u = df.defenderUnits.find(u => u.id === id);
+    if (u) u.aborted = true;
+  });
   const defActive = df.defenderUnits.filter(u => !u.aborted).length;
   if (defActive === 0) { df.phase='end'; df.winner='attacker'; df.endReason='방어자 전원 자발적 임무 중단'; }
   else                 { df.phase='select'; df.round=1; }
@@ -381,7 +388,7 @@ function renderDfDiceResult(res, atkUnit, defUnit) {
     <div class="df-loss-row">
       <span class="df-loss-label ${cls}">${label} 손실 굴림</span>
       <div class="die-wrap" style="transform:scale(0.8);transform-origin:center;">${makeDieFaceHTML(lo.die,'ivory')}<div class="die-val">${lo.die}</div></div>
-      <span class="df-loss-result ${lo.loss?'brt-step':'brt-none'}">${lo.loss?'1 스텝 손실':'손실 없음'} (5~6)</span>
+      <span class="df-loss-result ${lo.loss?'brt-step':'brt-none'}">${lo.loss?'1 스텝 손실 (5~6)':'손실 없음 (1~4)'}</span>
     </div>` : '';
   const abortLines = [
     ...(atkAbort ? [`<div class="df-result-row atk-loss">→ ${atkUnit?.name} 임무 중단${atkLoss?.loss?' + 1 스텝 손실':''}</div>`] : []),
@@ -542,7 +549,12 @@ function renderIcDone() {
     </div>`;
 }
 
-function icDone() { const cb=icState?.onDone; icReset(); if(cb) cb(); else airUI(); }
+function icDone() {
+  const cb = icState?.onDone;
+  const snap = icState ? { missionUnits: [...(icState.missionUnits || [])] } : null;
+  icReset();
+  if (cb) cb(snap); else airUI();
+}
 
 // ─────────────────────────────────────────────────────────────
 // ██  대공 사격 모듈 (AA Fire)
@@ -1514,7 +1526,7 @@ function renderAirdropSetup() {
         </div>
         ${u.unitType === 'transport' ? `
         <div class="field-group">
-          <label class="field-label">적재 용량</label>
+          <label class="field-label">적재 용량(T)</label>
           <input class="field-input" type="number" id="adCap_${i}" value="${u.capacity}" min="0" step="1" style="width:65px;">
         </div>` : ''}
       </div>
@@ -1664,13 +1676,10 @@ function airdropYesAirspace() {
       id: u.id, name: u.name, str: u.airStr, aborted: false,
     })),
     onDone: (snap) => {
-      if (snap?.defenderUnits) {
-        snap.defenderUnits.forEach(du => {
-          const u = airdropState.units.find(u => u.id === du.id);
-          if (u && du.aborted) u.aborted = true;
-        });
-      }
-      // 요격 후 수송기 손실 → 화물 재검토
+      snap?.missionUnits?.forEach(mu => {
+        const u = airdropState.units.find(u => u.id === mu.id);
+        if (u && mu.aborted) u.aborted = true;
+      });
       airdropRevalidateCargo('요격');
     },
     onBack: () => { icReset(); airdropState.step = 'interception'; airUI(); },
@@ -1710,23 +1719,8 @@ function airdropStartAA() {
 // 수송기 손실 후 화물 용량 재검토 → 초과분 파괴
 function airdropRevalidateCargo(phase) {
   const messages = [];
-  const transports = airdropState.units.filter(u => u.unitType === 'transport' && !u.destroyed);
 
-  // 수송기별 적재 중량 합산 → 용량 초과 시 화물 파괴
-  transports.forEach(t => {
-    const loaded = airdropState.cargo.filter(c => !c.destroyed && c.transporterId === t.id);
-    let totalWeight = loaded.reduce((s, c) => s + c.weight, 0);
-    if (totalWeight > t.capacity) {
-      // 초과분: 뒤에서부터 파괴
-      for (let i = loaded.length - 1; i >= 0 && totalWeight > t.capacity; i--) {
-        loaded[i].destroyed = true;
-        messages.push(`${loaded[i].name} — ${t.name} 용량 초과로 파괴`);
-        totalWeight -= loaded[i].weight;
-      }
-    }
-  });
-
-  // 파괴된 수송기의 화물 파괴
+  // ── 파괴된 수송기에 실린 화물 파괴 ──────────────────────────
   const destroyedTransports = airdropState.units.filter(u => u.unitType === 'transport' && u.destroyed);
   destroyedTransports.forEach(t => {
     airdropState.cargo.filter(c => !c.destroyed && c.transporterId === t.id).forEach(c => {
@@ -1735,11 +1729,39 @@ function airdropRevalidateCargo(phase) {
     });
   });
 
-  // 생존한 수송기가 없고 살아있는 화물도 없으면 임무 종료
-  const anyTransportAlive = airdropState.units.some(u => u.unitType === 'transport' && !u.destroyed);
-  const anyCargoAlive = airdropState.cargo.some(c => !c.destroyed);
+  // ── 임무 중단된(aborted) 수송기의 용량 초과 화물 파괴 ────────
+  // aborted지만 destroyed가 아닌 수송기: 화물을 운반할 수 없으므로 용량 = 0 처리
+  const abortedTransports = airdropState.units.filter(u => u.unitType === 'transport' && u.aborted && !u.destroyed);
+  abortedTransports.forEach(t => {
+    airdropState.cargo.filter(c => !c.destroyed && c.transporterId === t.id).forEach(c => {
+      c.destroyed = true;
+      messages.push(`${c.name} — ${t.name} 임무 중단으로 수송 불가, 파괴`);
+    });
+  });
 
-  if (!anyTransportAlive || !anyCargoAlive) {
+  // ── 활성 수송기의 용량 초과 화물 파괴 ────────────────────────
+  const activeTransports = airdropState.units.filter(u => u.unitType === 'transport' && !u.aborted && !u.destroyed);
+  activeTransports.forEach(t => {
+    const loaded = airdropState.cargo.filter(c => !c.destroyed && c.transporterId === t.id);
+    let totalWeight = loaded.reduce((s, c) => s + c.weight, 0);
+    if (totalWeight > t.capacity) {
+      for (let i = loaded.length - 1; i >= 0 && totalWeight > t.capacity; i--) {
+        loaded[i].destroyed = true;
+        messages.push(`${loaded[i].name} — ${t.name} 용량 초과로 파괴`);
+        totalWeight -= loaded[i].weight;
+      }
+    }
+  });
+
+  // ── 임무 중단 판정 ────────────────────────────────────────────
+  // 조건 1: 활성 수송기(파괴·중단 아닌)가 하나도 없음
+  const anyActiveTransport = airdropState.units.some(u => u.unitType === 'transport' && !u.aborted && !u.destroyed);
+  // 조건 2: 운반 가능한 화물(파괴되지 않은)이 하나도 없음
+  const anyCargoAlive = airdropState.cargo.some(c => !c.destroyed);
+  // 조건 3: 임무 수행 측 모든 항공 유닛이 중단됨 (파괴 포함)
+  const anyUnitActive = airdropState.units.some(u => !u.aborted && !u.destroyed);
+
+  if (!anyActiveTransport || !anyCargoAlive || !anyUnitActive) {
     airdropState.step = 'aborted';
     airdropState._abortPhase = phase;
   } else {
@@ -2052,6 +2074,428 @@ function renderAirdropReturn() {
         <button class="btn btn-primary" onclick="backToAirSelect()">임무 완료 ✓</button>
       </div>
     </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// ██  항공 수송 (Air Transport / Airlift)
+// ─────────────────────────────────────────────────────────────
+// 절차:
+//   STEP 1. 항공 유닛 편성 및 임무 목표 항공 기지 헥스로 이동
+//   STEP 2. 적 경계 영공 진입 여부 확인
+//     2-1. 예 → 요격 처리 (icStart)
+//     2-2. 아니오 → STEP 3
+//   STEP 3. 대공 사격 처리 (aaStart)
+//   STEP 4. 화물 하차 (사용자가 물리적으로 화물을 목표 기지에 하차)
+//   STEP 5. 항속 거리 이내 수송 여부 확인
+//     5-1. 예 → 항속 거리 이내 아무 항공 기지로 복귀, 비활성화
+//     5-2. 아니오 → 목표 항공 기지에서 비활성화
+// ─────────────────────────────────────────────────────────────
+
+const AIRLIFT_STEPS = [
+  { id:'setup',        label:'유닛 편성 / 이동',  en:'Setup & Move'         },
+  { id:'interception', label:'경계 영공 / 요격',  en:'Alert Airspace Check' },
+  { id:'aa',           label:'대공 사격',          en:'AA Fire'              },
+  { id:'unload',       label:'화물 하차',          en:'Cargo Unload'         },
+  { id:'return',       label:'복귀 / 비활성화',    en:'Return & Deactivate'  },
+];
+
+let airliftState = {};
+
+function airliftInit() {
+  airliftState = {
+    step: 'setup',
+    units: [{ id:0, name:'유닛 1', airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false }],
+    cargo: [{ id:0, name:'화물 1', type:'unit', weight:1, transporterId:0, destroyed:false }],
+    inEnemyAirspace: false,
+    withinRange: null,
+  };
+  icReset(); aaReset();
+}
+
+function renderAirlift() {
+  const si = renderStepIndicator(AIRLIFT_STEPS, AIRLIFT_STEPS.findIndex(s => s.id === airliftState.step));
+  const hdr = `<div class="card">
+    <div class="card-title"><span class="icon">📦</span> 항공 수송 (Air Transport)
+      <button class="air-back-btn" onclick="backToAirSelect()">◀ 임무 선택</button>
+    </div>${si}</div>`;
+
+  if (icState) return hdr + renderInterception();
+  if (aaState) return hdr + renderAA();
+
+  let body = '';
+  switch (airliftState.step) {
+    case 'setup':        body = renderAirliftSetup();        break;
+    case 'interception': body = renderAirliftAirspaceCheck(); break;
+    case 'aa':           airliftStartAA(); return renderAirlift();
+    case 'unload':       body = renderAirliftUnload();       break;
+    case 'return':       body = renderAirliftReturn();       break;
+    case 'aborted':      body = renderMissionAborted('요격/대공 사격'); break;
+  }
+  return hdr + body;
+}
+
+// ── STEP 1: 유닛 편성 / 이동 ─────────────────────────────────
+
+function renderAirliftSetup() {
+  const units = airliftState.units;
+  const cargo = airliftState.cargo;
+  const transporters = units.filter(u => u.unitType === 'transport');
+
+  const unitRows = units.map((u, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i + 1}</div>
+      <div class="bom-unit-fields" style="flex-wrap:wrap;gap:6px;">
+        <div class="field-group">
+          <label class="field-label">유닛 이름</label>
+          <input class="field-input" type="text" id="alName_${i}" value="${u.name}" style="width:100px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">공대공 전력</label>
+          <input class="field-input" type="number" id="alAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:65px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">유형</label>
+          <select class="field-input" id="alType_${i}" onchange="airliftSaveSetup();airUI();" style="width:90px;">
+            <option value="fighter"   ${u.unitType==='fighter'   ?'selected':''}>전투기</option>
+            <option value="transport" ${u.unitType==='transport' ?'selected':''}>수송기</option>
+            <option value="other"     ${u.unitType==='other'     ?'selected':''}>기타</option>
+          </select>
+        </div>
+        ${u.unitType === 'transport' ? `
+        <div class="field-group">
+          <label class="field-label">적재 용량(T)</label>
+          <input class="field-input" type="number" id="alCap_${i}" value="${u.capacity}" min="0" style="width:55px;">
+        </div>` : ''}
+      </div>
+      ${units.length > 1 ? `<button class="bom-del-btn" onclick="airliftRemoveUnit(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  const cargoRows = cargo.map((c, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i + 1}</div>
+      <div class="bom-unit-fields" style="flex-wrap:wrap;gap:6px;">
+        <div class="field-group">
+          <label class="field-label">화물 이름</label>
+          <input class="field-input" type="text" id="alCgName_${i}" value="${c.name}" style="width:100px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">유형</label>
+          <select class="field-input" id="alCgType_${i}" style="width:85px;">
+            <option value="unit"   ${c.type==='unit'   ?'selected':''}>전투 유닛</option>
+            <option value="supply" ${c.type==='supply' ?'selected':''}>보급품</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">중량(T)</label>
+          <input class="field-input" type="number" id="alCgWt_${i}" value="${c.weight}" min="1" style="width:55px;">
+        </div>
+        ${transporters.length ? `
+        <div class="field-group">
+          <label class="field-label">적재 수송기</label>
+          <select class="field-input" id="alCgTr_${i}" style="width:90px;">
+            ${transporters.map(t => `<option value="${t.id}" ${c.transporterId===t.id?'selected':''}>${t.name}</option>`).join('')}
+          </select>
+        </div>` : ''}
+      </div>
+      ${cargo.length > 1 ? `<button class="bom-del-btn" onclick="airliftRemoveCargo(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">📦</span> STEP 1 — 유닛 편성 / 이동</div>
+      <div class="air-manual-desc" style="margin-bottom:10px;">
+        <p>임무 참가 항공 유닛과 적재 화물을 입력하고, 유닛을 <strong>목표 항공 기지 헥스</strong>로 이동시키세요.</p>
+      </div>
+      <div class="field-label" style="margin-bottom:6px;">▸ 항공 유닛</div>
+      <div class="bom-unit-list">${unitRows}</div>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn btn-secondary" onclick="airliftAddUnit()">+ 유닛 추가</button>
+      </div>
+      <div class="divider"></div>
+      <div class="field-label" style="margin-bottom:6px;">▸ 화물</div>
+      <div class="bom-unit-list">${cargoRows}</div>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn btn-secondary" onclick="airliftAddCargo()">+ 화물 추가</button>
+      </div>
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="airliftSetupDone()">다음 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airliftSaveSetup() {
+  airliftState.units.forEach((u, i) => {
+    const nm = document.getElementById(`alName_${i}`);
+    const as = document.getElementById(`alAirStr_${i}`);
+    const tp = document.getElementById(`alType_${i}`);
+    const cp = document.getElementById(`alCap_${i}`);
+    if (nm) u.name     = nm.value || u.name;
+    if (as) u.airStr   = parseFloat(as.value) || 0;
+    if (tp) u.unitType = tp.value;
+    if (cp) u.capacity = parseInt(cp.value) || 0;
+  });
+  airliftState.cargo.forEach((c, i) => {
+    const nm = document.getElementById(`alCgName_${i}`);
+    const tp = document.getElementById(`alCgType_${i}`);
+    const wt = document.getElementById(`alCgWt_${i}`);
+    const tr = document.getElementById(`alCgTr_${i}`);
+    if (nm) c.name          = nm.value || c.name;
+    if (tp) c.type          = tp.value;
+    if (wt) c.weight        = parseInt(wt.value) || 1;
+    if (tr) c.transporterId = parseInt(tr.value);
+  });
+}
+
+function airliftAddUnit() {
+  airliftSaveSetup();
+  const i = airliftState.units.length;
+  airliftState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false });
+  airUI();
+}
+
+function airliftRemoveUnit(idx) {
+  airliftSaveSetup();
+  airliftState.units.splice(idx, 1);
+  airliftState.units.forEach((u, i) => { u.id = i; });
+  airUI();
+}
+
+function airliftAddCargo() {
+  airliftSaveSetup();
+  const i = airliftState.cargo.length;
+  const firstTransport = airliftState.units.find(u => u.unitType === 'transport');
+  airliftState.cargo.push({ id:i, name:`화물 ${i+1}`, type:'unit', weight:1, transporterId: firstTransport?.id ?? 0, destroyed:false });
+  airUI();
+}
+
+function airliftRemoveCargo(idx) {
+  airliftSaveSetup();
+  airliftState.cargo.splice(idx, 1);
+  airliftState.cargo.forEach((c, i) => { c.id = i; });
+  airUI();
+}
+
+function airliftSetupDone() {
+  airliftSaveSetup();
+  airliftState.step = 'interception';
+  airUI();
+}
+
+// ── STEP 2: 경계 영공 / 요격 ─────────────────────────────────
+
+function renderAirliftAirspaceCheck() {
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🚨</span> STEP 2 — 경계 영공 / 요격</div>
+      <div class="df-info-box"><p>임무 목표가 <strong>적 경계 영공(Enemy Alert Airspace)</strong> 내에 있습니까?</p></div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-secondary" onclick="airliftNoAirspace()">아니오 — 대공 사격으로 ▶</button>
+        <button class="btn btn-primary"   onclick="airliftYesAirspace()">예 — 요격 절차 진행 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airliftNoAirspace() {
+  airliftState.inEnemyAirspace = false;
+  airliftState.step = 'aa';
+  airUI();
+}
+
+function airliftYesAirspace() {
+  airliftState.inEnemyAirspace = true;
+  icStart({
+    missionUnits: airliftState.units.filter(u => !u.aborted && !u.destroyed).map(u => ({
+      id: u.id, name: u.name, str: u.airStr, aborted: false,
+    })),
+    onDone: (snap) => {
+      snap?.missionUnits?.forEach(mu => {
+        const u = airliftState.units.find(u => u.id === mu.id);
+        if (u && mu.aborted) u.aborted = true;
+      });
+      airliftRevalidateCargo('요격');
+    },
+    onBack: () => { icReset(); airliftState.step = 'interception'; airUI(); },
+  });
+  airUI();
+}
+
+// ── STEP 3: 대공 사격 ──────────────────────────────────────────
+
+function airliftStartAA() {
+  const alive = airliftState.units.filter(u => !u.aborted && !u.destroyed);
+  aaStart({
+    missionUnits: alive.map(u => ({
+      id: u.id, name: u.name,
+      airStr: u.airStr, groundStr: u.airStr, str: u.airStr,
+      unitType: u.unitType, capacity: u.capacity,
+      aborted: false, destroyed: false,
+    })),
+    inEnemyAirspace: airliftState.inEnemyAirspace,
+    onDone: () => {
+      aaState?.missionUnits?.forEach(mu => {
+        const u = airliftState.units.find(u => u.id === mu.id);
+        if (!u) return;
+        if (mu.destroyed) { u.destroyed = true; u.aborted = true; }
+        else if (mu.aborted) u.aborted = true;
+        if (u.unitType === 'transport' && !u.destroyed) {
+          u.capacity = mu.groundStr ?? u.capacity;
+        }
+      });
+      airliftRevalidateCargo('대공 사격');
+    },
+  });
+}
+
+function airliftRevalidateCargo(phase) {
+  const messages = [];
+
+  // ── 파괴된 수송기에 실린 화물 파괴 ──────────────────────────
+  const destroyedTransports = airliftState.units.filter(u => u.unitType === 'transport' && u.destroyed);
+  destroyedTransports.forEach(t => {
+    airliftState.cargo.filter(c => !c.destroyed && c.transporterId === t.id).forEach(c => {
+      c.destroyed = true;
+      messages.push(`${c.name} — ${t.name} 파괴로 함께 파괴`);
+    });
+  });
+
+  // ── 임무 중단된(aborted) 수송기의 화물 파괴 ─────────────────
+  const abortedTransports = airliftState.units.filter(u => u.unitType === 'transport' && u.aborted && !u.destroyed);
+  abortedTransports.forEach(t => {
+    airliftState.cargo.filter(c => !c.destroyed && c.transporterId === t.id).forEach(c => {
+      c.destroyed = true;
+      messages.push(`${c.name} — ${t.name} 임무 중단으로 수송 불가, 파괴`);
+    });
+  });
+
+  // ── 활성 수송기의 용량 초과 화물 파괴 ────────────────────────
+  const activeTransports = airliftState.units.filter(u => u.unitType === 'transport' && !u.aborted && !u.destroyed);
+  activeTransports.forEach(t => {
+    const loaded = airliftState.cargo.filter(c => !c.destroyed && c.transporterId === t.id);
+    let totalWeight = loaded.reduce((s, c) => s + c.weight, 0);
+    if (totalWeight > t.capacity) {
+      for (let i = loaded.length - 1; i >= 0 && totalWeight > t.capacity; i--) {
+        loaded[i].destroyed = true;
+        messages.push(`${loaded[i].name} — ${t.name} 용량 초과로 파괴`);
+        totalWeight -= loaded[i].weight;
+      }
+    }
+  });
+
+  // ── 임무 중단 판정 ────────────────────────────────────────────
+  // 조건 1: 활성 수송기(파괴·중단 아닌)가 하나도 없음
+  const anyActiveTransport = airliftState.units.some(u => u.unitType === 'transport' && !u.aborted && !u.destroyed);
+  // 조건 2: 운반 가능한 화물(파괴되지 않은)이 하나도 없음
+  const anyCargoAlive = airliftState.cargo.some(c => !c.destroyed);
+  // 조건 3: 임무 수행 측 모든 항공 유닛이 중단됨 (파괴 포함)
+  const anyUnitActive = airliftState.units.some(u => !u.aborted && !u.destroyed);
+
+  if (!anyActiveTransport || !anyCargoAlive || !anyUnitActive) {
+    airliftState.step = 'aborted';
+    airliftState._abortPhase = phase;
+  } else {
+    airliftState.step = airliftState.step === 'interception' ? 'aa' : 'unload';
+  }
+
+  airliftState._revalidateMessages = messages;
+  icReset();
+  aaReset();
+  airUI();
+}
+
+// ── STEP 4: 화물 하차 ─────────────────────────────────────────
+
+function renderAirliftUnload() {
+  const msgs = airliftState._revalidateMessages || [];
+  const survivingCargo = airliftState.cargo.filter(c => !c.destroyed);
+  const destroyedCargo = airliftState.cargo.filter(c => c.destroyed);
+
+  const msgRows = msgs.length
+    ? `<div class="df-result-summary" style="margin-bottom:10px;">${msgs.map(m => `<div class="df-result-row atk-loss" style="margin:0 0 4px;">⚠ ${m}</div>`).join('')}</div>`
+    : '';
+
+  const survivingRows = survivingCargo.map(c => {
+    const t = airliftState.units.find(u => u.id === c.transporterId);
+    return `<div class="df-result-row brt-none" style="margin:0 0 4px;">📦 ${c.name} (${c.type==='unit'?'전투 유닛':'보급품'}, ${c.weight}T) — ${t?.name ?? '?'} 탑재</div>`;
+  }).join('');
+
+  const destroyedRows = destroyedCargo.map(c =>
+    `<div class="df-result-row atk-loss" style="margin:0 0 4px;">💀 ${c.name} — 파괴됨</div>`
+  ).join('');
+
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 4</span>
+        <span class="air-step-title">화물 하차</span>
+        <span class="air-step-en">Cargo Unload</span>
+      </div>
+      ${msgRows}
+      ${survivingRows || destroyedRows ? `<div class="df-result-summary" style="margin-bottom:10px;">${survivingRows}${destroyedRows}</div>` : ''}
+      <div class="df-info-box">
+        <p>생존한 화물을 <strong>목표 항공 기지 헥스에 물리적으로 하차</strong>하세요.</p>
+        ${survivingCargo.length === 0 ? '<p style="margin-top:6px;color:var(--ink-faded);">하차할 화물이 없습니다.</p>' : ''}
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="airliftUnloadDone()">복귀 / 비활성화 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airliftUnloadDone() {
+  airliftState.step = 'return';
+  airUI();
+}
+
+// ── STEP 5: 복귀 / 비활성화 ──────────────────────────────────
+
+function renderAirliftReturn() {
+  const alive = airliftState.units.filter(u => !u.destroyed);
+  const dead  = airliftState.units.filter(u => u.destroyed);
+
+  const statusRows = [
+    ...alive.map(u => `<div class="df-result-row brt-none" style="margin:0 0 4px;">${u.name} — 복귀 대기</div>`),
+    ...dead .map(u => `<div class="df-result-row atk-loss" style="margin:0 0 4px;">💀 ${u.name} — 파괴됨</div>`),
+  ];
+
+  const withinRange = airliftState.withinRange;
+
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 5</span>
+        <span class="air-step-title">복귀 / 비활성화</span>
+        <span class="air-step-en">Return &amp; Deactivate</span>
+      </div>
+      <div class="df-result-summary" style="margin-bottom:12px;">
+        ${statusRows.join('')}
+      </div>
+      ${withinRange === null ? `
+      <div class="df-info-box">
+        <p>이 임무는 <strong>항속 거리 이내</strong>에서 수행되었습니까?</p>
+        <p style="margin-top:6px;font-size:0.8rem;color:var(--ink-faded);">
+          항속 거리 이내: 아무 항공 기지로 복귀 후 비활성화<br>
+          항속 거리 초과: 목표 항공 기지에서 비활성화
+        </p>
+      </div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-secondary" onclick="airliftReturnDone(true)">예 — 항속 거리 이내 → 아무 기지로 복귀</button>
+        <button class="btn btn-danger"    onclick="airliftReturnDone(false)">아니오 — 항속 거리 초과 → 목표 기지에서 비활성화</button>
+      </div>` : `
+      <div class="df-info-box">
+        ${withinRange
+          ? '<p>✅ 항속 거리 이내 — 생존 유닛을 <strong>아무 항공 기지로 이동</strong>시키고 <strong>비활성화</strong>하세요.</p>'
+          : '<p>⛔ 항속 거리 초과 — 생존 유닛을 <strong>목표 항공 기지에서 비활성화</strong>하세요.</p>'}
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="backToAirSelect()">임무 완료 ✓</button>
+      </div>`}
+    </div>`;
+}
+
+function airliftReturnDone(withinRange) {
+  airliftState.withinRange = withinRange;
+  airUI();
 }
 
 // ─────────────────────────────────────────────────────────────
