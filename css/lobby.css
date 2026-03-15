@@ -319,3 +319,43 @@
   background: var(--paper-dark);
   color: var(--ink);
 }
+
+/* ── 커스텀 시나리오 폼 ── */
+.lobby-add-scenario-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: transparent;
+  border: 2px dashed var(--border);
+  color: var(--ink-faded);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lobby-add-scenario-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--paper-dark); }
+
+.custom-form-wrap { display: flex; flex-direction: column; gap: 10px; max-width: 600px; }
+.custom-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-faded); display: block; margin-bottom: 4px; }
+.custom-req { color: var(--red-stamp); }
+.custom-input { font-family: var(--font); font-size: 0.8rem; padding: 6px 8px; border: 2px solid var(--border); background: var(--paper); color: var(--ink); width: 100%; box-sizing: border-box; }
+.custom-input:focus { outline: none; border-color: var(--olive); }
+.custom-sel { width: auto; }
+.custom-num { width: 90px; }
+.custom-date-row { display: flex; gap: 6px; align-items: center; }
+.custom-form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.custom-form-row { display: flex; flex-direction: column; }
+.custom-form-divider { font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-faded); border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 6px; }
+.custom-rule-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+.custom-rule-del { font-family: var(--font); padding: 4px 8px; background: transparent; border: 1px solid var(--border); color: var(--red-stamp); cursor: pointer; flex-shrink: 0; }
+.custom-add-rule-btn { font-family: var(--font); font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; padding: 5px 10px; background: transparent; border: 1px dashed var(--border); color: var(--ink-faded); cursor: pointer; align-self: flex-start; }
+.custom-add-rule-btn:hover { border-color: var(--ink); color: var(--ink); }
+.custom-submit-btn { font-family: var(--font); font-size: 0.8rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; padding: 10px; background: var(--olive); color: var(--paper); border: 2px solid var(--ink); border-bottom: 4px solid var(--ink); cursor: pointer; margin-top: 4px; }
+.custom-submit-btn:hover { background: var(--olive-lt); }
+.custom-error { font-size: 0.72rem; color: var(--red-stamp); font-weight: 700; padding: 6px 8px; border: 1px solid var(--red-stamp); background: rgba(180,40,40,0.08); }
+.custom-badge { font-size: 0.55rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: var(--olive); color: var(--paper); padding: 1px 5px; vertical-align: middle; margin-left: 6px; }
+.custom-del-btn { font-family: var(--font); font-size: 0.6rem; padding: 1px 5px; background: transparent; border: 1px solid var(--red-stamp); color: var(--red-stamp); cursor: pointer; margin-left: 4px; vertical-align: middle; }
+.custom-del-btn:hover { background: var(--red-stamp); color: var(--paper); }

@@ -8,6 +8,7 @@ let currentScenario = null;
 // 로비 단계: 'game' | 'scenario'
 let lobbyStage = 'game';
 let lobbySelectedGameId = null;
+let lobbyIsCustomMode = false; // 커스텀 시나리오 추가 모드 여부
 
 // ============================================================
 // 시나리오 등록
@@ -47,8 +48,13 @@ function renderLobby() {
   const container = document.getElementById('lobbyContent');
   if (!container) return;
 
+  if (lobbyIsCustomMode) {
+    renderCustomForm(container);
+    return;
+  }
+
   if (_scenarioCache) {
-    _renderLobbyStage(container, _scenarioCache);
+    _renderLobbyStage(container, _getAllScenarios());
     return;
   }
 
@@ -60,12 +66,14 @@ function renderLobby() {
     )
   ).then(results => {
     _scenarioCache = results.filter(Boolean);
-    if (!_scenarioCache.length) {
-      container.innerHTML = '<div class="lobby-empty">사용 가능한 시나리오가 없습니다.</div>';
-      return;
-    }
-    _renderLobbyStage(container, _scenarioCache);
+    _renderLobbyStage(container, _getAllScenarios());
   });
+}
+
+// 파일 시나리오 + localStorage 커스텀 시나리오 병합
+function _getAllScenarios() {
+  const custom = _loadCustomScenarios();
+  return [...(_scenarioCache || []), ...custom];
 }
 
 function _renderLobbyStage(container, scenarios) {
@@ -91,7 +99,8 @@ function renderGameSelect(container, scenarios) {
 
   container.innerHTML = `
     <div class="lobby-stage-label">게임 선택</div>
-    <div class="lobby-game-list">${cards}</div>`;
+    <div class="lobby-game-list">${cards}</div>
+    <button class="lobby-add-scenario-btn" onclick="showCustomForm()">＋ 시나리오 직접 추가</button>`;
 }
 
 // ── 시나리오 선택 화면 ────────────────────────────────────────
@@ -113,7 +122,11 @@ function renderScenarioSelect(container, scenarios) {
         <div class="lobby-card-header">
           <div class="lobby-card-turns">${turns}턴</div>
         </div>
-        <div class="lobby-card-title">${s.title}</div>
+        <div class="lobby-card-title">
+          ${s.title}
+          ${s.isCustom ? `<span class="custom-badge">사용자 추가</span>` : ''}
+          ${s.isCustom ? `<button class="custom-del-btn" onclick="event.stopPropagation();_deleteCustomScenario('${s.id}')">✕</button>` : ''}
+        </div>
         ${s.subtitle ? `<div class="lobby-card-subtitle">${s.subtitle}</div>` : ''}
         <div class="lobby-card-meta">
           <span class="lobby-meta-date">
@@ -154,7 +167,7 @@ function backToGameSelect() {
 }
 
 function selectScenario(id) {
-  const scenario = (_scenarioCache || []).find(s => s.id === id);
+  const scenario = _getAllScenarios().find(s => s.id === id);
   if (!scenario) return;
   currentScenario = scenario;
   applyScenarioToState(scenario);
@@ -232,3 +245,186 @@ function onNewTurn() {
     state.currentTurnN++;
   }
 }
+
+// ============================================================
+// 커스텀 시나리오 — localStorage 저장/불러오기
+// ============================================================
+
+const CUSTOM_STORAGE_KEY = 'ocs_custom_scenarios';
+
+function _loadCustomScenarios() {
+  try {
+    return JSON.parse(localStorage.getItem(CUSTOM_STORAGE_KEY) || '[]');
+  } catch { return []; }
+}
+
+function _saveCustomScenarios(list) {
+  localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(list));
+}
+
+function _deleteCustomScenario(id) {
+  const list = _loadCustomScenarios().filter(s => s.id !== id);
+  _saveCustomScenarios(list);
+  _scenarioCache = null; // 캐시 무효화 후 재로드
+  renderLobby();
+}
+
+// ============================================================
+// 커스텀 시나리오 입력 폼
+// ============================================================
+
+function showCustomForm() {
+  lobbyIsCustomMode = true;
+  renderLobby();
+}
+
+function hideCustomForm() {
+  lobbyIsCustomMode = false;
+  renderLobby();
+}
+
+function renderCustomForm(container) {
+  container.innerHTML = `
+    <div class="lobby-stage-header">
+      <button class="lobby-back-btn" onclick="hideCustomForm()">◀ 취소</button>
+      <div class="lobby-stage-label">새 시나리오 추가</div>
+    </div>
+    <div class="custom-form-wrap">
+
+      <div class="custom-form-row">
+        <label class="custom-label">게임 시리즈 <span class="custom-req">*</span></label>
+        <input class="custom-input" id="cf_series" placeholder="예) OCS Tunisia" />
+      </div>
+      <div class="custom-form-row">
+        <label class="custom-label">시나리오 제목 <span class="custom-req">*</span></label>
+        <input class="custom-input" id="cf_title" placeholder="예) Baptism of Fire" />
+      </div>
+
+      <div class="custom-form-divider">턴 설정</div>
+
+      <div class="custom-form-cols">
+        <div>
+          <label class="custom-label">시작 턴 <span class="custom-req">*</span></label>
+          <div class="custom-date-row">
+            <input class="custom-input custom-num" id="cf_sy" type="number" placeholder="연도" min="1900" max="2100" />
+            <select class="custom-input custom-sel" id="cf_sm">
+              ${Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}월</option>`).join('')}
+            </select>
+            <select class="custom-input custom-sel" id="cf_sd">
+              ${[1,4,8,15,22,29].map(d=>`<option value="${d}">${d}일</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="custom-label">종료 턴 <span class="custom-req">*</span></label>
+          <div class="custom-date-row">
+            <input class="custom-input custom-num" id="cf_ey" type="number" placeholder="연도" min="1900" max="2100" />
+            <select class="custom-input custom-sel" id="cf_em">
+              ${Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}월</option>`).join('')}
+            </select>
+            <select class="custom-input custom-sel" id="cf_ed">
+              ${[1,4,8,15,22,29].map(d=>`<option value="${d}">${d}일</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="custom-form-divider">진영 설정</div>
+
+      <div class="custom-form-cols">
+        <div>
+          <label class="custom-label">진영 1 <span class="custom-req">*</span></label>
+          <input class="custom-input" id="cf_side1" placeholder="예) 추축군" />
+        </div>
+        <div>
+          <label class="custom-label">진영 2 <span class="custom-req">*</span></label>
+          <input class="custom-input" id="cf_side2" placeholder="예) 연합군" />
+        </div>
+      </div>
+
+      <div class="custom-form-divider">특수 규칙 (선택)</div>
+      <div id="cf_rules_wrap"></div>
+      <button class="custom-add-rule-btn" onclick="addCustomRuleField()">+ 특수 규칙 추가</button>
+
+      <div class="custom-form-divider"></div>
+      <div id="cf_error" class="custom-error" style="display:none;"></div>
+      <button class="custom-submit-btn" onclick="submitCustomScenario()">저장</button>
+    </div>`;
+}
+
+let _customRuleCount = 0;
+function addCustomRuleField() {
+  _customRuleCount++;
+  const wrap = document.getElementById('cf_rules_wrap');
+  const div = document.createElement('div');
+  div.className = 'custom-rule-row';
+  div.id = `cf_rule_${_customRuleCount}`;
+  div.innerHTML = `
+    <input class="custom-input" placeholder="규칙 내용" id="cf_rd_${_customRuleCount}" style="flex:1;" />
+    <button class="custom-rule-del" onclick="document.getElementById('cf_rule_${_customRuleCount}').remove()">✕</button>`;
+  wrap.appendChild(div);
+}
+
+function submitCustomScenario() {
+  const errEl = document.getElementById('cf_error');
+  errEl.style.display = 'none';
+
+  const series   = document.getElementById('cf_series').value.trim();
+  const title    = document.getElementById('cf_title').value.trim();
+  const sy = parseInt(document.getElementById('cf_sy').value);
+  const sm = parseInt(document.getElementById('cf_sm').value);
+  const sd = parseInt(document.getElementById('cf_sd').value);
+  const ey = parseInt(document.getElementById('cf_ey').value);
+  const em = parseInt(document.getElementById('cf_em').value);
+  const ed = parseInt(document.getElementById('cf_ed').value);
+  const side1 = document.getElementById('cf_side1').value.trim();
+  const side2 = document.getElementById('cf_side2').value.trim();
+
+  // 유효성 검사
+  if (!series || !title || !side1 || !side2 || isNaN(sy) || isNaN(ey)) {
+    errEl.textContent = '필수 항목(*)을 모두 입력해주세요.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (sy > ey || (sy === ey && sm > em) || (sy === ey && sm === em && sd >= ed)) {
+    errEl.textContent = '종료 턴은 시작 턴보다 이후여야 합니다.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // 특수 규칙 수집
+  const rules = [];
+  document.querySelectorAll('[id^="cf_rule_"]').forEach(row => {
+    const idx = row.id.split('_')[2];
+    const d = document.getElementById(`cf_rd_${idx}`)?.value.trim();
+    if (d) rules.push({ id: `sr-${idx}`, title: d, description: d, appliesTo: 'both', appliesToTurn: null });
+  });
+
+  const id = `custom-${Date.now()}`;
+  const scenario = {
+    id, isCustom: true,
+    gameId: `custom-${series.toLowerCase().replace(/\s+/g,'-')}`,
+    series, title,
+    startTurn: { year: sy, month: sm, day: sd },
+    endTurn:   { year: ey, month: em, day: ed },
+    sides: {
+      first:  { label: side1, en: side1 },
+      second: { label: side2, en: side2 },
+    },
+    specialRules: rules,
+    weather: { tableFile: null, initial: { air: 'clear', ground: 'dry' } },
+  };
+
+  const list = _loadCustomScenarios();
+  list.push(scenario);
+  _saveCustomScenarios(list);
+
+  _scenarioCache = null; // 캐시 초기화 → 재로드 시 병합
+  lobbyIsCustomMode = false;
+  renderLobby();
+}
+
+// ============================================================
+// 커스텀 시나리오 삭제 버튼 — 카드에 표시
+// (renderScenarioSelect 내 카드 HTML에 isCustom 조건 추가 필요 — 변경 4 참고)
+// ============================================================
