@@ -62,14 +62,32 @@
        PAGE: 턴 트래커
   ======================================================== -->
   <div id="turn" class="page active">
-    <div class="turn-grid">
+
+    <!-- ── 페이즈 배너 ── -->
+    <div class="phase-banner" id="phaseBanner">
+      <div class="phase-banner-left">
+        <div class="phase-banner-meta">
+          <span class="phase-banner-date" id="bannerDate"></span>
+          <span class="phase-banner-player" id="bannerPlayer"></span>
+        </div>
+        <div class="phase-banner-name" id="bannerPhaseName">—</div>
+        <div class="phase-banner-en"   id="bannerPhaseEn"></div>
+      </div>
+      <div class="phase-banner-right">
+        <button class="btn-banner-nav" onclick="prevPhase()">◀ 이전 단계</button>
+        <button class="btn-banner-nav btn-banner-primary" onclick="nextPhase()">다음 단계 ▶</button>
+      </div>
+    </div>
+
+    <!-- ── 3열 그리드 ── -->
+    <div class="turn-three-col">
+
+      <!-- 작전 현황 -->
       <div class="card">
         <div class="card-title">
           <span class="icon">📋</span> 작전 현황
           <button class="scenario-change-btn" onclick="showLobby()">◀ 시나리오 변경</button>
         </div>
-
-        <!-- 시나리오 정보 -->
         <div class="info-row">
           <span class="info-label">시나리오</span>
           <span class="info-value" id="scenarioTitle" style="font-size:0.82rem;">—</span>
@@ -78,14 +96,7 @@
           <span class="info-label">시리즈</span>
           <span class="info-value info-value-faded" id="scenarioSeries">—</span>
         </div>
-
         <div class="divider"></div>
-
-        <!-- 현재 턴 정보 -->
-        <div class="info-row" id="rowTurnDate" style="display:none;">
-          <span class="info-label">현재 턴</span>
-          <span class="info-value turn-date-display" id="turnDate"></span>
-        </div>
         <div class="info-row" id="rowNextTurnDate" style="display:none;">
           <span class="info-label">다음 턴</span>
           <span class="info-value info-value-faded" id="nextTurnDate"></span>
@@ -94,12 +105,14 @@
           <span class="info-label">마지막 턴</span>
           <span class="info-value info-value-end" id="endTurnDate"></span>
         </div>
-        <div class="info-row">
-          <span class="info-label">현재 페이즈</span>
-          <span class="info-value" id="curPhaseLabel">날씨 결정 페이즈</span>
+        <div class="info-row" id="rowWeatherAir" style="display:none;">
+          <span class="info-label">날씨 (기상)</span>
+          <span class="info-value weather-value">—</span>
         </div>
-
-        <!-- 턴 진행도 -->
+        <div class="info-row" id="rowWeatherGround" style="display:none;">
+          <span class="info-label">날씨 (지면)</span>
+          <span class="info-value weather-value">—</span>
+        </div>
         <div class="turn-progress-block" id="turnProgressBlock" style="display:none;">
           <div class="turn-progress-label-row">
             <span class="turn-progress-label">턴 진행도</span>
@@ -109,43 +122,43 @@
             <div class="turn-progress-bar-fill" id="turnProgressFill" style="width:0%;"></div>
           </div>
         </div>
+      </div>
 
-        <div class="divider"></div>
-
-        <div class="btn-row">
-          <button class="btn btn-primary"   onclick="nextPhase()">다음 페이즈 ▶</button>
-          <button class="btn btn-secondary" onclick="prevPhase()">◀ 이전</button>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-danger"    onclick="resetTurn()">턴 리셋</button>
-          <button class="btn btn-secondary" onclick="newTurn()">새 턴 시작</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="dice-section">
-          <div class="dice-title">🎲 주사위</div>
-          <div class="dice-btn-row">
-            <button class="dice-btn" onclick="rollDice('1d6')">1d6</button>
-            <button class="dice-btn" onclick="rollDice('2d6')">2d6</button>
-            <button class="dice-btn" onclick="rollDice('2d6+1d6')">2d6 <span class="plus-sep">+</span> 1d6</button>
-          </div>
-          <div class="dice-result-area" id="diceResult">
-            <span class="dice-placeholder">버튼을 눌러 굴리세요</span>
-          </div>
+      <!-- 이번 페이즈 행동 -->
+      <div class="card" id="phaseActionCard">
+        <div class="card-title"><span class="icon">📌</span> 이번 페이즈 행동</div>
+        <div id="phaseActionContent" class="phase-action-body">
+          <p class="phase-action-placeholder">페이즈 행동이 여기에 표시됩니다.</p>
         </div>
       </div>
 
-      <div class="card">
+      <!-- 페이즈 순서 -->
+      <div class="card" id="phaseListCard">
         <div class="card-title"><span class="icon">🗂</span> 페이즈 순서</div>
         <ul class="phase-list" id="phaseList"></ul>
       </div>
+
+    </div><!-- /turn-three-col -->
+
+    <!-- 주사위 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎲</span> 주사위</div>
+      <div class="dice-btn-row">
+        <button class="dice-btn" onclick="rollDice('1d6')">1d6</button>
+        <button class="dice-btn" onclick="rollDice('2d6')">2d6</button>
+        <button class="dice-btn" onclick="rollDice('2d6+1d6')">2d6 <span class="plus-sep">+</span> 1d6</button>
+      </div>
+      <div class="dice-result-area" id="diceResult">
+        <span class="dice-placeholder">버튼을 눌러 굴리세요</span>
+      </div>
     </div>
 
+    <!-- 작전 메모 -->
     <div class="card">
       <div class="card-title"><span class="icon">✏</span> 작전 메모</div>
       <textarea class="field-input" rows="4" placeholder="작전 상황, 공급 현황, 특이사항 등 기록..." style="resize:vertical;"></textarea>
     </div>
+
   </div><!-- /turn -->
 
 

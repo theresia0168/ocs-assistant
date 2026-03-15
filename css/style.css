@@ -269,9 +269,27 @@ nav button.active::before { opacity: 1; }
    턴 트래커
 ============================================================ */
 .turn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
-.turn-grid .card { display: flex; flex-direction: column; }
+.turn-grid > .card { display: flex; flex-direction: column; }
 
-#phaseList { flex: 1; overflow-y: auto; max-height: 460px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+/* B안 3열 그리드 */
+.turn-three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;   /* ← start → stretch */
+  margin-bottom: 12px;
+}
+.turn-three-col .card {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+#phaseList {
+  /* overflow 제거 — 뷰포트가 담당 */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
 #phaseList::-webkit-scrollbar { width: 4px; }
 #phaseList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
@@ -279,60 +297,318 @@ nav button.active::before { opacity: 1; }
 .info-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-faded); }
 .info-value { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
 
-.phase-list { list-style: none; }
-.phase-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 10px; margin-bottom: 3px;
+/* ============================================================
+   페이즈 순서 — 새 디자인
+============================================================ */
+.phase-list { list-style: none; display: flex; flex-direction: column; }
+
+/* 연결선 */
+.phase-connector {
+  width: 2px; height: 8px;
+  background: var(--border);
+  margin-left: 17px;
+  opacity: 0.4;
+}
+.phase-connector.phase-connector-strong {
+  background: var(--khaki);
+  opacity: 0.8;
+}
+
+/* 말줄임 */
+.phase-ellipsis-row {
+  font-size: 0.65rem;
+  color: var(--ink-faded);
+  text-align: center;
+  padding: 3px 0;
+  letter-spacing: 1px;
+}
+
+/* 그룹 헤더 (선/후 플레이어) */
+.phase-group-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--ink);
+  color: var(--khaki);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 4px 0 2px;
+  opacity: 0.6;
+}
+.phase-group-row.group-row-active {
+  opacity: 1;
+  border-left: 3px solid #f0c040;
+  color: var(--paper);
+}
+.phase-group-icon { font-size: 0.85rem; }
+.phase-group-text { flex: 1; }
+
+/* 공통 행 */
+.phase-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border: 1px solid transparent;
+}
+
+/* 아이콘 */
+.phase-row-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-top: 1px;
+}
+.phase-icon-done {
+  color: var(--olive-lt);
+}
+.phase-icon-cur {
+  color: #f0c040;
+  font-size: 0.6rem;
+}
+.phase-icon-next {
   border: 1px solid var(--border);
-  background: rgba(0,0,0,0.04); cursor: pointer; transition: background 0.1s;
+  color: var(--ink-faded);
+  font-size: 0.6rem;
+  border-radius: 2px;
+}
+
+/* 본문 */
+.phase-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.phase-row-parent {
+  font-size: 0.6rem;
+  color: var(--khaki);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.phase-row-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+}
+.phase-row-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.phase-row-en {
+  font-size: 0.6rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 완료 */
+.phase-row-done {
+  opacity: 0.45;
+  text-decoration: line-through;
+  color: var(--ink-faded);
+}
+.phase-row-done .phase-row-en { color: var(--ink-faded); }
+.phase-row-done:hover { background: rgba(0,0,0,0.03); }
+
+/* 현재 */
+.phase-row-current {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+  border-left: 3px solid #f0c040;
+  padding-left: 8px;
+}
+.phase-row-current .phase-row-parent { color: var(--khaki); }
+.phase-row-current .phase-row-en     { color: var(--paper-dark); }
+.phase-row-current:hover { background: var(--ink); }
+
+/* 바로 다음 */
+.phase-row-next {
+  background: rgba(0,0,0,0.05);
+  border-color: var(--border);
+  color: var(--ink);
+}
+.phase-row-next .phase-row-en     { color: var(--ink-faded); }
+.phase-row-next .phase-row-parent { color: var(--khaki); }
+.phase-row-next:hover { background: rgba(0,0,0,0.08); }
+
+/* 그 다음 */
+.phase-row-upcoming {
+  color: var(--ink-faded);
+}
+.phase-row-upcoming .phase-row-en { color: var(--ink-faded); opacity: 0.7; }
+.phase-row-upcoming:hover { background: rgba(0,0,0,0.04); }
+
+.phase-ellipsis {
+  justify-content: center;
+  background: transparent !important;
+  border-color: transparent !important;
+  cursor: default !important;
+  padding: 2px 0 !important;
+}
+.phase-ellipsis:hover { background: transparent !important; }
+.phase-ellipsis-text {
+  font-size: 0.68rem;
+  color: var(--ink-faded);
+  letter-spacing: 1px;
+}
+
+/* 하위 단계에서 부모 페이즈 이름 힌트 */
+.phase-parent-label {
+  font-size: 0.65rem;
+  color: var(--khaki);
+  font-weight: 400;
+  margin-right: 2px;
+}
+.phase-item.current .phase-parent-label { color: var(--paper-dark); }
+
+/* turn-grid 높이 맞춤 — 오른쪽이 왼쪽 높이에 자동 맞춤 */
+.turn-grid { align-items: stretch; }
+.turn-grid > .card,
+.turn-right-col { align-self: stretch; }
+
+/* ============================================================
+   페이즈 배너 (B안)
+============================================================ */
+.phase-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 20px;
+  margin-bottom: 12px;
+  border: 2px solid var(--ink);
+  border-bottom: 4px solid rgba(0,0,0,0.4);
+  border-right: 4px solid rgba(0,0,0,0.4);
+  gap: 12px;
+}
+.phase-banner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.phase-banner-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+.phase-banner-date {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--paper-dark);
+}
+.phase-banner-player {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f0c040;
+  border-left: 2px solid #f0c040;
+  padding-left: 8px;
+}
+.phase-banner-name {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: var(--paper);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.phase-banner-en {
+  font-size: 0.62rem;
+  color: var(--paper-dark);
+  letter-spacing: 1.5px;
+}
+.phase-banner-right {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.btn-banner-nav {
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: 2px solid var(--paper-dark);
+  border-bottom: 3px solid rgba(0,0,0,0.3);
+  background: transparent;
+  color: var(--paper-dark);
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+.btn-banner-nav:hover  { background: rgba(255,255,255,0.1); color: var(--paper); border-color: var(--paper); }
+.btn-banner-nav:active { transform: translateY(1px); border-bottom-width: 2px; }
+.btn-banner-primary    { background: rgba(255,255,255,0.15); color: var(--paper); border-color: var(--paper); }
+.btn-banner-primary:hover { background: rgba(255,255,255,0.25); }
+
+/* ============================================================
+   이번 페이즈 행동 패널
+============================================================ */
+.phase-action-desc {
   font-size: 0.82rem;
+  color: var(--ink-faded);
+  margin: 0 0 10px;
+  line-height: 1.5;
 }
-.phase-item:hover   { background: rgba(0,0,0,0.08); }
-.phase-item.done    { background: var(--olive); color: var(--paper); border-color: var(--ink); text-decoration: line-through; opacity: 0.7; }
-.phase-item.current { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.phase-num {
-  font-size: 0.68rem; font-weight: 700;
-  width: 22px; height: 22px; border: 1px solid currentColor;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+.phase-action-placeholder {
+  font-size: 0.75rem;
+  color: var(--khaki);
+  border: 1px dashed var(--border);
+  padding: 12px;
+  text-align: center;
+  letter-spacing: 1px;
 }
-.phase-name { font-size: 0.82rem; }
-.phase-en   { font-size: 0.62rem; color: var(--ink-faded); margin-left: auto; white-space: nowrap; }
-.phase-item.current .phase-en { color: var(--paper-dark); }
-.phase-item.done    .phase-en { color: var(--paper-dark); opacity: 0.6; }
 
-.phase-group-header {
-  font-size: 0.78rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--paper); background: var(--ink);
-  padding: 7px 10px; margin: 8px 0 3px;
-  display: flex; align-items: center; gap: 6px;
-  border-left: 3px solid var(--red-stamp);
-  cursor: pointer; user-select: none; transition: background 0.15s;
+.phase-action-body { flex: 1; display: flex; flex-direction: column; }
+.phase-action-placeholder {
+  font-size: 0.8rem;
+  color: var(--ink-faded);
+  text-align: center;
+  padding: 16px 8px;
+  border: 1px dashed var(--border);
 }
-.phase-group-header:hover        { background: #3a3020; }
-.phase-group-header.group-done   { border-left-color: var(--khaki); opacity: 0.7; }
-.phase-group-header.group-active { border-left-color: #f0c040; }
-.group-label-text { flex: 1; }
-.collapse-toggle  { font-size: 0.6rem; color: var(--khaki); margin-left: auto; }
-.group-icon       { font-size: 0.9rem; }
-.group-en         { font-size: 0.6rem; color: var(--khaki); margin-left: 4px; letter-spacing: 1px; }
-
-.sub-phase { padding-left: 18px !important; }
-
-.phase-sub-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 5px 10px 5px 18px; margin-top: 4px;
-  background: rgba(0,0,0,0.07); border-left: 2px solid var(--khaki); color: var(--ink-faded);
-  font-size: 0.78rem;
+.phase-action-desc {
+  font-size: 0.82rem;
+  color: var(--ink-faded);
+  margin: 0 0 10px;
+  line-height: 1.5;
 }
-.phase-sub-header.done    { opacity: 0.55; text-decoration: line-through; }
-.phase-sub-header.current { background: rgba(74,74,40,0.25); border-left-color: var(--olive-lt); color: var(--ink); }
-.phase-sub-header .phase-num  { font-size: 0.62rem; color: var(--ink-faded); }
-.phase-sub-header .phase-en   { font-size: 0.58rem; color: var(--ink-faded); margin-left: auto; }
 
-.step-phase { padding-left: 32px !important; }
-.step-dot   { font-size: 1.3rem !important; line-height: 0 !important; color: var(--khaki) !important; border: none !important; width: auto !important; height: auto !important; background: none !important; }
-.step-phase.current .step-dot { color: var(--paper) !important; }
-.solo-phase { border-left: 3px solid var(--olive-lt); }
+#phaseListCard { overflow: hidden; }   /* 카드 자체가 높이 제한 */
+#phaseList {
+  flex: 1;
+  overflow-y: auto;
+  max-height: none;        /* 카드가 높이를 결정, 리스트는 그 안에서 스크롤 */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#phaseList::-webkit-scrollbar { width: 4px; }
+#phaseList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 /* ============================================================
    주사위

@@ -200,8 +200,26 @@ function applyScenarioToState(scenario) {
   if (seriesEl) seriesEl.textContent = scenario.series || '—';
 
   // 진행도 블록 표시
-  const progressBlock = document.getElementById('turnProgressBlock');
+const progressBlock = document.getElementById('turnProgressBlock');
   if (progressBlock) progressBlock.style.display = '';
+
+  // 날씨 초기화
+  const w = scenario.weather;
+  if (w && w.initial) {
+    state.weatherEnabled  = true;
+    state.weatherSeparated = !!(w.separated ?? (w.initial.ground !== undefined));
+    state.weatherAir      = w.initial.air    ?? null;
+    state.weatherGround   = w.initial.ground ?? null;
+    // 날씨 테이블 레이블 맵 구성 (표시용)
+    state.weatherAirLabels    = {};
+    state.weatherGroundLabels = {};
+    if (w.tableData) {
+      (w.tableData.airWeather?.states    || []).forEach(s => { state.weatherAirLabels[s.id]    = s.label; });
+      (w.tableData.groundWeather?.states || []).forEach(s => { state.weatherGroundLabels[s.id] = s.label; });
+    }
+  } else {
+    state.weatherEnabled = false;
+  }
 
   updateTurnUI();
 }
