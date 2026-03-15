@@ -73,14 +73,17 @@
         <div class="phase-banner-name" id="bannerPhaseName">—</div>
         <div class="phase-banner-en"   id="bannerPhaseEn"></div>
       </div>
+      <div class="phase-banner-action" id="phaseActionContent">
+        <p class="phase-action-placeholder">페이즈 행동이 여기에 표시됩니다.</p>
+      </div>
       <div class="phase-banner-right">
         <button class="btn-banner-nav" onclick="prevPhase()">◀ 이전 단계</button>
         <button class="btn-banner-nav btn-banner-primary" onclick="nextPhase()">다음 단계 ▶</button>
       </div>
     </div>
 
-    <!-- ── 3열 그리드 ── -->
-    <div class="turn-three-col">
+    <!-- ── 2열 그리드 ── -->
+    <div class="turn-two-col">
 
       <!-- 작전 현황 -->
       <div class="card">
@@ -124,21 +127,13 @@
         </div>
       </div>
 
-      <!-- 이번 페이즈 행동 -->
-      <div class="card" id="phaseActionCard">
-        <div class="card-title"><span class="icon">📌</span> 이번 페이즈 행동</div>
-        <div id="phaseActionContent" class="phase-action-body">
-          <p class="phase-action-placeholder">페이즈 행동이 여기에 표시됩니다.</p>
-        </div>
-      </div>
-
       <!-- 페이즈 순서 -->
       <div class="card" id="phaseListCard">
         <div class="card-title"><span class="icon">🗂</span> 페이즈 순서</div>
         <ul class="phase-list" id="phaseList"></ul>
       </div>
 
-    </div><!-- /turn-three-col -->
+    </div><!-- /turn-two-col -->
 
     <!-- 주사위 -->
     <div class="card">

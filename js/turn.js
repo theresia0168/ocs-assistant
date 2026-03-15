@@ -232,7 +232,6 @@ function renderPhases() {
       ? `<span class="phase-row-parent">${f.phaseLabel} ›</span>`
       : '';
     const labelHtml = `<span class="phase-row-label">${f.label}</span>`;
-    const enHtml    = `<span class="phase-row-en">${f.en || ''}</span>`;
 
     row.className = 'phase-row'
       + (done ? ' phase-row-done'     : '')
@@ -244,7 +243,7 @@ function renderPhases() {
       ${iconHtml}
       <span class="phase-row-body">
         ${parentHtml}
-        <span class="phase-row-main">${labelHtml}${enHtml}</span>
+        <span class="phase-row-main">${labelHtml}</span>
       </span>`;
 
     row.onclick = ((idx) => () => { state.step = idx; updateTurnUI(); })(i);
@@ -286,6 +285,7 @@ function renderPhaseAction() {
   if (!el) return;
 
   const cur = FLAT[state.step];
+
   if (!cur) {
     el.innerHTML = '<p class="phase-action-desc">이번 턴의 모든 페이즈가 완료되었습니다.</p>';
     return;
@@ -295,7 +295,7 @@ function renderPhaseAction() {
   if (def) {
     def.render(el);
   } else {
-    el.innerHTML = `<p class="phase-action-desc" style="color:var(--ink-faded);">${cur.label} 페이즈의 행동을 여기에 표시합니다.</p>`;
+    el.innerHTML = `<p class="phase-action-desc">${cur.label} 페이즈의 행동을 여기에 표시합니다.</p>`;
   }
 }
 
@@ -328,6 +328,7 @@ function updateTurnUI() {
   updateWeatherUI();
 
   renderPhases();
+  renderPhaseAction();
 }
 
 function updateWeatherUI() {

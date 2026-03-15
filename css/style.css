@@ -271,15 +271,15 @@ nav button.active::before { opacity: 1; }
 .turn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
 .turn-grid > .card { display: flex; flex-direction: column; }
 
-/* B안 3열 그리드 */
-.turn-three-col {
+/* 2열 그리드 (이번 페이즈 행동 배너 통합 후) */
+.turn-two-col {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
-  align-items: stretch;   /* ← start → stretch */
+  align-items: stretch;
   margin-bottom: 12px;
 }
-.turn-three-col .card {
+.turn-two-col .card {
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
@@ -565,6 +565,31 @@ nav button.active::before { opacity: 1; }
 .btn-banner-nav:active { transform: translateY(1px); border-bottom-width: 2px; }
 .btn-banner-primary    { background: rgba(255,255,255,0.15); color: var(--paper); border-color: var(--paper); }
 .btn-banner-primary:hover { background: rgba(255,255,255,0.25); }
+
+.phase-banner-action {
+  flex: 1;
+  min-width: 0;
+  padding: 0 16px;
+  border-left: 1px solid rgba(255,255,255,0.15);
+  border-right: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+.phase-banner-action .phase-action-desc {
+  color: var(--paper-dark);
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.phase-banner-action .phase-action-placeholder {
+  color: rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.2);
+  font-size: 0.75rem;
+  padding: 8px;
+  text-align: center;
+}
 
 /* ============================================================
    이번 페이즈 행동 패널
