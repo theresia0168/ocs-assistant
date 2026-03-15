@@ -14,7 +14,7 @@ const AIR_ACTIONS = [
   { id: 'bombing',   label: '폭격 + 힙샷',  en: 'Bombing + Hip Shoot', icon: '💣', available: true  },
   { id: 'interdict', label: '항공 저지',     en: 'Interdiction',        icon: '🚫', available: true },
   { id: 'transfer',  label: '기지 이동',     en: 'Base Transfer',       icon: '✈',  available: true },
-  { id: 'airdrop',   label: '공수 강하',     en: 'Airborne Drop',       icon: '🪂',  available: false },
+  { id: 'airdrop',   label: '공수 강하',     en: 'Airborne Drop',       icon: '🪂',  available: true },
   { id: 'airlift',   label: '항공 수송',     en: 'Air Transport',       icon: '📦', available: false },
   { id: 'cap',       label: '전투기 초계',   en: 'CAP',                 icon: '🛡',  available: true  },
 ];
@@ -31,6 +31,7 @@ function airUI() {
   else if (airAction === 'bombing') el.innerHTML = renderBombing();
   else if (airAction === 'transfer')  el.innerHTML = renderTransfer();
   else if (airAction === 'interdict') el.innerHTML = renderInterdict();
+  else if (airAction === 'airdrop')   el.innerHTML = renderAirdrop();
 }
 
 // app.js에서 호출하는 초기화 별칭
@@ -58,9 +59,10 @@ function renderActionSelect() {
 function selectAirAction(id) {
   airAction = id;
   if (id === 'cap')     { capInit();  }
-  if (id === 'bombing') { bombInit(); }
-  if (id === 'transfer') { transferInit(); }
-  if (id === 'interdict') { interdictInit(); }
+  else if (id === 'bombing')   bombInit();
+  else if (id === 'transfer')  transferInit();
+  else if (id === 'interdict') interdictInit();
+  else if (id === 'airdrop')   airdropInit();
   airUI();
 }
 
@@ -1401,6 +1403,653 @@ function renderMissionAborted(label) {
       </div>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-primary" onclick="backToAirSelect()">임무 종료 ✓</button>
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// ██  공수 강하 (Airborne Drop)
+// ─────────────────────────────────────────────────────────────
+// 절차:
+//   STEP 1. 항공 유닛 편성 및 임무 목표 헥스로 이동
+//   STEP 2. 적 경계 영공 진입 여부 확인
+//     2-1. 예 → 요격 처리 (icStart)
+//     2-2. 아니오 → STEP 3
+//   STEP 3. 대공 사격 처리 (aaStart)
+//   STEP 4. 화물 투하 (수송기 생존 확인 후)
+//   STEP 5. 공수 강하 손실 테이블 처리 (화물별 개별 처리)
+//   STEP 6. 복귀 / 비활성화
+
+const AIRDROP_STEPS = [
+  { id:'setup',        label:'유닛 편성 / 이동',  en:'Setup & Move'         },
+  { id:'interception', label:'경계 영공 / 요격',  en:'Alert Airspace Check' },
+  { id:'aa',           label:'대공 사격',          en:'AA Fire'              },
+  { id:'drop',         label:'화물 투하',          en:'Cargo Drop'           },
+  { id:'landtable',    label:'강하 손실 테이블',   en:'Airborne Loss Table'  },
+  { id:'return',       label:'복귀 / 비활성화',    en:'Return & Deactivate'  },
+];
+
+let airdropState = {};
+
+function airdropInit() {
+  airdropState = {
+    step: 'setup',
+    // 항공 유닛 목록: { id, name, airStr, unitType('fighter'|'transport'|'other'), capacity, aborted, destroyed }
+    units: [{ id:0, name:'유닛 1', airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false }],
+    // 화물 목록: { id, name, type('unit'|'supply'), weight, transporterId, destroyed }
+    cargo: [{ id:0, name:'화물 1', type:'unit', weight:1, transporterId:0, destroyed:false }],
+    inEnemyAirspace: false,
+    // 강하 손실 테이블 관련
+    landOptions: {
+      friendlyHex: true,    // 아군 지역 여부
+      terrain: 'clear',     // 'clear' | 'closed'
+      drm: {
+        alliedEuro44: false,
+        sovietAirtransport: false,
+        glider: false,
+        veryClose: false,
+        extrClose: false,
+      },
+    },
+    enemyOnHex: false,      // 목표 헥스에 적 유닛 존재 여부
+    // 화물별 강하 결과: { cargoId, dice1, dice2, adjusted, success, destroyed }
+    landResults: [],
+    landCargoIdx: 0,        // 현재 처리 중인 화물 인덱스
+  };
+  icReset(); aaReset();
+}
+
+function renderAirdrop() {
+  const si = renderStepIndicator(AIRDROP_STEPS, AIRDROP_STEPS.findIndex(s => s.id === airdropState.step));
+  const hdr = `<div class="card">
+    <div class="card-title"><span class="icon">🪂</span> 공수 강하 (Airborne Drop)
+      <button class="air-back-btn" onclick="backToAirSelect()">◀ 임무 선택</button>
+    </div>${si}</div>`;
+
+  // 하위 모듈 활성
+  if (icState) return hdr + renderInterception();
+  if (aaState) return hdr + renderAA();
+
+  let body = '';
+  switch (airdropState.step) {
+    case 'setup':        body = renderAirdropSetup();        break;
+    case 'interception': body = renderAirdropAirspaceCheck(); break;
+    case 'aa':           airdropStartAA(); return renderAirdrop();
+    case 'drop':         body = renderAirdropDrop();         break;
+    case 'landtable':    body = renderAirdropLandTable();    break;
+    case 'return':       body = renderAirdropReturn();       break;
+    case 'aborted':      body = renderMissionAborted('요격/대공 사격'); break;
+  }
+  return hdr + body;
+}
+
+// ── STEP 1: 유닛 편성 / 이동 ─────────────────────────────────
+
+function renderAirdropSetup() {
+  const units = airdropState.units;
+  const cargo = airdropState.cargo;
+
+  // 수송기만 화물 적재 대상
+  const transporters = units.filter(u => u.unitType === 'transport');
+
+  const unitRows = units.map((u, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i + 1}</div>
+      <div class="bom-unit-fields" style="flex-wrap:wrap;gap:6px;">
+        <div class="field-group">
+          <label class="field-label">유닛 이름</label>
+          <input class="field-input" type="text" id="adName_${i}" value="${u.name}" style="width:100px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">공대공 전력</label>
+          <input class="field-input" type="number" id="adAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:65px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">유형</label>
+          <select class="field-input" id="adType_${i}" onchange="airdropSaveSetup();airUI();" style="width:90px;">
+            <option value="fighter"   ${u.unitType==='fighter'   ?'selected':''}>전투기</option>
+            <option value="transport" ${u.unitType==='transport' ?'selected':''}>수송기</option>
+            <option value="other"     ${u.unitType==='other'     ?'selected':''}>기타</option>
+          </select>
+        </div>
+        ${u.unitType === 'transport' ? `
+        <div class="field-group">
+          <label class="field-label">적재 용량</label>
+          <input class="field-input" type="number" id="adCap_${i}" value="${u.capacity}" min="0" step="1" style="width:65px;">
+        </div>` : ''}
+      </div>
+      ${units.length > 1 ? `<button class="bom-del-btn" onclick="airdropRemoveUnit(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  const cargoRows = cargo.map((c, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i + 1}</div>
+      <div class="bom-unit-fields" style="flex-wrap:wrap;gap:6px;">
+        <div class="field-group">
+          <label class="field-label">화물 명칭</label>
+          <input class="field-input" type="text" id="adCgName_${i}" value="${c.name}" style="width:100px;">
+        </div>
+        <div class="field-group">
+          <label class="field-label">유형</label>
+          <select class="field-input" id="adCgType_${i}" style="width:85px;">
+            <option value="unit"   ${c.type==='unit'   ?'selected':''}>전투 유닛</option>
+            <option value="supply" ${c.type==='supply' ?'selected':''}>보급품 1T</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">중량</label>
+          <input class="field-input" type="number" id="adCgWt_${i}" value="${c.weight}" min="1" step="1" style="width:60px;">
+        </div>
+        ${transporters.length > 0 ? `
+        <div class="field-group">
+          <label class="field-label">적재 수송기</label>
+          <select class="field-input" id="adCgTr_${i}" style="width:90px;">
+            ${transporters.map(t => `<option value="${t.id}" ${c.transporterId===t.id?'selected':''}>${t.name}</option>`).join('')}
+          </select>
+        </div>` : ''}
+      </div>
+      ${cargo.length > 1 ? `<button class="bom-del-btn" onclick="airdropRemoveCargo(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">✈</span> STEP 1 — 유닛 편성 / 이동</div>
+      <div class="air-manual-desc" style="margin-bottom:10px;">
+        <p>임무 참가 항공 유닛과 적재 화물을 입력하고, 유닛을 <strong>임무 목표 헥스</strong>로 이동시키세요.</p>
+      </div>
+
+      <div class="field-label" style="margin-bottom:6px;">▸ 항공 유닛</div>
+      <div class="bom-unit-list">${unitRows}</div>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn btn-secondary" onclick="airdropAddUnit()">+ 유닛 추가</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field-label" style="margin-bottom:6px;">▸ 화물</div>
+      <div class="bom-unit-list">${cargoRows}</div>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn btn-secondary" onclick="airdropAddCargo()">+ 화물 추가</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="airdropSetupDone()">다음 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airdropSaveSetup() {
+  airdropState.units.forEach((u, i) => {
+    const nm = document.getElementById(`adName_${i}`);
+    const as = document.getElementById(`adAirStr_${i}`);
+    const tp = document.getElementById(`adType_${i}`);
+    const cp = document.getElementById(`adCap_${i}`);
+    if (nm) u.name      = nm.value || u.name;
+    if (as) u.airStr    = parseFloat(as.value) || 0;
+    if (tp) u.unitType  = tp.value;
+    if (cp) u.capacity  = parseInt(cp.value) || 0;
+  });
+  airdropState.cargo.forEach((c, i) => {
+    const nm = document.getElementById(`adCgName_${i}`);
+    const tp = document.getElementById(`adCgType_${i}`);
+    const wt = document.getElementById(`adCgWt_${i}`);
+    const tr = document.getElementById(`adCgTr_${i}`);
+    if (nm) c.name         = nm.value || c.name;
+    if (tp) c.type         = tp.value;
+    if (wt) c.weight       = parseInt(wt.value) || 1;
+    if (tr) c.transporterId = parseInt(tr.value);
+  });
+}
+
+function airdropAddUnit() {
+  airdropSaveSetup();
+  const i = airdropState.units.length;
+  airdropState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false });
+  airUI();
+}
+
+function airdropRemoveUnit(idx) {
+  airdropSaveSetup();
+  airdropState.units.splice(idx, 1);
+  airdropState.units.forEach((u, i) => { u.id = i; });
+  airUI();
+}
+
+function airdropAddCargo() {
+  airdropSaveSetup();
+  const i = airdropState.cargo.length;
+  const firstTransport = airdropState.units.find(u => u.unitType === 'transport');
+  airdropState.cargo.push({ id:i, name:`화물 ${i+1}`, type:'unit', weight:1, transporterId: firstTransport?.id ?? 0, destroyed:false });
+  airUI();
+}
+
+function airdropRemoveCargo(idx) {
+  airdropSaveSetup();
+  airdropState.cargo.splice(idx, 1);
+  airdropState.cargo.forEach((c, i) => { c.id = i; });
+  airUI();
+}
+
+function airdropSetupDone() {
+  airdropSaveSetup();
+  airdropState.step = 'interception';
+  airUI();
+}
+
+// ── STEP 2: 경계 영공 / 요격 ─────────────────────────────────
+
+function renderAirdropAirspaceCheck() {
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🚨</span> STEP 2 — 경계 영공 / 요격</div>
+      <div class="df-info-box"><p>임무 목표가 <strong>적 경계 영공(Enemy Alert Airspace)</strong> 내에 있습니까?</p></div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-secondary" onclick="airdropNoAirspace()">아니오 — 대공 사격으로 ▶</button>
+        <button class="btn btn-primary"   onclick="airdropYesAirspace()">예 — 요격 절차 진행 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airdropNoAirspace() {
+  airdropState.inEnemyAirspace = false;
+  airdropState.step = 'aa';
+  airUI();
+}
+
+function airdropYesAirspace() {
+  airdropState.inEnemyAirspace = true;
+  icStart({
+    missionUnits: airdropState.units.filter(u => !u.aborted && !u.destroyed).map(u => ({
+      id: u.id, name: u.name, str: u.airStr, aborted: false,
+    })),
+    onDone: (snap) => {
+      if (snap?.defenderUnits) {
+        snap.defenderUnits.forEach(du => {
+          const u = airdropState.units.find(u => u.id === du.id);
+          if (u && du.aborted) u.aborted = true;
+        });
+      }
+      // 요격 후 수송기 손실 → 화물 재검토
+      airdropRevalidateCargo('요격');
+    },
+    onBack: () => { icReset(); airdropState.step = 'interception'; airUI(); },
+  });
+  airUI();
+}
+
+// ── STEP 3: 대공 사격 ──────────────────────────────────────────
+
+function airdropStartAA() {
+  const alive = airdropState.units.filter(u => !u.aborted && !u.destroyed);
+  aaStart({
+    missionUnits: alive.map(u => ({
+      id: u.id, name: u.name,
+      airStr: u.airStr, groundStr: u.airStr, str: u.airStr,
+      unitType: u.unitType, capacity: u.capacity,
+      aborted: false, destroyed: false,
+    })),
+    inEnemyAirspace: airdropState.inEnemyAirspace,
+    onDone: () => {
+      // AA 결과를 airdropState.units에 반영
+      aaState?.missionUnits?.forEach(mu => {
+        const u = airdropState.units.find(u => u.id === mu.id);
+        if (!u) return;
+        if (mu.destroyed) { u.destroyed = true; u.aborted = true; }
+        else if (mu.aborted) u.aborted = true;
+        // 수송기인 경우 용량 재설정 (groundStr 감소분 반영)
+        if (u.unitType === 'transport' && !u.destroyed) {
+          u.capacity = mu.groundStr ?? u.capacity;
+        }
+      });
+      airdropRevalidateCargo('대공 사격');
+    },
+  });
+}
+
+// 수송기 손실 후 화물 용량 재검토 → 초과분 파괴
+function airdropRevalidateCargo(phase) {
+  const messages = [];
+  const transports = airdropState.units.filter(u => u.unitType === 'transport' && !u.destroyed);
+
+  // 수송기별 적재 중량 합산 → 용량 초과 시 화물 파괴
+  transports.forEach(t => {
+    const loaded = airdropState.cargo.filter(c => !c.destroyed && c.transporterId === t.id);
+    let totalWeight = loaded.reduce((s, c) => s + c.weight, 0);
+    if (totalWeight > t.capacity) {
+      // 초과분: 뒤에서부터 파괴
+      for (let i = loaded.length - 1; i >= 0 && totalWeight > t.capacity; i--) {
+        loaded[i].destroyed = true;
+        messages.push(`${loaded[i].name} — ${t.name} 용량 초과로 파괴`);
+        totalWeight -= loaded[i].weight;
+      }
+    }
+  });
+
+  // 파괴된 수송기의 화물 파괴
+  const destroyedTransports = airdropState.units.filter(u => u.unitType === 'transport' && u.destroyed);
+  destroyedTransports.forEach(t => {
+    airdropState.cargo.filter(c => !c.destroyed && c.transporterId === t.id).forEach(c => {
+      c.destroyed = true;
+      messages.push(`${c.name} — ${t.name} 파괴로 함께 파괴`);
+    });
+  });
+
+  // 생존한 수송기가 없고 살아있는 화물도 없으면 임무 종료
+  const anyTransportAlive = airdropState.units.some(u => u.unitType === 'transport' && !u.destroyed);
+  const anyCargoAlive = airdropState.cargo.some(c => !c.destroyed);
+
+  if (!anyTransportAlive || !anyCargoAlive) {
+    airdropState.step = 'aborted';
+    airdropState._abortPhase = phase;
+  } else {
+    airdropState.step = airdropState.step === 'interception' ? 'aa' : 'drop';
+  }
+
+  airdropState._revalidateMessages = messages;
+  icReset();
+  aaReset();
+  airUI();
+}
+
+// ── STEP 4: 화물 투하 ─────────────────────────────────────────
+
+function renderAirdropDrop() {
+  const msgs = airdropState._revalidateMessages || [];
+  const survivingCargo = airdropState.cargo.filter(c => !c.destroyed);
+  const destroyedCargo = airdropState.cargo.filter(c => c.destroyed);
+
+  const cargoRows = survivingCargo.map(c => {
+    const t = airdropState.units.find(u => u.id === c.transporterId);
+    return `<div class="df-result-row brt-none" style="margin:0 0 4px;">📦 ${c.name} (${c.type==='unit'?'전투 유닛':'보급품'}, ${c.weight}T) — ${t?.name ?? '?'} 탑재</div>`;
+  }).join('');
+
+  const destroyedRows = destroyedCargo.map(c =>
+    `<div class="df-result-row atk-loss" style="margin:0 0 4px;">💀 ${c.name} — 파괴됨</div>`
+  ).join('');
+
+  const msgRows = msgs.length
+    ? `<div class="df-info-box" style="margin-bottom:10px;">${msgs.map(m=>`<p>⚠ ${m}</p>`).join('')}</div>` : '';
+
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 4</span>
+        <span class="air-step-title">화물 투하</span>
+        <span class="air-step-en">Cargo Drop</span>
+      </div>
+      ${msgRows}
+      <div class="df-result-summary" style="margin-bottom:12px;">
+        ${cargoRows}
+        ${destroyedRows}
+      </div>
+      <div class="df-info-box">
+        <p>생존한 수송기가 화물을 투하합니다. 아래에서 강하 손실 테이블 조건을 설정하고 진행하세요.</p>
+      </div>
+
+      <div class="divider"></div>
+      <div class="field-label" style="margin-bottom:8px;">▸ 강하 조건 설정</div>
+
+      <div class="aa-drm-list">
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adFriendlyHex" ${airdropState.landOptions.friendlyHex?'checked':''}>
+            <span class="aa-drm-desc">아군 지역 (현 페이즈 시작 시 아군이 점령 중인 헥스)</span>
+          </label>
+        </div>
+        <div class="aa-drm-row">
+          <span class="aa-drm-desc">지형 유형</span>
+          <select class="field-input" id="adTerrain" style="width:120px;margin-left:auto;">
+            <option value="clear"  ${airdropState.landOptions.terrain==='clear' ?'selected':''}>Clear (평지/마을/항공기지)</option>
+            <option value="closed" ${airdropState.landOptions.terrain==='closed'?'selected':''}>Closed (기타 지형)</option>
+          </select>
+        </div>
+        <div class="aa-drm-row" style="margin-top:6px;">
+          <span class="aa-drm-desc" style="font-weight:700;">DRM 수정치</span>
+        </div>
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adDrmAllied" ${airdropState.landOptions.drm.alliedEuro44?'checked':''}>
+            <span class="aa-drm-desc">44년 6월 이전 유럽 전구 연합군 공수</span>
+          </label>
+          <span class="aa-drm-shift bcl-L">−1</span>
+        </div>
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adDrmSoviet" ${airdropState.landOptions.drm.sovietAirtransport?'checked':''}>
+            <span class="aa-drm-desc">소련 항공 수송 (상시)</span>
+          </label>
+          <span class="aa-drm-shift bcl-L">−1</span>
+        </div>
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adDrmGlider" ${airdropState.landOptions.drm.glider?'checked':''}>
+            <span class="aa-drm-desc">글라이더 착륙</span>
+          </label>
+          <span class="aa-drm-shift bcl-R">+1</span>
+        </div>
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adDrmVeryClose" ${airdropState.landOptions.drm.veryClose?'checked':''}>
+            <span class="aa-drm-desc">Very Close <span class="bcl-opt-tag">옵션</span></span>
+          </label>
+          <span class="aa-drm-shift bcl-L">−1</span>
+        </div>
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adDrmExtrClose" ${airdropState.landOptions.drm.extrClose?'checked':''}>
+            <span class="aa-drm-desc">Extr Close <span class="bcl-opt-tag">옵션</span></span>
+          </label>
+          <span class="aa-drm-shift bcl-L">−2</span>
+        </div>
+        <div class="aa-drm-row">
+          <label class="aa-drm-label">
+            <input type="checkbox" id="adEnemyOnHex" ${airdropState.enemyOnHex?'checked':''}>
+            <span class="aa-drm-desc">목표 헥스에 <strong>적 유닛 존재</strong> (강하 성공 시에도 파괴)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="airdropDropDone()">강하 손실 테이블 처리 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airdropDropDone() {
+  // 옵션 저장
+  const lo = airdropState.landOptions;
+  lo.friendlyHex = document.getElementById('adFriendlyHex')?.checked ?? true;
+  lo.terrain     = document.getElementById('adTerrain')?.value || 'clear';
+  lo.drm.alliedEuro44        = document.getElementById('adDrmAllied')?.checked    ?? false;
+  lo.drm.sovietAirtransport  = document.getElementById('adDrmSoviet')?.checked    ?? false;
+  lo.drm.glider              = document.getElementById('adDrmGlider')?.checked    ?? false;
+  lo.drm.veryClose           = document.getElementById('adDrmVeryClose')?.checked ?? false;
+  lo.drm.extrClose           = document.getElementById('adDrmExtrClose')?.checked ?? false;
+  airdropState.enemyOnHex    = document.getElementById('adEnemyOnHex')?.checked   ?? false;
+
+  // DRM 계산
+  const d = lo.drm;
+  let drm = 0;
+  if (d.alliedEuro44)       drm -= 1;
+  if (d.sovietAirtransport) drm -= 1;
+  if (d.glider)             drm += 1;
+  if (d.veryClose)          drm -= 1;
+  if (d.extrClose)          drm -= 2;
+  airdropState.landDRM = drm;
+
+  // 성공 최솟값 계산
+  // friendly+clear: 5, friendly+closed: 6, enemy+clear: 6, enemy+closed: 7
+  const base = lo.friendlyHex
+    ? (lo.terrain === 'clear' ? 5 : 6)
+    : (lo.terrain === 'clear' ? 6 : 7);
+  airdropState.landSuccessMin = base;
+
+  airdropState.landResults  = [];
+  airdropState.landCargoIdx = 0;
+  airdropState.step = 'landtable';
+  airUI();
+}
+
+// ── STEP 5: 공수 강하 손실 테이블 ────────────────────────────
+
+function renderAirdropLandTable() {
+  const activeCargo = airdropState.cargo.filter(c => !c.destroyed);
+  const idx = airdropState.landCargoIdx;
+
+  if (idx >= activeCargo.length) {
+    return renderAirdropLandSummary();
+  }
+
+  const c = activeCargo[idx];
+  const lo = airdropState.landOptions;
+  const drm = airdropState.landDRM;
+  const successMin = airdropState.landSuccessMin;
+  const existing = airdropState.landResults.find(r => r.cargoId === c.id);
+
+  const condDesc = `${lo.friendlyHex ? '아군 지역' : '적지'} · ${lo.terrain === 'clear' ? 'Clear' : 'Closed'} · DRM ${drm >= 0 ? '+' : ''}${drm} · 성공 최솟값 ${successMin}`;
+
+  let diceHtml = '<span class="dice-placeholder">버튼을 눌러 굴리세요</span>';
+  let btnHtml = `<button class="btn btn-primary" onclick="airdropLandRoll(${c.id})">🎲 강하 굴림 (2d6)</button>`;
+
+  if (existing) {
+    const total = existing.dice1 + existing.dice2;
+    const adj   = total + drm;
+    const successBase = adj >= successMin;
+    const success     = successBase && !airdropState.enemyOnHex;
+
+    diceHtml = `
+      <div class="die-wrap">${makeDieFaceHTML(existing.dice1, 'ivory')}<div class="die-val">${existing.dice1}</div></div>
+      <div class="die-wrap">${makeDieFaceHTML(existing.dice2, 'ivory')}<div class="die-val">${existing.dice2}</div></div>
+        <div class="dice-modified-total">
+          ${existing.dice1} + ${existing.dice2}${drm !== 0 ? ` ${drm >= 0 ? '+' : ''}${drm}` : ''} = <strong>${adj}</strong>
+          <div class="drm-line">기준: ${successMin} 이상 = 성공</div>
+        </div>
+      <div style="width:100%;display:flex;flex-direction:column;gap:4px;margin-top:4px;">
+        <div class="df-result-row ${successBase ? 'brt-none' : 'atk-loss'}" style="margin:0;">
+          ${successBase ? '✅ 강하 성공 (기준 충족)' : '❌ 강하 실패'}
+        </div>
+        ${successBase && airdropState.enemyOnHex
+          ? `<div class="df-result-row atk-loss" style="margin:0;">⚔ 목표 헥스에 적 유닛 존재 → 파괴</div>` : ''}
+        <div class="df-result-row ${success ? 'brt-none' : 'atk-loss'}" style="margin:0;font-weight:700;">
+          ${success ? `✅ ${c.name} — 목표 헥스에 배치` : `💀 ${c.name} — 파괴`}
+        </div>
+      </div>`;
+
+    btnHtml = `
+      <button class="btn btn-secondary" onclick="airdropLandReroll(${c.id})">🎲 다시 굴리기</button>
+      <button class="btn btn-primary"   onclick="airdropLandNext()">
+        ${idx + 1 < activeCargo.length ? '다음 화물 ▶' : '결과 요약 ▶'}
+      </button>`;
+  }
+
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">🪂</span> STEP 5 — 강하 손실 테이블 (${idx + 1} / ${activeCargo.length})</div>
+      <div class="df-info-box" style="margin-bottom:10px;">
+        <p>현재 화물: <strong>${c.name}</strong> (${c.type === 'unit' ? '전투 유닛' : '보급품 1T'})</p>
+        <p style="margin-top:4px;font-size:0.78rem;color:var(--ink-faded);">${condDesc}</p>
+      </div>
+      <div class="dice-result-area" style="min-height:60px;">
+        ${diceHtml}
+      </div>
+      <div class="btn-row" style="margin-top:12px;">
+        ${btnHtml}
+      </div>
+    </div>`;
+}
+
+function airdropLandRoll(cargoId) {
+  const d1 = Math.ceil(Math.random() * 6);
+  const d2 = Math.ceil(Math.random() * 6);
+  // 기존 결과 제거 후 추가
+  airdropState.landResults = airdropState.landResults.filter(r => r.cargoId !== cargoId);
+  airdropState.landResults.push({ cargoId, dice1: d1, dice2: d2 });
+  airUI();
+}
+
+function airdropLandReroll(cargoId) {
+  airdropState.landResults = airdropState.landResults.filter(r => r.cargoId !== cargoId);
+  airUI();
+}
+
+function airdropLandNext() {
+  const activeCargo = airdropState.cargo.filter(c => !c.destroyed);
+  const idx = airdropState.landCargoIdx;
+  const c = activeCargo[idx];
+  const res = airdropState.landResults.find(r => r.cargoId === c.id);
+
+  if (res) {
+    const adj = res.dice1 + res.dice2 + airdropState.landDRM;
+    const successBase = adj >= airdropState.landSuccessMin;
+    const success = successBase && !airdropState.enemyOnHex;
+    if (!success) c.destroyed = true;
+  }
+
+  airdropState.landCargoIdx++;
+  airUI();
+}
+
+// 모든 화물 처리 후 결과 요약
+function renderAirdropLandSummary() {
+  const allCargo = airdropState.cargo;
+  const placed   = allCargo.filter(c => !c.destroyed);
+  const destroyed = allCargo.filter(c => c.destroyed);
+
+  const placedRows   = placed.map(c =>
+    `<div class="df-result-row brt-none" style="margin:0 0 4px;">✅ ${c.name} — 목표 헥스에 배치</div>`
+  ).join('');
+  const destroyedRows = destroyed.map(c =>
+    `<div class="df-result-row atk-loss" style="margin:0 0 4px;">💀 ${c.name} — 파괴</div>`
+  ).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span> 강하 결과 요약</div>
+      <div class="df-result-summary" style="margin-bottom:12px;">
+        ${placedRows}
+        ${destroyedRows}
+        ${!placedRows && !destroyedRows ? '<div class="df-result-row" style="margin:0;">화물 없음</div>' : ''}
+      </div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn btn-primary" onclick="airdropGoReturn()">복귀 / 비활성화 ▶</button>
+      </div>
+    </div>`;
+}
+
+function airdropGoReturn() {
+  airdropState.step = 'return';
+  airUI();
+}
+
+// ── STEP 6: 복귀 / 비활성화 ─────────────────────────────────
+
+function renderAirdropReturn() {
+  const units = airdropState.units;
+  const alive = units.filter(u => !u.destroyed);
+  const dead  = units.filter(u => u.destroyed);
+
+  const statusRows = [
+    ...alive.map(u => `<div class="df-result-row brt-none" style="margin:0 0 4px;">${u.name} — 복귀 대기</div>`),
+    ...dead .map(u => `<div class="df-result-row atk-loss" style="margin:0 0 4px;">💀 ${u.name} — 파괴됨</div>`),
+  ];
+
+  return `
+    <div class="card air-manual-step">
+      <div class="air-step-header">
+        <span class="air-step-num">STEP 6</span>
+        <span class="air-step-title">복귀 / 비활성화</span>
+        <span class="air-step-en">Return &amp; Deactivate</span>
+      </div>
+      <div class="df-result-summary" style="margin-bottom:12px;">
+        ${statusRows.join('')}
+      </div>
+      <div class="air-manual-desc">
+        <p>임무에 참가한 모든 항공 유닛을 <strong>아무 항공 기지로 복귀</strong>시키고 <strong>비활성화</strong>하세요.</p>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="backToAirSelect()">임무 완료 ✓</button>
       </div>
     </div>`;
 }
