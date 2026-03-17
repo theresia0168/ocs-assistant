@@ -181,19 +181,22 @@ function selectScenario(id) {
       .then(tableData => {
         scenario.weather.tableData = tableData;
         currentScenario = scenario;
+        // Handler를 먼저 등록한 뒤 UI 초기화
+        const handler = createWeatherHandler(scenario.gameId, tableData, state);
+        setWeatherHandler(handler);
         applyScenarioToState(scenario);
         hideLobby();
       })
       .catch(err => {
         console.warn('날씨 테이블 로드 실패:', tableFile, err);
-        // 실패해도 시나리오는 로드 (날씨 레이블 없이 id 그대로 표시)
         currentScenario = scenario;
+        setWeatherHandler(createWeatherHandler(scenario.gameId, null, state));
         applyScenarioToState(scenario);
         hideLobby();
       });
   } else {
-    // tableFile 없는 시나리오는 바로 로드
     currentScenario = scenario;
+    setWeatherHandler(createWeatherHandler(scenario.gameId, null, state));
     applyScenarioToState(scenario);
     hideLobby();
   }

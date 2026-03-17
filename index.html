@@ -73,12 +73,19 @@
         <div class="phase-banner-name" id="bannerPhaseName">—</div>
         <div class="phase-banner-en"   id="bannerPhaseEn"></div>
       </div>
-      <div class="phase-banner-action" id="phaseActionContent">
-        <p class="phase-action-placeholder">페이즈 행동이 여기에 표시됩니다.</p>
+      <div class="phase-banner-desc" id="phaseDescContent">
+        <p class="phase-banner-desc-text">페이즈를 선택하세요.</p>
       </div>
       <div class="phase-banner-right">
         <button class="btn-banner-nav" onclick="prevPhase()">◀ 이전 단계</button>
         <button class="btn-banner-nav btn-banner-primary" onclick="nextPhase()">다음 단계 ▶</button>
+      </div>
+    </div>
+
+    <!-- ── 페이즈 액션 영역 (굴림 UI가 있는 페이즈만 표시) ── -->
+    <div id="phaseActionArea" style="display:none; margin-bottom:12px;">
+      <div class="card" style="margin-bottom:0;">
+        <div id="phaseActionContent" class="phase-action-body"></div>
       </div>
     </div>
 

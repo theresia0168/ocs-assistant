@@ -271,40 +271,65 @@ function renderPhases() {
 // ============================================================
 
 const PHASE_ACTIONS = {
-  // 날씨 결정 페이즈
   'weather': {
-    title: '날씨 결정 페이즈',
-    en:    'Weather Determination Phase',
-    render(el) { renderWeatherPhaseAction(el); },
-  },
-  // 선 플레이어 결정 페이즈
-  'initiative': {
-    title: '선 플레이어 결정 페이즈',
-    en:    'First Player Determination Phase',
+    desc: '주사위를 굴려 이번 턴의 날씨를 결정합니다.',
     render(el) {
-      el.innerHTML = `
-        <p class="phase-action-desc">주사위를 굴려 선 플레이어를 결정합니다.</p>
-        <div class="phase-action-placeholder">(선 플레이어 결정 UI — 추후 구현)</div>`;
+      const handler = getWeatherHandler();
+      if (handler) handler.renderUI(el);
+      else el.innerHTML = `<p class="phase-action-desc">날씨 핸들러가 로드되지 않았습니다.</p>`;
     },
+  },
+  'initiative': {
+    desc:   '주사위를 굴려 이번 턴의 선 플레이어를 결정합니다.',
+    render: null,  // 추후 구현
   },
 };
 
+// weather Handler 브릿지 — HTML onclick에서 호출
+function weatherHandlerRoll() {
+  const handler = getWeatherHandler();
+  if (handler) {
+    handler.roll();
+    handler.renderUI(document.getElementById('phaseActionContent'));
+  }
+}
+
+function weatherHandlerApply() {
+  const handler = getWeatherHandler();
+  if (handler) {
+    handler.apply();
+    nextPhase();
+  }
+}
+
 function renderPhaseAction() {
-  const el = document.getElementById('phaseActionContent');
-  if (!el) return;
+  const actionArea = document.getElementById('phaseActionArea');
+  const actionEl   = document.getElementById('phaseActionContent');
+  const descEl     = document.getElementById('phaseDescContent');
 
   const cur = FLAT[state.step];
+  const def = cur ? PHASE_ACTIONS[cur.id] : null;
 
-  if (!cur) {
-    el.innerHTML = '<p class="phase-action-desc">이번 턴의 모든 페이즈가 완료되었습니다.</p>';
-    return;
+  // ── 배너 설명 텍스트 갱신 ──
+  if (descEl) {
+    let descText;
+    if (!cur) {
+      descText = '이번 턴의 모든 페이즈가 완료되었습니다.';
+    } else {
+      descText = def?.desc || `${cur.label} 페이즈입니다.`;
+    }
+    descEl.innerHTML = `<p class="phase-banner-desc-text">${descText}</p>`;
   }
 
-  const def = PHASE_ACTIONS[cur.id];
-  if (def) {
-    def.render(el);
+  // ── 액션 영역 갱신 ──
+  if (!actionArea || !actionEl) return;
+
+  if (def?.render) {
+    actionArea.style.display = '';
+    def.render(actionEl);
   } else {
-    el.innerHTML = `<p class="phase-action-desc">${cur.label} 페이즈의 행동을 여기에 표시합니다.</p>`;
+    actionArea.style.display = 'none';
+    actionEl.innerHTML = '';
   }
 }
 
@@ -336,8 +361,10 @@ function updateTurnUI() {
   // 날씨 렌더
   updateWeatherUI();
 
-  renderPhases();
+  // 페이즈 액션 / 설명 렌더
   renderPhaseAction();
+
+  renderPhases();
 }
 
 function updateWeatherUI() {
@@ -432,250 +459,4 @@ function newTurn() {
 }
 function prevPhase() {
   if (state.step > 0) { state.step--; updateTurnUI(); }
-}
-
-// ============================================================
-// 날씨 굴림 (TFB 방식: Ground 1d6 → Flight 2d6)
-// ============================================================
-
-// 현재 날씨 굴림 대기 결과 (적용 전 임시 보관)
-let _weatherPendingResult = null;
-
-// ── 유틸 ──────────────────────────────────────────────────────
-
-// 현재 턴 날짜로 Ground 테이블에서 해당 행 찾기
-function _findGroundRow(tbl) {
-  const m = state.month, d = state.day;
-  return tbl.groundCondition.table.find(row => {
-    const fromOk = (m > row.monthFrom) || (m === row.monthFrom && d >= row.dayFrom);
-    const toOk   = (m < row.monthTo)   || (m === row.monthTo   && d <= row.dayTo);
-    return fromOk && toOk;
-  }) || null;
-}
-
-// results 객체에서 주사위 눈에 해당하는 결과 id 찾기
-// results: { "dry": [1,2], "mud": [3,4,5,6], "freeze": null, ... }
-// "auto"인 항목이 있으면 굴림 없이 그게 결과
-function _resolveResult(results, dieValue) {
-  // auto 먼저 확인
-  for (const [id, val] of Object.entries(results)) {
-    if (val === 'auto') return { id, auto: true };
-  }
-  // 눈 범위 탐색
-  for (const [id, val] of Object.entries(results)) {
-    if (Array.isArray(val) && val.includes(dieValue)) return { id, auto: false };
-  }
-  return null;
-}
-
-// 1d6 굴림
-function _roll1d6() { return Math.floor(Math.random() * 6) + 1; }
-
-// 2d6 굴림
-function _roll2d6() {
-  return [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
-}
-
-// April Mud 3연속 체크
-function _checkAprilMudRule(groundId) {
-  if (state.month !== 4 || groundId !== 'mud') return null;
-  const recent = (state.weatherHistory || []).slice(-2);
-  if (recent.length === 2 && recent.every(h => h.groundCondition === 'mud')) {
-    return 'April Mud 3연속 — 즉시 게임 종료 조건 달성 (룰북 1.8 참조)';
-  }
-  return null;
-}
-
-// ── 주 굴림 함수 ──────────────────────────────────────────────
-
-function weatherRoll() {
-  const tbl = currentScenario?.weather?.tableData;
-  if (!tbl) return;
-
-  const groundRow = _findGroundRow(tbl);
-  if (!groundRow) {
-    alert('현재 날짜에 해당하는 Ground 테이블 행이 없습니다.');
-    return;
-  }
-
-  // ── Ground 굴림 ──
-  let groundDie   = null;
-  let groundAuto  = false;
-  let groundId;
-
-  // auto가 있는 행인지 먼저 확인
-  const autoEntry = Object.entries(groundRow.results).find(([, v]) => v === 'auto');
-  if (autoEntry) {
-    groundId   = autoEntry[0];
-    groundAuto = true;
-  } else {
-    groundDie = _roll1d6();
-    const resolved = _resolveResult(groundRow.results, groundDie);
-    if (!resolved) return; // 이론상 발생 안 함
-    groundId = resolved.id;
-  }
-
-  // ── Flight 굴림 ──
-  const flightRow = tbl.flightCondition.table[groundId];
-  let flightDice  = null;
-  let flightAuto  = false;
-  let flightId;
-
-  const flightAutoEntry = flightRow
-    ? Object.entries(flightRow).find(([, v]) => v === 'auto')
-    : null;
-
-  if (flightAutoEntry) {
-    flightId   = flightAutoEntry[0];
-    flightAuto = true;
-  } else if (flightRow) {
-    flightDice = _roll2d6();
-    const total    = flightDice[0] + flightDice[1];
-    const resolved = _resolveResult(flightRow, total);
-    flightId = resolved?.id || null;
-  }
-
-  // April Mud 특수 규칙 체크
-  const warning = _checkAprilMudRule(groundId);
-
-  // 결과 임시 저장
-  _weatherPendingResult = { groundId, groundDie, groundAuto, flightId, flightDice, flightAuto, warning };
-
-  // UI 갱신
-  renderWeatherPhaseAction(document.getElementById('phaseActionContent'));
-}
-
-// ── 적용 ──────────────────────────────────────────────────────
-
-function weatherApply() {
-  if (!_weatherPendingResult) return;
-  const { groundId, flightId } = _weatherPendingResult;
-
-  // state 슬롯 갱신
-  state.weatherSlots = state.weatherSlots.map(slot => {
-    if (slot.key === 'groundCondition') return { ...slot, stateId: groundId };
-    if (slot.key === 'flightCondition') return { ...slot, stateId: flightId };
-    return slot;
-  });
-
-  // 히스토리 기록
-  if (!state.weatherHistory) state.weatherHistory = [];
-  state.weatherHistory.push({
-    year:  state.year, month: state.month, day: state.day,
-    groundCondition: groundId,
-    flightCondition: flightId,
-  });
-
-  _weatherPendingResult = null;
-  updateWeatherUI();
-  renderWeatherPhaseAction(document.getElementById('phaseActionContent'));
-}
-
-// ── 렌더 ──────────────────────────────────────────────────────
-
-function renderWeatherPhaseAction(el) {
-  if (!el) return;
-  const tbl = currentScenario?.weather?.tableData;
-
-  if (!tbl) {
-    el.innerHTML = `<p class="phase-action-desc">이 시나리오는 날씨 테이블이 없습니다.</p>`;
-    return;
-  }
-
-  const pending = _weatherPendingResult;
-  const groundLabels  = state.weatherLabels['groundCondition'] || {};
-  const flightLabels  = state.weatherLabels['flightCondition'] || {};
-
-  // 현재 적용된 날씨
-  const curGround = state.weatherSlots.find(s => s.key === 'groundCondition')?.stateId;
-  const curFlight = state.weatherSlots.find(s => s.key === 'flightCondition')?.stateId;
-  const curGroundLabel = groundLabels[curGround] || curGround || '—';
-  const curFlightLabel = flightLabels[curFlight] || curFlight || '—';
-
-  let html = `<p class="phase-action-desc">주사위를 굴려 이번 턴의 날씨를 결정합니다.</p>`;
-
-  // 현재 날씨 표시
-  html += `
-    <div class="weather-current-row">
-      <span class="weather-current-label">현재 날씨</span>
-      <span class="weather-current-value">${curGroundLabel} — ${curFlightLabel}</span>
-    </div>`;
-
-  if (!pending) {
-    // 굴림 전
-    html += `
-      <button class="dice-roll-btn combat-btn weather-main-btn" onclick="weatherRoll()">
-        <span class="roll-label">날씨 굴림</span>
-        <span class="roll-formula">Ground 1d6 → Flight 2d6</span>
-      </button>`;
-  } else {
-    // 굴림 후 결과 표시
-    const nextGroundLabel = groundLabels[pending.groundId] || pending.groundId || '—';
-    const nextFlightLabel = flightLabels[pending.flightId] || pending.flightId || '—';
-
-    // Ground 주사위 렌더
-    let groundDiceHtml;
-    if (pending.groundAuto) {
-      groundDiceHtml = `<span class="weather-auto-badge">AUTO</span>`;
-    } else {
-      groundDiceHtml = `
-        <div class="die-wrap">
-          ${makeDieFaceHTML(pending.groundDie, 'ivory')}
-          <div class="die-val">${pending.groundDie}</div>
-        </div>`;
-    }
-
-    // Flight 주사위 렌더
-    let flightDiceHtml;
-    if (pending.flightAuto) {
-      flightDiceHtml = `<span class="weather-auto-badge">AUTO</span>`;
-    } else if (pending.flightDice) {
-      const total = pending.flightDice[0] + pending.flightDice[1];
-      flightDiceHtml = `
-        <div class="die-wrap">
-          ${makeDieFaceHTML(pending.flightDice[0], 'ivory')}
-          <div class="die-val">${pending.flightDice[0]}</div>
-        </div>
-        <div class="die-wrap">
-          ${makeDieFaceHTML(pending.flightDice[1], 'ivory')}
-          <div class="die-val">${pending.flightDice[1]}</div>
-        </div>
-        <div class="dice-total">${total}<small>합계</small></div>`;
-    }
-
-    html += `
-      <div class="weather-roll-result-block">
-
-        <div class="weather-roll-section">
-          <div class="weather-roll-section-label">지면 상황 (1d6)</div>
-          <div class="weather-roll-dice-row">
-            <div class="dice-result-area weather-dice-area">${groundDiceHtml}</div>
-            <div class="weather-roll-arrow">→</div>
-            <div class="weather-roll-next-state">${nextGroundLabel}</div>
-          </div>
-        </div>
-
-        <div class="weather-roll-section">
-          <div class="weather-roll-section-label">비행 상황 (2d6)</div>
-          <div class="weather-roll-dice-row">
-            <div class="dice-result-area weather-dice-area">${flightDiceHtml}</div>
-            <div class="weather-roll-arrow">→</div>
-            <div class="weather-roll-next-state">${nextFlightLabel}</div>
-          </div>
-        </div>
-
-        ${pending.warning ? `
-          <div class="weather-warning">
-            ⚠ ${pending.warning}
-          </div>` : ''}
-
-        <div class="weather-apply-row">
-          <button class="dice-roll-btn combat-btn" style="flex:1;" onclick="weatherRoll()">다시 굴리기</button>
-          <button class="btn btn-primary weather-apply-btn" onclick="weatherApply()">적용 ▶</button>
-        </div>
-
-      </div>`;
-  }
-
-  el.innerHTML = html;
 }

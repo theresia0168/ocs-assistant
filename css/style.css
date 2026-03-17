@@ -566,29 +566,20 @@ nav button.active::before { opacity: 1; }
 .btn-banner-primary    { background: rgba(255,255,255,0.15); color: var(--paper); border-color: var(--paper); }
 .btn-banner-primary:hover { background: rgba(255,255,255,0.25); }
 
-.phase-banner-action {
+.phase-banner-desc {
   flex: 1;
   min-width: 0;
   padding: 0 16px;
   border-left: 1px solid rgba(255,255,255,0.15);
   border-right: 1px solid rgba(255,255,255,0.15);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
+  align-items: center;
 }
-.phase-banner-action .phase-action-desc {
+.phase-banner-desc-text {
   color: var(--paper-dark);
   margin: 0;
   font-size: 0.8rem;
   line-height: 1.5;
-}
-.phase-banner-action .phase-action-placeholder {
-  color: rgba(255,255,255,0.3);
-  border-color: rgba(255,255,255,0.2);
-  font-size: 0.75rem;
-  padding: 8px;
-  text-align: center;
 }
 
 /* ============================================================
@@ -729,6 +720,383 @@ nav button.active::before { opacity: 1; }
 .weather-apply-btn {
   flex-shrink: 0;
   padding: 8px 16px;
+}
+
+/* ============================================================
+   날씨 패널 (개선 버전)
+============================================================ */
+.weather-panel {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.weather-panel-left {
+  flex: 1;
+  min-width: 0;
+}
+.weather-panel-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 80px;
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+.weather-tbl-section {
+  padding: 6px 8px;
+  background: var(--paper-dark);
+  border: 1px solid var(--border);
+}
+.weather-tbl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.weather-tbl-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.weather-tbl-period {
+  font-size: 0.62rem;
+  color: var(--khaki);
+  font-weight: 700;
+}
+.weather-tbl-entries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.wtbl-entry {
+  font-size: 0.72rem;
+  color: var(--ink);
+  background: rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+.wtbl-range {
+  font-weight: 900;
+  color: var(--ink);
+  margin-left: 3px;
+}
+.wtbl-auto {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--ink);
+  background: var(--khaki);
+  border: 1px solid var(--ink);
+  padding: 2px 6px;
+}
+.weather-cur-block {
+  text-align: center;
+}
+.weather-cur-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 4px;
+}
+.weather-cur-value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.weather-roll-compact-btn {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+/* 굴림 결과 블록 */
+.weather-result-block {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.weather-result-row {
+  display: flex;
+  gap: 12px;
+}
+.weather-result-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper-dark);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  min-width: 0;
+}
+.weather-result-dice {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.weather-result-arrow {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--khaki);
+  flex-shrink: 0;
+}
+.weather-result-next {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: var(--ink);
+  flex: 1;
+  text-align: center;
+}
+
+/* ============================================================
+   날씨 막대 테이블
+============================================================ */
+.wbar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.wbar-cells {
+  display: flex;
+  gap: 2px;
+}
+.wbar-cell {
+  flex: 1;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 4px 0;
+  border-radius: 2px;
+  min-width: 0;
+  line-height: 1;
+}
+.wbar-labels {
+  display: flex;
+  margin-top: 3px;
+  gap: 2px;
+}
+.wbar-label-cell {
+  flex: 1;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  letter-spacing: 0.3px;
+}/* ============================================================
+   날씨 굴림 UI
+============================================================ */
+.weather-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 상단 바 */
+.weather-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.weather-top-current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.weather-top-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  flex-shrink: 0;
+}
+.weather-top-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.weather-top-btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.weather-reroll-btn {
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.weather-apply-btn2 {
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+/* 중단 결과 영역 */
+.weather-result-cols {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0 12px;
+  align-items: stretch;
+}
+.weather-result-col-divider {
+  background: var(--border);
+}
+.weather-result-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.weather-result-col-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.weather-result-col-area {
+  min-height: 72px;
+  background: rgba(0,0,0,0.05);
+  border: 1px dashed var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 8px;
+  gap: 6px;
+}
+.weather-result-col-area > .weather-dice-half {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-right: 1px solid var(--border);
+  padding: 4px 12px 4px 4px;
+  height: 100%;
+}
+.weather-result-col-area > .weather-name-half {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 결과 텍스트 */
+.weather-result-arrow {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--khaki);
+  flex-shrink: 0;
+}
+.weather-result-next {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--ink);
+  text-align: center;
+  width: 100%;
+}
+
+/* AUTO 뱃지 */
+.weather-auto-badge {
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: var(--khaki);
+  color: var(--ink);
+  padding: 3px 8px;
+  border: 1px solid var(--ink);
+}
+
+/* 경고 */
+.weather-warning {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--red-stamp);
+  border: 2px solid var(--red-stamp);
+  padding: 8px 10px;
+  background: rgba(139,26,26,0.06);
+}
+
+/* 하단 테이블 섹션 */
+.weather-tbl-section {
+  padding: 6px 8px;
+  background: var(--paper-dark);
+  border: 1px solid var(--border);
+}
+.weather-tbl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.weather-tbl-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.weather-tbl-period {
+  font-size: 0.62rem;
+  color: var(--khaki);
+  font-weight: 700;
+}
+
+/* 막대 테이블 */
+.wbar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.wbar-cells {
+  display: flex;
+  gap: 2px;
+}
+.wbar-cell {
+  flex: 1;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 4px 0;
+  border-radius: 2px;
+  min-width: 0;
+  line-height: 1;
+}
+.wbar-labels {
+  display: flex;
+  margin-top: 3px;
+  gap: 2px;
+}
+.wbar-label-cell {
+  flex: 1;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  letter-spacing: 0.3px;
 }
 
 /* ============================================================
