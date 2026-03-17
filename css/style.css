@@ -1319,6 +1319,41 @@ nav button.active::before { opacity: 1; }
 }
 
 /* ============================================================
+   항공 정비 페이즈 UI
+============================================================ */
+.air-refit-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.air-refit-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.air-refit-section-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+.air-refit-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.air-refit-list li {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* ============================================================
    주사위
 ============================================================ */
 .dice-section  { margin-top: 4px; }

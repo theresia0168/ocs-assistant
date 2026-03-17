@@ -305,6 +305,9 @@ const PHASE_ACTIONS = {
       renderInitiativeUI(el);
     },
   },
+
+  'f_air': { desc: '비활성 항공 유닛을 정비합니다.', render(el) { renderAirRefitUI(el); } },
+  's_air': { desc: '비활성 항공 유닛을 정비합니다.', render(el) { renderAirRefitUI(el); } },
 };
 
 // weather Handler 브릿지 — HTML onclick에서 호출
@@ -495,4 +498,39 @@ function newTurn() {
 }
 function prevPhase() {
   if (state.step > 0) { state.step--; updateTurnUI(); }
+}
+
+// ============================================================
+// 항공 정비 페이즈 UI
+// ============================================================
+function renderAirRefitUI(el) {
+  el.innerHTML = `
+    <div class="air-refit-ui">
+
+      <div class="air-refit-section">
+        <div class="air-refit-section-title">✈ 수행 가능한 행동</div>
+        <ul class="air-refit-list">
+          <li><strong>비활성(Inactive)</strong> 항공 유닛을 정비하여 <strong>활성(Active)</strong> 상태로 전환합니다.</li>
+          <li>항공 유닛 정비를 수행하는 <strong>항공 기지(Air Base)마다 1T</strong>를 지불합니다.</li>
+          <li>지불한 기지에서 <strong>항공 기지 레벨당 항공 유닛 최대 2기</strong>까지 정비할 수 있습니다. (항공 기지 레벨 * 2)</li>
+        </ul>
+      </div>
+
+      <div class="air-refit-section">
+        <div class="air-refit-section-title">⚠ 주의사항</div>
+        <ul class="air-refit-list">
+          <li>상쇄되지 않은 적 ZOC 내의 항공 기지에서는 항공 유닛 정비를 수행 할 수 없습니다.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+let _airRefitLevel = 1;
+function airRefitCalcStep(delta) {
+  _airRefitLevel = Math.max(1, Math.min(9, _airRefitLevel + delta));
+  const lvlEl = document.getElementById('airRefitLevel');
+  const maxEl = document.getElementById('airRefitMax');
+  if (lvlEl) lvlEl.textContent = _airRefitLevel;
+  if (maxEl) maxEl.textContent = _airRefitLevel * 2;
 }
