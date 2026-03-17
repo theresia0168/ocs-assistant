@@ -1100,6 +1100,225 @@ nav button.active::before { opacity: 1; }
 }
 
 /* ============================================================
+   선 플레이어 결정 (Initiative) UI
+============================================================ */
+.initiative-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 동점 / 승자 안내 */
+.initiative-notice {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.initiative-notice-tie {
+  color: var(--red-stamp);
+  border: 2px solid var(--red-stamp);
+  background: rgba(139,26,26,0.06);
+}
+.initiative-notice-winner {
+  color: var(--ink);
+  border: 2px solid var(--khaki);
+  background: rgba(180,150,60,0.08);
+}
+.initiative-reroll-all-btn {
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+
+/* 굴림 단계: 2열 레이아웃 */
+.initiative-roll-cols {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0 16px;
+  align-items: stretch;
+}
+.initiative-col-divider {
+  background: var(--border);
+  align-self: stretch;
+}
+.initiative-roll-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+.initiative-col-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.initiative-dice-area {
+  min-height: 72px;
+  width: 100%;
+  background: rgba(0,0,0,0.05);
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+.initiative-dice-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.initiative-dice-winner .dice-total {
+  color: var(--khaki);
+}
+.initiative-roll-btn {
+  width: 100%;
+  font-size: 0.82rem;
+}
+
+/* "선후 결정하기" / "다음 페이즈" 진행 버튼 행 */
+.initiative-proceed-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border);
+}
+.initiative-proceed-btn {
+  min-width: 160px;
+  font-size: 0.88rem;
+  padding: 9px 20px;
+}
+
+/* 선후 선택 단계: 결과 요약 */
+.initiative-result-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.initiative-summary-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.initiative-summary-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.initiative-summary-total {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1;
+}
+.initiative-winner-total {
+  color: var(--khaki);
+}
+.initiative-summary-vs {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--ink-faded);
+  align-self: center;
+}
+
+/* 선후 선택 패널 */
+.initiative-choose-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+.initiative-choose-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+}
+.initiative-choose-winner {
+  color: var(--khaki);
+  font-weight: 900;
+}
+.initiative-choose-subtitle {
+  font-size: 0.72rem;
+  color: var(--ink-faded);
+  text-align: center;
+}
+.initiative-choose-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+.initiative-choose-btn {
+  min-width: 130px;
+  font-size: 0.88rem;
+  padding: 10px 18px;
+}
+
+/* 결과 확인 단계 */
+.initiative-final-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+.initiative-final-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 2px;
+}
+.initiative-final-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--paper-dark);
+}
+.initiative-final-badge {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border: 2px solid;
+  flex-shrink: 0;
+  min-width: 44px;
+  text-align: center;
+}
+.initiative-badge-first {
+  color: var(--ink);
+  border-color: var(--khaki);
+  background: rgba(180,150,60,0.12);
+}
+.initiative-badge-second {
+  color: var(--ink-faded);
+  border-color: var(--border);
+  background: transparent;
+}
+.initiative-final-side-label {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* ============================================================
    주사위
 ============================================================ */
 .dice-section  { margin-top: 4px; }

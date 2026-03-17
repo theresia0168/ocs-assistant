@@ -109,10 +109,30 @@ function getPlayerForStep(stepIdx) {
 }
 
 // 플레이어 턴 레이블 — 플레이어 페이즈에 진입했을 때만 반환
+// state.firstPlayer 가 설정된 경우 진영명을 괄호 안에 표시
 function getPlayerLabel(stepIdx) {
   const p = getPlayerForStep(stepIdx);
-  if (p === 'first')  return '선 플레이어 턴';
-  if (p === 'second') return '후 플레이어 턴';
+  if (!p) return null;
+
+  // 진영명 조회 헬퍼
+  function _sideLabel(sideKey) {
+    if (!sideKey || !currentScenario?.sides) return null;
+    const side = currentScenario.sides[sideKey];
+    return side?.label || side?.en || null;
+  }
+
+  const firstKey  = state.firstPlayer;                                        // 선 플레이어 진영 key
+  const sides     = currentScenario?.sides ? Object.keys(currentScenario.sides) : [];
+  const secondKey = sides.find(k => k !== firstKey) ?? null;                  // 후 플레이어 진영 key
+
+  if (p === 'first') {
+    const label = firstKey ? _sideLabel(firstKey) : null;
+    return label ? `선 플레이어(${label}) 턴` : '선 플레이어 턴';
+  }
+  if (p === 'second') {
+    const label = secondKey ? _sideLabel(secondKey) : null;
+    return label ? `후 플레이어(${label}) 턴` : '후 플레이어 턴';
+  }
   return null;
 }
 
@@ -280,8 +300,10 @@ const PHASE_ACTIONS = {
     },
   },
   'initiative': {
-    desc:   '주사위를 굴려 이번 턴의 선 플레이어를 결정합니다.',
-    render: null,  // 추후 구현
+    desc: '주사위를 굴려 이번 턴의 선 플레이어를 결정합니다.',
+    render(el) {
+      renderInitiativeUI(el);
+    },
   },
 };
 
@@ -316,7 +338,7 @@ function renderPhaseAction() {
     if (!cur) {
       descText = '이번 턴의 모든 페이즈가 완료되었습니다.';
     } else {
-      descText = def?.desc || `${cur.label} 페이즈입니다.`;
+      descText = def?.desc || `${cur.label} 입니다.`;
     }
     descEl.innerHTML = `<p class="phase-banner-desc-text">${descText}</p>`;
   }
@@ -360,6 +382,20 @@ function updateTurnUI() {
 
   // 날씨 렌더
   updateWeatherUI();
+
+  // initiative 페이즈 진입 시 굴림 상태 초기화
+  // (이미 choose/result 단계라면 초기화 안 함 — 뒤로 갔다 오는 경우 등)
+  if (FLAT[state.step]?.id === 'initiative') {
+    if (typeof initiativeReset === 'function' &&
+        _initiativeState.phase === 'roll' &&
+        Object.keys(_initiativeState.rolls).length === 0) {
+      // 이미 깨끗한 상태면 아무것도 안 함 (중복 초기화 방지)
+    } else if (typeof initiativeReset === 'function' &&
+               _initiativeState.phase !== 'choose' &&
+               _initiativeState.phase !== 'result') {
+      initiativeReset();
+    }
+  }
 
   // 페이즈 액션 / 설명 렌더
   renderPhaseAction();

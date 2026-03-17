@@ -32,7 +32,7 @@
 
   "sides": {
     "soviet": {
-      "label": "소련군",
+      "label": "소련",
       "en": "Soviet",
       "resources": {
         "railCapacity":         9,
@@ -51,7 +51,7 @@
       }
     },
     "axis": {
-      "label": "추축군",
+      "label": "추축국",
       "en": "Axis",
       "resources": {
         "railCapacity":   10,
