@@ -636,6 +636,102 @@ nav button.active::before { opacity: 1; }
 #phaseList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 /* ============================================================
+   날씨 굴림 블록
+============================================================ */
+.weather-current-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--border);
+}
+.weather-current-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.weather-current-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.weather-main-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+.weather-roll-result-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+.weather-roll-section {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  background: var(--paper-dark);
+}
+.weather-roll-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-bottom: 8px;
+}
+.weather-roll-dice-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.weather-dice-area {
+  flex: 1;
+  min-height: 56px;
+}
+.weather-roll-arrow {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--khaki);
+  flex-shrink: 0;
+}
+.weather-roll-next-state {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--ink);
+  min-width: 60px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.weather-auto-badge {
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: var(--khaki);
+  color: var(--ink);
+  padding: 3px 8px;
+  border: 1px solid var(--ink);
+}
+.weather-warning {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--red-stamp);
+  border: 2px solid var(--red-stamp);
+  padding: 8px 10px;
+  background: rgba(139,26,26,0.06);
+}
+.weather-apply-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+.weather-apply-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+}
+
+/* ============================================================
    주사위
 ============================================================ */
 .dice-section  { margin-top: 4px; }

@@ -108,13 +108,9 @@
           <span class="info-label">마지막 턴</span>
           <span class="info-value info-value-end" id="endTurnDate"></span>
         </div>
-        <div class="info-row" id="rowWeatherAir" style="display:none;">
-          <span class="info-label">날씨 (기상)</span>
-          <span class="info-value weather-value">—</span>
-        </div>
-        <div class="info-row" id="rowWeatherGround" style="display:none;">
-          <span class="info-label">날씨 (지면)</span>
-          <span class="info-value weather-value">—</span>
+        <div class="info-row" id="rowWeather" style="display:none;">
+          <span class="info-label">날씨</span>
+          <span class="info-value weather-value" id="weatherValue">—</span>
         </div>
         <div class="turn-progress-block" id="turnProgressBlock" style="display:none;">
           <div class="turn-progress-label-row">
@@ -385,6 +381,9 @@
 </div><!-- /page-wrap -->
 </div><!-- /mainApp -->
 
+<script src="js/weather/weather-core.js"></script>
+<script src="js/weather/weather-dummy.js"></script>
+<script src="js/weather/weather-022.js"></script>
 <script src="js/turn.js"></script>
 <script src="js/dice.js"></script>
 <script src="js/combat.js"></script>

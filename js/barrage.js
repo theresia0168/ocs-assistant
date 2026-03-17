@@ -386,3 +386,46 @@ function rollFacility() {
   tag.textContent = '시설 포격/폭격 굴림';
   tag.className   = 'dice-result-tag combat';
 }
+
+// ============================================================
+// 대상 조건 UI 초기화
+// ============================================================
+
+function initBarrage() {
+  // 밀집도 버튼
+  const densityEl = document.getElementById('densityBtns');
+  if (densityEl) {
+    densityEl.innerHTML = Object.entries(DENSITY_LABEL).map(([val, label]) => `
+      <button class="density-btn${val === barrageDensity ? ' active' : ''}"
+              onclick="setDensity('${val}', this)">${label}</button>
+    `).join('');
+  }
+
+  // Hedgehog 버튼
+  const fortEl = document.getElementById('barrFortBtns');
+  if (fortEl) {
+    fortEl.innerHTML = [0,1,2,3,4].map(v => `
+      <button class="fort-btn barrage-fort-btn${barrageFort === v ? ' active' : ''}"
+              onclick="setBarrageFort(${v}, this)">${v === 0 ? '없음' : v}</button>
+    `).join('');
+  }
+
+  // 컬럼 시프트 체크리스트
+  const checkEl = document.getElementById('barrageChecklist');
+  if (checkEl) {
+    checkEl.innerHTML = CHECKLIST.map((item, i) => {
+      const shiftCls = item.shift > 0 ? 'bcl-R' : 'bcl-L';
+      const isOptional = item.desc.includes('옵션');
+      const isNoObs = item.shift === -3;
+      const itemCls = isOptional ? 'bcl-item bcl-optional' : isNoObs ? 'bcl-item bcl-no-obs-item' : 'bcl-item';
+      return `
+        <label class="${itemCls}">
+          <input type="checkbox" onchange="calcBarrage()">
+          <span class="bcl-shift ${shiftCls}">${item.shift > 0 ? '+' : ''}${item.shift}</span>
+          <span class="bcl-desc">${item.desc}</span>
+        </label>`;
+    }).join('');
+  }
+
+  calcBarrage();
+}

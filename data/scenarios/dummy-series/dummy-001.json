@@ -10,8 +10,9 @@
     "month": 6,
     "day": 6,
     "firstPlayer": "axis",
-    "phase": "weather",
-    "note": "phase, note는 특수 지시가 없을 경우 생략 가능. phase는 turn.js FLAT 배열의 step id 사용."
+    "startPlayer": "second",
+    "phase": "reinf",
+    "note": "phase: 페이즈 이름만 명시 (prefix 없이). 예: weather, supply, combat, move 등. 생략 시 weather(턴 맨 처음)로 시작. startPlayer: first 또는 second, 생략 시 first 기본값."
   },
 
   "endTurn": {
@@ -22,7 +23,7 @@
   },
 
   "weather": {
-    "tableFile": "weather-tables/dummy-weather.json",
+    "tableFile": "data/weather-tables/dummy-weather.json",
     "initial": {
       "air": "clear",
       "ground": "dry"

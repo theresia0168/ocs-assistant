@@ -16,7 +16,10 @@ let lobbyIsCustomMode = false; // 커스텀 시나리오 추가 모드 여부
 // ============================================================
 
 const SCENARIO_INDEX = [
+  // 더미 시나리오
   'data/scenarios/dummy-series/dummy-001.json',
+  // The Forgotten Battles
+  'data/scenarios/022/022-001.json',
 ];
 
 // ============================================================
@@ -169,20 +172,43 @@ function backToGameSelect() {
 function selectScenario(id) {
   const scenario = _getAllScenarios().find(s => s.id === id);
   if (!scenario) return;
-  currentScenario = scenario;
-  applyScenarioToState(scenario);
-  hideLobby();
+
+  const tableFile = scenario.weather?.tableFile;
+
+  if (tableFile) {
+    fetch(`data/${tableFile}`)
+      .then(r => r.json())
+      .then(tableData => {
+        scenario.weather.tableData = tableData;
+        currentScenario = scenario;
+        applyScenarioToState(scenario);
+        hideLobby();
+      })
+      .catch(err => {
+        console.warn('날씨 테이블 로드 실패:', tableFile, err);
+        // 실패해도 시나리오는 로드 (날씨 레이블 없이 id 그대로 표시)
+        currentScenario = scenario;
+        applyScenarioToState(scenario);
+        hideLobby();
+      });
+  } else {
+    // tableFile 없는 시나리오는 바로 로드
+    currentScenario = scenario;
+    applyScenarioToState(scenario);
+    hideLobby();
+  }
 }
 
-function applyScenarioToState(scenario) {
+async function applyScenarioToState(scenario) {
   const st = scenario.startTurn;
   const en = scenario.endTurn;
 
-  state.year      = st.year;
-  state.month     = st.month;
-  state.day       = st.day;
-  state.step      = resolveStartStep(st);
-  state.collapsed = {};
+  state.year        = st.year;
+  state.month       = st.month;
+  state.day         = st.day;
+  state.step        = resolveStartStep(st);
+  state.firstPlayer = st.firstPlayer || null;
+  state.collapsed   = {};
 
   // 종료 턴 정보 저장
   state.endYear   = en.year;
@@ -200,25 +226,37 @@ function applyScenarioToState(scenario) {
   if (seriesEl) seriesEl.textContent = scenario.series || '—';
 
   // 진행도 블록 표시
-const progressBlock = document.getElementById('turnProgressBlock');
+  const progressBlock = document.getElementById('turnProgressBlock');
   if (progressBlock) progressBlock.style.display = '';
 
   // 날씨 초기화
   const w = scenario.weather;
   if (w && w.initial) {
-    state.weatherEnabled  = true;
-    state.weatherSeparated = !!(w.separated ?? (w.initial.ground !== undefined));
-    state.weatherAir      = w.initial.air    ?? null;
-    state.weatherGround   = w.initial.ground ?? null;
-    // 날씨 테이블 레이블 맵 구성 (표시용)
-    state.weatherAirLabels    = {};
-    state.weatherGroundLabels = {};
-    if (w.tableData) {
-      (w.tableData.airWeather?.states    || []).forEach(s => { state.weatherAirLabels[s.id]    = s.label; });
-      (w.tableData.groundWeather?.states || []).forEach(s => { state.weatherGroundLabels[s.id] = s.label; });
-    }
+    state.weatherEnabled = true;
+    state.weatherSlots   = [];
+    state.weatherLabels  = {};
+
+    const tbl = w.tableData || null;
+
+    // displayOrder가 있으면 그 순서대로 슬롯 구성
+    // 없으면 initial의 키 순서대로 fallback
+    const order = tbl?.displayOrder || Object.keys(w.initial);
+
+    order.forEach(key => {
+      const stateId = w.initial[key] ?? null;
+      state.weatherSlots.push({ key, stateId });
+
+      // tableData[key]로 직접 섹션 접근
+      const section = tbl?.[key];
+      state.weatherLabels[key] = {};
+      if (section?.states) {
+        section.states.forEach(s => { state.weatherLabels[key][s.id] = s.label; });
+      }
+    });
   } else {
     state.weatherEnabled = false;
+    state.weatherSlots   = [];
+    state.weatherLabels  = {};
   }
 
   updateTurnUI();
@@ -226,13 +264,25 @@ const progressBlock = document.getElementById('turnProgressBlock');
 
 // startTurn.phase 값으로 FLAT 인덱스 결정
 function resolveStartStep(startTurn) {
-  if (!startTurn.phase || startTurn.phase === 'weather') return 0;
+  const phase       = startTurn.phase || 'weather';
+  const startPlayer = startTurn.startPlayer || 'first'; // 기본값 first
 
+  // weather / initiative 는 선/후 구분 없는 solo 단계 → 그대로 id 매칭
+  if (phase === 'weather' || phase === 'initiative') {
+    const idx = FLAT.findIndex(s => s.id === phase);
+    return idx >= 0 ? idx : 0;
+  }
+
+  // 플레이어 단계: startPlayer에 따라 prefix 결정
+  const prefix = startPlayer === 'second' ? 's' : 'f';
+
+  // 페이즈 진입점(isStep=false) 우선 탐색, 없으면 첫 번째 하위 step
   const idx = FLAT.findIndex(s => {
-    // step id 직접 매칭
-    if (s.id && s.id === startTurn.phase) return true;
-    // groupId 매칭 (플레이어 그룹 진입점)
-    if (s.groupId === startTurn.phase && !s.isStep) return true;
+    const targetId = `${prefix}_${phase}`;
+    if (s.id === targetId) return true;                       // 페이즈 자체 id 직접 매칭
+    if (s.groupId === `${prefix === 'f' ? 'first' : 'second'}` // 그룹 소속 확인
+        && s.phaseLabel                                       // 하위 step인 경우
+        && s.id.startsWith(targetId)) return true;
     return false;
   });
   return idx >= 0 ? idx : 0;

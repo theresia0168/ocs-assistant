@@ -1,0 +1,200 @@
+{
+  "id": "022-weather",
+  "gameId": "022",
+  "series": "The Forgotten Battles",
+  "description": "The Forgotten Battles Weather Table (1.8). Ground: 1d6, Flight: 2d6.",
+
+  "groundCondition": {
+    "label": "지면 상황",
+    "en": "Ground Condition",
+    "dice": "1d6",
+    "rowKeyType": "dateRange",
+    "states": [
+      { "id": "dry",         "label": "건조",     "en": "Dry"         },
+      { "id": "mud",         "label": "진창",     "en": "Mud"         },
+      { "id": "freeze",      "label": "결빙",     "en": "Freeze"      },
+      { "id": "deep-freeze", "label": "강결빙",   "en": "Deep Freeze" }
+    ],
+    "table": [
+      {
+        "id": "through-oct1",
+        "label": "10월 1일까지",
+        "en": "Through October 1",
+        "monthFrom": 1, "dayFrom": 1,
+        "monthTo": 10,  "dayTo": 1,
+        "results": {
+          "dry":         "auto",
+          "mud":         null,
+          "freeze":      null,
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "oct5-15",
+        "label": "10월 5~15일",
+        "en": "October 5-15",
+        "monthFrom": 10, "dayFrom": 5,
+        "monthTo":   10, "dayTo":   15,
+        "results": {
+          "dry":         [1, 2],
+          "mud":         [3, 4, 5, 6],
+          "freeze":      null,
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "oct19-29",
+        "label": "10월 19~29일",
+        "en": "October 19-29",
+        "monthFrom": 10, "dayFrom": 19,
+        "monthTo":   10, "dayTo":   29,
+        "results": {
+          "dry":         [1],
+          "mud":         [2, 3, 4, 5, 6],
+          "freeze":      null,
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "nov1-12",
+        "label": "11월 1~12일",
+        "en": "November 1-12",
+        "monthFrom": 11, "dayFrom": 1,
+        "monthTo":   11, "dayTo":   12,
+        "results": {
+          "dry":         [1, 2, 3, 4],
+          "mud":         null,
+          "freeze":      [5, 6],
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "nov15-29",
+        "label": "11월 15~29일",
+        "en": "November 15-29",
+        "monthFrom": 11, "dayFrom": 15,
+        "monthTo":   11, "dayTo":   29,
+        "results": {
+          "dry":         [1, 2],
+          "mud":         null,
+          "freeze":      [3, 4, 5, 6],
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "december",
+        "label": "12월",
+        "en": "December",
+        "monthFrom": 12, "dayFrom": 1,
+        "monthTo":   12, "dayTo":   31,
+        "results": {
+          "dry":         null,
+          "mud":         null,
+          "freeze":      "auto",
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "january",
+        "label": "1월",
+        "en": "January",
+        "monthFrom": 1, "dayFrom": 1,
+        "monthTo":   1, "dayTo":   31,
+        "results": {
+          "dry":         null,
+          "mud":         null,
+          "freeze":      [1, 2, 3, 4, 5],
+          "deep-freeze": [6]
+        }
+      },
+      {
+        "id": "february",
+        "label": "2월",
+        "en": "February",
+        "monthFrom": 2, "dayFrom": 1,
+        "monthTo":   2, "dayTo":   28,
+        "results": {
+          "dry":         null,
+          "mud":         null,
+          "freeze":      [1, 2, 3, 4, 5],
+          "deep-freeze": [6]
+        }
+      },
+      {
+        "id": "march",
+        "label": "3월",
+        "en": "March",
+        "monthFrom": 3, "dayFrom": 1,
+        "monthTo":   3, "dayTo":   31,
+        "results": {
+          "dry":         null,
+          "mud":         [1, 2, 3],
+          "freeze":      [4, 5, 6],
+          "deep-freeze": null
+        }
+      },
+      {
+        "id": "april",
+        "label": "4월",
+        "en": "April",
+        "monthFrom": 4, "dayFrom": 1,
+        "monthTo":   4, "dayTo":   30,
+        "results": {
+          "dry":         [1, 2],
+          "mud":         [3, 4, 5, 6],
+          "freeze":      null,
+          "deep-freeze": null
+        },
+        "specialRules": [
+          {
+            "id": "april-mud-consecutive",
+            "trigger": "consecutive",
+            "state": "mud",
+            "count": 3,
+            "effect": "game-end",
+            "note": "4월 중 Mud가 3턴 연속으로 결정되면 즉시 게임 종료."
+          }
+        ]
+      }
+    ]
+  },
+
+  "flightCondition": {
+    "label": "비행 상황",
+    "en": "Flight Condition",
+    "dice": "2d6",
+    "rowKeyType": "groundCondition",
+    "note": "Ground Condition 결정 후 이어서 굴림. Deep Freeze는 자동으로 No Flight.",
+    "states": [
+      { "id": "full-flight",    "label": "비행 가능", "en": "Full Flight"    },
+      { "id": "limited-flight", "label": "제한 비행",      "en": "Limited Flight" },
+      { "id": "no-flight",      "label": "비행 불가",      "en": "No Flight"      }
+    ],
+    "table": {
+      "dry": {
+        "full-flight":    [2,3,4,5,6,7,8,9],
+        "limited-flight": [10,11],
+        "no-flight":      [12]
+      },
+      "mud": {
+        "full-flight":    [2,3,4,5,6],
+        "limited-flight": [7,8,9],
+        "no-flight":      [10,11,12]
+      },
+      "freeze": {
+        "full-flight":    [2,3,4],
+        "limited-flight": [5,6,7,8],
+        "no-flight":      [9,10,11,12]
+      },
+      "deep-freeze": {
+        "full-flight":    null,
+        "limited-flight": null,
+        "no-flight":      "auto"
+      }
+    }
+  },
+
+  "displayOrder": ["groundCondition", "flightCondition"],
+  "rollOrder": ["groundCondition", "flightCondition"],
+  "note": "rollOrder 순서대로 굴림을 진행. flightCondition은 groundCondition 결과 없이 굴릴 수 없음."
+}

@@ -1,0 +1,100 @@
+{
+  "id": "022-001",
+  "gameId": "022",
+  "series": "The Forgotten Battles",
+  "title": "Scenario 1: The Red Army Resurgent",
+  "subtitle": "The full campaign in all its glory.",
+
+  "startTurn": {
+    "year": 1943,
+    "month": 9,
+    "day": 26,
+    "firstPlayer": "soviet"
+  },
+
+  "endTurn": {
+    "year": 1944,
+    "month": 4,
+    "day": 26
+  },
+
+  "setupOrder": "axis-first",
+
+  "weather": {
+    "tableFile": "weather-tables/022-weather.json",
+    "initial": {
+      "groundCondition": "dry",
+      "flightCondition": "full-flight"
+    },
+    "riverCondition": "normal",
+    "note": "26 Sept 43: Dry with Normal Flight. River Condition is Normal."
+  },
+
+  "sides": {
+    "soviet": {
+      "label": "소련군",
+      "en": "Soviet",
+      "resources": {
+        "railCapacity":         9,
+        "reserveMarkers":       10,
+        "specialTruckExtenders": 2,
+        "penalUnits":           3
+      },
+      "barrageMarkers": {
+        "note": "1st Baltic은 Ready 상태. 1st Belorussian은 Front Barrage Marker Track 6번 칸. Western·2nd Belorussian은 8번 칸.",
+        "tracks": [
+          { "front": "1st Baltic",        "box": "ready" },
+          { "front": "1st Belorussian",   "box": 6 },
+          { "front": "Western",           "box": 8 },
+          { "front": "2nd Belorussian",   "box": 8 }
+        ]
+      }
+    },
+    "axis": {
+      "label": "추축군",
+      "en": "Axis",
+      "resources": {
+        "railCapacity":   10,
+        "reserveMarkers": 10,
+        "kesselHQs":      1,
+        "fortressUnits":  7
+      },
+      "kgMarkers": {
+        "note": "Von Sauc, Von Chol, Gollw 사용 가능.",
+        "available": ["Von Sauc", "Von Chol", "Gollw"]
+      }
+    }
+  },
+
+  "specialRules": [
+    {
+      "id": "sr-001",
+      "title": "소련군 공세 태세 (Offensive Posture)",
+      "appliesTo": "soviet",
+      "appliesToTurn": { "year": 1943, "month": 9, "day": 26 },
+      "description": "26 September는 1st Belorussian Front의 6번째 공세 턴, 2nd Belorussian Front의 5번째 공세 턴으로 간주한다. Western Front와 1st Baltic Front는 Ready 박스 상태로 시작한다."
+    },
+    {
+      "id": "sr-002",
+      "title": "보급/교체 테이블 굴림",
+      "appliesTo": "both",
+      "appliesToTurn": { "year": 1943, "month": 9, "day": 26 },
+      "description": "26 Sept 43에 양측 모두 정상적인 보급 테이블 및 교체 테이블 굴림을 실시한다."
+    }
+  ],
+
+  "victoryConditions": [
+    {
+      "id": "vc-001",
+      "title": "캠페인 승리 조건",
+      "description": "캠페인 게임 승리 조건(5.0)을 사용한다."
+    },
+    {
+      "id": "vc-002",
+      "title": "선택 캠페인 승리 방식 (Optional)",
+      "description": "선택 규칙(5.0b)을 사용하는 경우, 게임 시작 시 1st·2nd Belorussian Front의 목표를 설정할 수 있다."
+    }
+  ],
+
+  "notes": "Garrison 상태, 유닛 배치, AGN/AGS 마커 헥스 좌표, 증원/교체 세부 정보는 실제 룰북 및 Order of Arrival을 참조."
+}
