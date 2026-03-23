@@ -1321,17 +1321,17 @@ nav button.active::before { opacity: 1; }
 /* ============================================================
    항공 정비 페이즈 UI
 ============================================================ */
-.air-refit-ui {
+.phase-info-ui {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-.air-refit-section {
+.phase-info-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-.air-refit-section-title {
+.phase-info-section-title {
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 1.5px;
@@ -1340,14 +1340,14 @@ nav button.active::before { opacity: 1; }
   border-bottom: 1px solid var(--border);
   padding-bottom: 4px;
 }
-.air-refit-list {
+.phase-info-list {
   margin: 0;
   padding-left: 18px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.air-refit-list li {
+.phase-info-list li {
   font-size: 0.82rem;
   line-height: 1.5;
   color: var(--ink);

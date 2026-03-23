@@ -49,7 +49,7 @@ const PLAYER_PHASES = (prefix) => [
     steps: [
       { id: `${prefix}_move_withdraw`, label: '탈출 단계',          en: 'Breakout'          },
       { id: `${prefix}_move_move`,     label: '이동 단계',          en: 'Movement'          },
-      { id: `${prefix}_move_bombard`,  label: '항공/해군 포격 단계', en: 'Air/Naval Barrage' },
+      { id: `${prefix}_move_barrage`,  label: '항공/해군 포격 단계', en: 'Air/Naval Barrage' },
     ]},
   { id: `${prefix}_supply`,   label: '보급 페이즈',  en: 'Supply Phase',   steps: null },
   { id: `${prefix}_reaction`, label: '반응 페이즈',  en: 'Reaction Phase',
@@ -308,6 +308,15 @@ const PHASE_ACTIONS = {
 
   'f_air': { desc: '비활성 항공 유닛을 정비합니다.', render(el) { renderAirRefitUI(el); } },
   's_air': { desc: '비활성 항공 유닛을 정비합니다.', render(el) { renderAirRefitUI(el); } },
+
+  'f_move_withdraw': { desc: '보급선이 끊긴 전투 유닛의 탈출을 시도합니다.', render(el) { renderBreakoutUI(el); } },
+  's_move_withdraw': { desc: '보급선이 끊긴 전투 유닛의 탈출을 시도합니다.', render(el) { renderBreakoutUI(el); } },
+
+  'f_move_move': { desc: '유닛의 모드를 결정하고 이동, 오버런 등을 수행합니다.', render(el) { renderMovementUI(el); } },
+  's_move_move': { desc: '유닛의 모드를 결정하고 이동, 오버런 등을 수행합니다.', render(el) { renderMovementUI(el); } },
+
+  'f_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMovementUI(el); } },
+  's_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMovementUI(el); } },
 };
 
 // weather Handler 브릿지 — HTML onclick에서 호출
@@ -505,20 +514,22 @@ function prevPhase() {
 // ============================================================
 function renderAirRefitUI(el) {
   el.innerHTML = `
-    <div class="air-refit-ui">
+    <div class="phase-info-ui">
 
-      <div class="air-refit-section">
-        <div class="air-refit-section-title">✈ 수행 가능한 행동</div>
-        <ul class="air-refit-list">
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">✈ 수행 가능한 행동</div>
+        <ul class="phase-info-list">
           <li><strong>비활성(Inactive)</strong> 항공 유닛을 정비하여 <strong>활성(Active)</strong> 상태로 전환합니다.</li>
           <li>항공 유닛 정비를 수행하는 <strong>항공 기지(Air Base)마다 1T</strong>를 지불합니다.</li>
-          <li>지불한 기지에서 <strong>항공 기지 레벨당 항공 유닛 최대 2기</strong>까지 정비할 수 있습니다. (항공 기지 레벨 * 2)</li>
+          <li>지불한 기지에서 <strong>항공 기지 레벨당 항공 유닛 최대 2기</strong>까지 정비할 수 있습니다.
+              <span id="airRefitMax" style="font-weight:900;"></span>기
+              (항공 기지 레벨 * 2)</li>
         </ul>
       </div>
 
-      <div class="air-refit-section">
-        <div class="air-refit-section-title">⚠ 주의사항</div>
-        <ul class="air-refit-list">
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⚠ 주의사항</div>
+        <ul class="phase-info-list">
           <li>상쇄되지 않은 적 ZOC 내의 항공 기지에서는 항공 유닛 정비를 수행 할 수 없습니다.</li>
         </ul>
       </div>
@@ -533,4 +544,114 @@ function airRefitCalcStep(delta) {
   const maxEl = document.getElementById('airRefitMax');
   if (lvlEl) lvlEl.textContent = _airRefitLevel;
   if (maxEl) maxEl.textContent = _airRefitLevel * 2;
+}
+
+// ============================================================
+// 탈출 단계 UI  (Breakout Segment — Rule 12.8e)
+// ============================================================
+function renderBreakoutUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li>보급선(Trace Supply)이 끊긴 <strong>전투 유닛(Combat Unit)</strong>은 이 단계에서 <strong>탈출(Breakout)</strong>을 시도할 수 있습니다.</li>
+          <li>탈출은 항상 <strong>자발적(Voluntary)</strong>이며, 강제되지 않습니다.</li>
+          <li>탈출은 <strong>다른 어떤 이동보다 먼저</strong> 이 단계에서 수행해야 합니다.</li>
+          <li>비전투 유닛(Non-Combat Unit)은 탈출할 수 없습니다.</li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">✅ 탈출 시도 가능 조건</div>
+        <ul class="phase-info-list">
+          <li>해당 유닛이 현재 <strong>보급선 불통(Out of Trace Supply)</strong> 상태여야 합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 이 단계에서 추적 보급 확인(Trace-check)을 수행합니다.</span></li>
+          <li>유닛의 <strong>인쇄된 이동력(MA)이 1 이상</strong>이어야 합니다.</li>
+          <li><strong>조건 A</strong> — 유닛에서 보급선이 연결된 아군 유닛까지, 적 전투 유닛과 해당 유닛의 이동 모드(Move Mode) 기준 통과 불가 지형이 없는 경로가 존재해야 합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 트럭 이동력(Truck MP) 유닛의 경우, 그 경로에 상쇄되지 않은 적 EZOC도 없어야 합니다.</span></li>
+          <li><strong>조건 B</strong> — 유닛이 보급선이 연결된 아군 전투 유닛으로부터 <strong>직선 거리 15헥스 이내</strong>에 있어야 합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 직선 거리 측정 시 적 유닛 및 ZOC는 무시합니다.</span></li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⭐ 첫 번째 보급 불통 턴 특례</div>
+        <ul class="phase-info-list">
+          <li>보급선이 끊긴 <strong>첫 번째 턴</strong>이라면 위 조건 A·B가 <strong>면제</strong>됩니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 단, 맵 보급 소비("eat off the map") 또는 보급 캐시(Supply Cache) 등 특수 보급 사용 시는 해당 없음.</span></li>
+          <li>첫 번째 보급 불통 턴에는 성공 확률에 <strong>+1 DRM</strong>이 적용됩니다.</li>
+          <li>첫 번째 보급 불통 턴에는 <strong>수송 포인트(Transport Points)</strong>도 탈출 시도 가능합니다 (각 포인트마다 별도 굴림).</li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🎲 탈출 굴림</div>
+        <ul class="phase-info-list">
+          <li>탈출을 시도하는 유닛마다 주사위 1개를 굴립니다.</li>
+          <li><strong>1–4: 탈출 실패</strong> — 유닛은 <strong>전사(Dead Pile)</strong>에 놓입니다. (정상적으로 재건 가능)</li>
+          <li><strong>5–6: 탈출 성공</strong> — 유닛은 지도에서 제거되고 이후 <strong>증원(Reinforcement)</strong>으로 복귀합니다.<br>
+              성공한 유닛마다 주사위를 다시 굴려, 나온 숫자만큼의 <strong>턴 후에 복귀</strong>합니다.<br>
+              복귀 시 스텝 손실 마커는 유지되지만, 그 외 모든 마커(저탄약, DG 등)는 제거됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="c">
+        <div class="phase-info-section-title">⚠ 주의사항</div>
+        <ul class="phase-info-list">
+          <li>탈출은 <strong>이동 페이즈 내 어떤 이동보다 먼저</strong> 수행해야 합니다.</li>
+          <li>복귀 예정 턴은 <strong>턴 기록 트랙(Turn Record Track)</strong>에 마커를 놓아 기억하세요.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 이동 단계 UI  (Movement Segment — Rule 6.0)
+// ============================================================
+function renderMovementUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li>하나의 유닛 또는 스택을 <strong>이동력(MA)</strong> 한도 내에서 <strong>이동</strong>시킬 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 한 유닛/스택의 이동을 마치기 전, 다른 유닛/스택의 이동을 시작할 수 없습니다.</span></li>
+          <li>이동 전에 유닛/스택이 해당 턴에 취할 <strong>모드</strong>를 선택할 수 있습니다.</li>
+          <li>이동 전에 분견대를 분할할 수 있습니다.</li>
+          <li>차량(Truck) 또는 궤도(Track) 이동 유형의 유닛은 이동 전 연료를 소모해야 합니다.</li>
+          <li>유닛/스택의 이동 중 3MP를 소모하여 <strong>오버런(이동 중 전투)</strong>을 수행할 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 3MP를 소모해 진입할 수 없는 헥스를 대상으로 오버런을 수행할 수 없습니다.</span><br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 전투 결과로 돌파를 얻을 수 없습니다.</span></li>
+          <li>힙샷을 포함한 <strong>항공 임무</strong>를 수행할 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 폭격은 수행할 수 없습니다.</span></li>
+          <li>공병 능력을 가진 유닛이 <strong>항공 기지, 진지, 항만 수리</strong>등을 수행할 수 있습니다.</li>
+          <li>철도 공병 유닛이 철도의 궤간을 변환할 수 있습니다.</li>
+          <li>SP는 한 페이즈에 한 번만 이동할 수 있습니다.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 해/공군 포격 단계 UI  (Movement Segment — Rule 6.0)
+// ============================================================
+function renderMoveBarrageUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li>해군 유닛으로 함포 사격을 수행할 수 있습니다.</li>
+          <li>항공 유닛으로 폭격을 수행할 수 있습니다.</li>
+          <li><strong>포격/폭격 탭</strong>을 사용하세요.</li>
+        </ul>
+      </div>
+
+    </div>`;
 }
