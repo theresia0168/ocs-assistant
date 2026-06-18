@@ -1,0 +1,430 @@
+{
+    "_comment": "Guderian's Blitzkrieg II 날씨 테이블",
+
+    "id": "008-weather",
+    "gameId": "008",
+    "series": "Guderian's Blitzkrieg II",
+    "description": "Guderian's Blitzkrieg II Weather Table. Ground: 1d6, Flight: 1d6.",
+
+    "gourndCondition": {
+        "label": "지면 상황",
+        "en": "Ground Condition",
+        "dice": "1d6",
+        "rowKeyType": "dateRange",
+        "states": [
+            { "id": "dry",              "label": "건조",        "en": "Dry"             },
+            { "id": "light-mud",        "label": "약한 진창",    "en": "Light Mud"       },
+            { "id": "mud",              "label": "진창",        "en": "Mud"             },
+            { "id": "light-freeze",     "label": "약결빙",      "en": "Ligth Freeze"    },
+            { "id": "moderate-freeze",  "label": "중결빙",      "en": "Moderate Freeze" },
+            { "id": "deep-freeze",      "label": "강결빙",      "en": "Deep Freeze"     }
+        ],
+        "table": [
+            {
+                "id": "dec22-jan8",
+                "label": "12월 22일~1월 8일",
+                "en": "December 22-January 8",
+                "monthFrom": 12, "dayFrom": 22,
+                "monthTo": 1, "dayTo": 8,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      "auto"
+                }
+            },
+            {
+                "id": "jan12-19",
+                "label": "1월 12일~1월 19일",
+                "en": "January 12-January 19",
+                "monthFrom": 1, "dayFrom": 12,
+                "monthTo": 1, "dayTo": 19,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     null,
+                    "moderate-freeze":  [1, 2],
+                    "deep-freeze":      [3, 4, 5, 6]
+                }
+            },
+            {
+                "id": "jan22-29",
+                "label": "1월 22일~1월 29일",
+                "en": "January 22-January 29",
+                "monthFrom": 1, "dayFrom": 22,
+                "monthTo": 1, "dayTo": 29,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1, 2],
+                    "moderate-freeze":  [3, 4],
+                    "deep-freeze":      [5, 6]
+                }
+            },
+            {
+                "id": "feb1-8",
+                "label": "2월 1일~2월 8일",
+                "en": "February 1-February 8",
+                "monthFrom": 2, "dayFrom": 1,
+                "monthTo": 2, "dayTo": 8,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1, 2],
+                    "moderate-freeze":  [3, 4, 5],
+                    "deep-freeze":      [6]
+                }
+            },
+            {
+                "id": "feb12-19",
+                "label": "2월 12일~2월 19일",
+                "en": "February 12-February 19",
+                "monthFrom": 2, "dayFrom": 12,
+                "monthTo": 2, "dayTo": 19,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1, 2, 3],
+                    "moderate-freeze":  [4, 5, 6],
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "feb22-26",
+                "label": "2월 22일~2월 26일",
+                "en": "February 22-February 26",
+                "monthFrom": 2, "dayFrom": 22,
+                "monthTo": 2, "dayTo": 26,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1, 2, 3, 4, 5],
+                    "moderate-freeze":  [6],
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "mar1-8",
+                "label": "3월 1일~3월 8일",
+                "en": "March 1-March 8",
+                "monthFrom": 3, "dayFrom": 1,
+                "monthTo": 3, "dayTo": 8,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     "auto",
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "mar12-19",
+                "label": "3월 12일~3월 19일",
+                "en": "March 12-March 19",
+                "monthFrom": 3, "dayFrom": 12,
+                "monthTo": 3, "dayTo": 19,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        [1],
+                    "mud":              [2, 3],
+                    "light-freeze":     [4, 5, 6],
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "mar22-29",
+                "label": "3월 22일~3월 29일",
+                "en": "March 22-March 29",
+                "monthFrom": 3, "dayFrom": 22,
+                "monthTo": 3, "dayTo": 29,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        [1, 2, 3],
+                    "mud":              [4, 5],
+                    "light-freeze":     [6],
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "apr1-8",
+                "label": "4월 1일~4월 8일",
+                "en": "April 1-April 8",
+                "monthFrom": 4, "dayFrom": 1,
+                "monthTo": 4, "dayTo": 8,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        [1, 2, 3, 4],
+                    "mud":              [5,6],
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "apr12-19",
+                "label": "4월 12일~4월 19일",
+                "en": "April 12-April 19",
+                "monthFrom": 4, "dayFrom": 12,
+                "monthTo": 4, "dayTo": 19,
+                "results": {
+                    "dry":              [1],
+                    "light-mud":        [2, 3, 4],
+                    "mud":              [5,6],
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "apr22-29",
+                "label": "4월 22일~4월 29일",
+                "en": "April 22-April 29",
+                "monthFrom": 4, "dayFrom": 22,
+                "monthTo": 4, "dayTo": 29,
+                "results": {
+                    "dry":              [1, 2, 3],
+                    "light-mud":        [4, 5, 6],
+                    "mud":              null,
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "through-oct8",
+                "label": "5월 1일~10월 8일",
+                "en": "May 1-October 8",
+                "monthFrom": 5, "dayFrom": 1,
+                "monthTo": 10, "dayTo": 8,
+                "results": {
+                    "dry":              "auto",
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "oct12-19",
+                "label": "10월 12일~10월 19일",
+                "en": "October 12-October 19",
+                "monthFrom": 10, "dayFrom": 12,
+                "monthTo": 10, "dayTo": 19,
+                "results": {
+                    "dry":              [1, 2, 3, 4],
+                    "light-mud":        [5, 6],
+                    "mud":              null,
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "oct22-29",
+                "label": "10월 22일~10월 29일",
+                "en": "October 22-October 29",
+                "monthFrom": 10, "dayFrom": 22,
+                "monthTo": 10, "dayTo": 29,
+                "results": {
+                    "dry":              [1, 2],
+                    "light-mud":        [3, 4, 5],
+                    "mud":              [6],
+                    "light-freeze":     null,
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "nov1-8",
+                "label": "11월 1일~11월 8일",
+                "en": "November 1-November 8",
+                "monthFrom": 11, "dayFrom": 1,
+                "monthTo": 11, "dayTo": 8,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        [1, 2, 3],
+                    "mud":              [4],
+                    "light-freeze":     [5, 6],
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "nov12-19",
+                "label": "11월 12일~11월 19일",
+                "en": "November 12-November 19",
+                "monthFrom": 11, "dayFrom": 12,
+                "monthTo": 11, "dayTo": 19,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        [1, 2],
+                    "mud":              [3],
+                    "light-freeze":     [4, 5, 6],
+                    "moderate-freeze":  null,
+                    "deep-freeze":      null
+                }
+            },
+            {
+                "id": "nov22-29",
+                "label": "11월 22일~11월 29일",
+                "en": "November 22-November 29",
+                "monthFrom": 11, "dayFrom": 22,
+                "monthTo": 11, "dayTo": 29,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1, 2, 3, 4],
+                    "moderate-freeze":  [5],
+                    "deep-freeze":      [6]
+                }
+            },
+            {
+                "id": "dec1-8",
+                "label": "12월 1일~12월 8일",
+                "en": "December 1-December 8",
+                "monthFrom": 12, "dayFrom": 1,
+                "monthTo": 12, "dayTo": 8,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1, 2],
+                    "moderate-freeze":  [3, 4],
+                    "deep-freeze":      [5, 6]
+                }
+            },
+            {
+                "id": "dec12-19",
+                "label": "12월 12일~12월 19일",
+                "en": "December 12-December 19",
+                "monthFrom": 12, "dayFrom": 12,
+                "monthTo": 12, "dayTo": 19,
+                "results": {
+                    "dry":              null,
+                    "light-mud":        null,
+                    "mud":              null,
+                    "light-freeze":     [1],
+                    "moderate-freeze":  [2, 3],
+                    "deep-freeze":      [4, 5, 6]
+                }
+            }
+        ]
+    },
+
+    "flightCondition": {
+        "label": "비행 상황",
+        "en": "Flight Condition",
+        "dice": "1d6",
+        "rowKeyType": "dateRange",
+        "states": [
+            { "id": "limited-flight", "label": "제한 비행",      "en": "Limited Flight" },
+            { "id": "normal-flight",      "label": "비행 가능",      "en": "Normal Flight"}
+        ],
+        "tabel": [
+            {
+                "id": "jan1-feb8",
+                "label": "1월 1일-2월 8",
+                "en": "January 1-February 8",
+                "monthFrom": 1, "dayFrom": 1,
+                "monthTo": 2, "dayTo": 8,
+                "result": {
+                    "limited-flight":   [1, 2, 3],
+                    "normal-flight":    [4, 5, 6]
+                }
+            },
+            {
+                "id": "feb12-feb19",
+                "label": "2월 12일-2월 26",
+                "en": "February 12-February 26",
+                "monthFrom": 2, "dayFrom": 12,
+                "monthTo": 2, "dayTo": 26,
+                "result": {
+                    "limited-flight":   [1, 2, 3, 4],
+                    "normal-flight":    [5, 6]
+                }
+            },
+            {
+                "id": "mar1-mar29",
+                "label": "3월 1일-3월 29",
+                "en": "March 1-March 29",
+                "monthFrom": 3, "dayFrom": 1,
+                "monthTo": 3, "dayTo": 29,
+                "result": {
+                    "limited-flight":   [1, 2, 3],
+                    "normal-flight":    [4, 5, 6]
+                }
+            },
+            {
+                "id": "apr1-apr29",
+                "label": "4월 1일-4월 29",
+                "en": "April 1-April 29",
+                "monthFrom": 4, "dayFrom": 1,
+                "monthTo": 4, "dayTo": 29,
+                "result": {
+                    "limited-flight":   [1, 2],
+                    "normal-flight":    [3, 4, 5, 6]
+                }
+            },
+            {
+                "id": "may1-oct19",
+                "label": "5월 1일-10월 19",
+                "en": "May 1-October 19",
+                "monthFrom": 5, "dayFrom": 1,
+                "monthTo": 10, "dayTo": 19,
+                "result": {
+                    "limited-flight":   [1],
+                    "normal-flight":    [2, 3, 4, 5, 6]
+                }
+            },
+            {
+                "id": "oct22-oct29",
+                "label": "10월 22일-10월 29",
+                "en": "October 22-October 29",
+                "monthFrom": 10, "dayFrom": 22,
+                "monthTo": 10, "dayTo": 29,
+                "result": {
+                    "limited-flight":   [1, 2],
+                    "normal-flight":    [3, 4, 5, 6]
+                }
+            },
+            {
+                "id": "nov1-nov15",
+                "label": "11월 1일-11월 15",
+                "en": "November 1-November 15",
+                "monthFrom": 11, "dayFrom": 1,
+                "monthTo": 11, "dayTo": 15,
+                "result": {
+                    "limited-flight":   [1, 2, 3],
+                    "normal-flight":    [4, 5, 6]
+                }
+            },
+            {
+                "id": "nov19-dec29",
+                "label": "11월 19일-12월 29",
+                "en": "November 19-December 29",
+                "monthFrom": 11, "dayFrom": 19,
+                "monthTo": 12, "dayTo": 29,
+                "result": {
+                    "limited-flight":   [1, 2, 3, 4],
+                    "normal-flight":    [5, 6]
+                }
+            }
+        ]
+    },
+
+    "displayOrder": ["groundCondition", "flightCondition"],
+    "rollOrder": ["groundCondition", "flightCondition"],
+    "note": "rollOrder 순서대로 굴림을 진행. groundCondition과 flightCondition의 결과는 독립 시행."
+}

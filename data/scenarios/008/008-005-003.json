@@ -1,0 +1,61 @@
+{
+    "id": "008-005-003",
+    "gamdId": "008",
+    "series": "Guderian's Blitzkrieg II",
+    "title": "Scenario 5.3: The Northern Pincers",
+    
+    "startTurn": {
+        "year": 1941,
+        "month": 10,
+        "day": 1,
+        "firstPlayer": "axis"
+    },
+
+    "endTurn": {
+        "year": 1941,
+        "month": 11,
+        "day": 15
+    },
+
+    "setupOrder": "soviet-first",
+
+    "weather": {
+        "tableFile": "weather-tables/008-weather.json",
+        "initial": {
+            "groundCondition": "",
+            "flightCondition": ""
+        },
+        "riverCondition": "normal",
+        "note": "1 Oct 41: Dry with Normal Flight. River Condition is Normal."
+    },
+
+    "sides": {
+        "axis": {
+            "label": "추축국",
+            "en": "Axis",
+            "resources": {
+                "railCapacity": 5,
+                "reserveMarkers": 12
+            }
+        },
+        "soviet": {
+            "label": "소련",
+            "en": "Soviet",
+            "resources": {
+                "railCapacity": 5,
+                "reserveMarkers": 0,
+                "treeBarkSoupMarkers": 5
+            }
+        }
+    },
+
+    "victoryConditions": [
+        {
+            "id": "vc-001",
+            "title": "시나리오 승리 조건",
+            "description": "독일 플레이어가 총합 23점 이상 얻을 시 승리한다."
+        }
+    ],
+
+    "notes": "유닛 배치, 증원 등 세부 정보는 실제 룰북 및 Order of Arrival을 참조."
+}

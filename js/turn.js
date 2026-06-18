@@ -315,8 +315,8 @@ const PHASE_ACTIONS = {
   'f_move_move': { desc: '유닛의 모드를 결정하고 이동, 오버런 등을 수행합니다.', render(el) { renderMovementUI(el); } },
   's_move_move': { desc: '유닛의 모드를 결정하고 이동, 오버런 등을 수행합니다.', render(el) { renderMovementUI(el); } },
 
-  'f_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMovementUI(el); } },
-  's_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMovementUI(el); } },
+  'f_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMoveBarrageUI(el); } },
+  's_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMoveBarrageUI(el); } },
 };
 
 // weather Handler 브릿지 — HTML onclick에서 호출
@@ -556,33 +556,33 @@ function renderBreakoutUI(el) {
       <div class="phase-info-section">
         <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
         <ul class="phase-info-list">
-          <li>보급선(Trace Supply)이 끊긴 <strong>전투 유닛(Combat Unit)</strong>은 이 단계에서 <strong>탈출(Breakout)</strong>을 시도할 수 있습니다.</li>
-          <li>탈출은 항상 <strong>자발적(Voluntary)</strong>이며, 강제되지 않습니다.</li>
-          <li>탈출은 <strong>다른 어떤 이동보다 먼저</strong> 이 단계에서 수행해야 합니다.</li>
-          <li>비전투 유닛(Non-Combat Unit)은 탈출할 수 없습니다.</li>
+          <li>보급이 끊긴 <strong>전투 유닛</strong>은 이 단계에 <strong>탈출(Breakout)</strong>을 시도할 수 있습니다.</li>
+          <li>탈출은 항상 <strong>자발적</strong>이며, 강제되지 않습니다.</li>
+          <li>탈출은 <strong>다른 어떤 이동보다 먼저</strong> 이 단계에 수행해야 합니다.</li>
+          <li>비전투 유닛은 탈출할 수 없습니다.</li>
         </ul>
       </div>
 
       <div class="phase-info-section">
-        <div class="phase-info-section-title">✅ 탈출 시도 가능 조건</div>
+        <div class="phase-info-section-title">✅ 탈출 시도 조건</div>
         <ul class="phase-info-list">
-          <li>해당 유닛이 현재 <strong>보급선 불통(Out of Trace Supply)</strong> 상태여야 합니다.<br>
-              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 이 단계에서 추적 보급 확인(Trace-check)을 수행합니다.</span></li>
-          <li>유닛의 <strong>인쇄된 이동력(MA)이 1 이상</strong>이어야 합니다.</li>
-          <li><strong>조건 A</strong> — 유닛에서 보급선이 연결된 아군 유닛까지, 적 전투 유닛과 해당 유닛의 이동 모드(Move Mode) 기준 통과 불가 지형이 없는 경로가 존재해야 합니다.<br>
-              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 트럭 이동력(Truck MP) 유닛의 경우, 그 경로에 상쇄되지 않은 적 EZOC도 없어야 합니다.</span></li>
-          <li><strong>조건 B</strong> — 유닛이 보급선이 연결된 아군 전투 유닛으로부터 <strong>직선 거리 15헥스 이내</strong>에 있어야 합니다.<br>
+          <li>해당 유닛이 현재 <strong>보급 단절(Out of Supply)</strong> 상태여야 합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 이 단계에서 보급 추적을 확인합니다.</span></li>
+          <li>유닛의 <strong>표시된 이동력(MA)이 1 이상</strong>이어야 합니다.</li>
+          <li><strong>조건 A</strong> — 해당 유닛에서 보급 중인 아군 유닛을 이으며 경로 상에 적 전투 유닛과 해당 유닛의 이동 모드 기준 통과 불가 지형이 없는 연결선이 존재해야 합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 차량 이동 유형(Truck) 유닛의 경우, 그 경로에 상쇄되지 않은 적 EZOC도 없어야 합니다.</span></li>
+          <li><strong>조건 B</strong> — 해당 유닛에서 보급 중인 아군 전투 유닛으로부터 <strong>직선 거리 15헥스 이내</strong>에 있어야 합니다.<br>
               <span style="font-size:0.78rem;color:var(--ink-faded);">※ 직선 거리 측정 시 적 유닛 및 ZOC는 무시합니다.</span></li>
         </ul>
       </div>
 
       <div class="phase-info-section">
-        <div class="phase-info-section-title">⭐ 첫 번째 보급 불통 턴 특례</div>
+        <div class="phase-info-section-title">⭐ 첫 번째 보급 단절 턴 혜택</div>
         <ul class="phase-info-list">
-          <li>보급선이 끊긴 <strong>첫 번째 턴</strong>이라면 위 조건 A·B가 <strong>면제</strong>됩니다.<br>
-              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 단, 맵 보급 소비("eat off the map") 또는 보급 캐시(Supply Cache) 등 특수 보급 사용 시는 해당 없음.</span></li>
-          <li>첫 번째 보급 불통 턴에는 성공 확률에 <strong>+1 DRM</strong>이 적용됩니다.</li>
-          <li>첫 번째 보급 불통 턴에는 <strong>수송 포인트(Transport Points)</strong>도 탈출 시도 가능합니다 (각 포인트마다 별도 굴림).</li>
+          <li><strong>첫 번째 보급 단절 턴</strong>이라면 위 조건 A·B를 무시할 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 단, 지도 상 보급 소비("eat off the map") 또는 보급 캐시 등 특수 보급 사용 시는 해당 없음.</span></li>
+          <li>첫 보급 단절 턴에는 성공 확률에 <strong>+1 DRM</strong>이 적용됩니다.</li>
+          <li>첫 보급 단절 턴에는 <strong>수송 포인트(Transport Points)</strong>도 탈출 시도 가능합니다 (각 포인트마다 별도 굴림).</li>
         </ul>
       </div>
 
@@ -590,8 +590,8 @@ function renderBreakoutUI(el) {
         <div class="phase-info-section-title">🎲 탈출 굴림</div>
         <ul class="phase-info-list">
           <li>탈출을 시도하는 유닛마다 주사위 1개를 굴립니다.</li>
-          <li><strong>1–4: 탈출 실패</strong> — 유닛은 <strong>전사(Dead Pile)</strong>에 놓입니다. (정상적으로 재건 가능)</li>
-          <li><strong>5–6: 탈출 성공</strong> — 유닛은 지도에서 제거되고 이후 <strong>증원(Reinforcement)</strong>으로 복귀합니다.<br>
+          <li><strong>1–4: 탈출 실패</strong> — 유닛은 <strong>전멸 더미(Dead Pile)</strong>에 놓입니다. (재건 가능)</li>
+          <li><strong>5–6: 탈출 성공</strong> — 유닛은 지도에서 제거되고 이후에 <strong>증원(Reinforcement)</strong>으로 복귀합니다.<br>
               성공한 유닛마다 주사위를 다시 굴려, 나온 숫자만큼의 <strong>턴 후에 복귀</strong>합니다.<br>
               복귀 시 스텝 손실 마커는 유지되지만, 그 외 모든 마커(저탄약, DG 등)는 제거됩니다.</li>
         </ul>
@@ -601,7 +601,7 @@ function renderBreakoutUI(el) {
         <div class="phase-info-section-title">⚠ 주의사항</div>
         <ul class="phase-info-list">
           <li>탈출은 <strong>이동 페이즈 내 어떤 이동보다 먼저</strong> 수행해야 합니다.</li>
-          <li>복귀 예정 턴은 <strong>턴 기록 트랙(Turn Record Track)</strong>에 마커를 놓아 기억하세요.</li>
+          <li>복귀 예정 턴은 <strong>턴 기록 트랙</strong>에 해당 유닛을 놓아 기억하세요.</li>
         </ul>
       </div>
 
