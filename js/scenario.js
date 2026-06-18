@@ -111,7 +111,7 @@ function renderGameSelect(container, scenarios) {
 // ── 시나리오 선택 화면 ────────────────────────────────────────
 
 function renderScenarioSelect(container, scenarios) {
-  const filtered  = scenarios.filter(s => s.gameId === lobbySelectedGameId);
+  const filtered = scenarios.filter(s => (s.gameId || 'unknown') === lobbySelectedGameId);
   const seriesName = filtered[0]?.series || lobbySelectedGameId;
 
   const cards = filtered.map(s => {

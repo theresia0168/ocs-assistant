@@ -339,7 +339,7 @@
                 "en": "January 1-February 8",
                 "monthFrom": 1, "dayFrom": 1,
                 "monthTo": 2, "dayTo": 8,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2, 3],
                     "normal-flight":    [4, 5, 6]
                 }
@@ -350,7 +350,7 @@
                 "en": "February 12-February 26",
                 "monthFrom": 2, "dayFrom": 12,
                 "monthTo": 2, "dayTo": 26,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2, 3, 4],
                     "normal-flight":    [5, 6]
                 }
@@ -361,7 +361,7 @@
                 "en": "March 1-March 29",
                 "monthFrom": 3, "dayFrom": 1,
                 "monthTo": 3, "dayTo": 29,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2, 3],
                     "normal-flight":    [4, 5, 6]
                 }
@@ -372,7 +372,7 @@
                 "en": "April 1-April 29",
                 "monthFrom": 4, "dayFrom": 1,
                 "monthTo": 4, "dayTo": 29,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2],
                     "normal-flight":    [3, 4, 5, 6]
                 }
@@ -383,7 +383,7 @@
                 "en": "May 1-October 19",
                 "monthFrom": 5, "dayFrom": 1,
                 "monthTo": 10, "dayTo": 19,
-                "result": {
+                "results": {
                     "limited-flight":   [1],
                     "normal-flight":    [2, 3, 4, 5, 6]
                 }
@@ -394,7 +394,7 @@
                 "en": "October 22-October 29",
                 "monthFrom": 10, "dayFrom": 22,
                 "monthTo": 10, "dayTo": 29,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2],
                     "normal-flight":    [3, 4, 5, 6]
                 }
@@ -405,7 +405,7 @@
                 "en": "November 1-November 15",
                 "monthFrom": 11, "dayFrom": 1,
                 "monthTo": 11, "dayTo": 15,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2, 3],
                     "normal-flight":    [4, 5, 6]
                 }
@@ -416,7 +416,7 @@
                 "en": "November 19-December 29",
                 "monthFrom": 11, "dayFrom": 19,
                 "monthTo": 12, "dayTo": 29,
-                "result": {
+                "results": {
                     "limited-flight":   [1, 2, 3, 4],
                     "normal-flight":    [5, 6]
                 }
