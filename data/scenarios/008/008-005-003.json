@@ -1,6 +1,6 @@
 {
     "id": "008-005-003",
-    "gamdId": "008",
+    "gameId": "008",
     "series": "Guderian's Blitzkrieg II",
     "title": "Scenario 5.3: The Northern Pincers",
     
@@ -22,8 +22,8 @@
     "weather": {
         "tableFile": "weather-tables/008-weather.json",
         "initial": {
-            "groundCondition": "",
-            "flightCondition": ""
+            "groundCondition": "dry",
+            "flightCondition": "normal-flight"
         },
         "riverCondition": "normal",
         "note": "1 Oct 41: Dry with Normal Flight. River Condition is Normal."

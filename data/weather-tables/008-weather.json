@@ -6,7 +6,7 @@
     "series": "Guderian's Blitzkrieg II",
     "description": "Guderian's Blitzkrieg II Weather Table. Ground: 1d6, Flight: 1d6.",
 
-    "gourndCondition": {
+    "groundCondition": {
         "label": "지면 상황",
         "en": "Ground Condition",
         "dice": "1d6",
@@ -332,7 +332,7 @@
             { "id": "limited-flight", "label": "제한 비행",      "en": "Limited Flight" },
             { "id": "normal-flight",      "label": "비행 가능",      "en": "Normal Flight"}
         ],
-        "tabel": [
+        "table": [
             {
                 "id": "jan1-feb8",
                 "label": "1월 1일-2월 8",
