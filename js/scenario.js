@@ -16,8 +16,6 @@ let lobbyIsCustomMode = false; // 커스텀 시나리오 추가 모드 여부
 // ============================================================
 
 const SCENARIO_INDEX = [
-  // 더미 시나리오
-  'data/scenarios/dummy-series/dummy-001.json',
   // Guderian's Blitzkrieg II
   'data/scenarios/008/008-005-003.json',
   // The Forgotten Battles

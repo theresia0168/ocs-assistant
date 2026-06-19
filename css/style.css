@@ -1318,6 +1318,21 @@ nav button.active::before { opacity: 1; }
   color: var(--ink);
 }
 
+/* 시나리오 지정 선 플레이어 확정 메시지 */
+.initiative-preset-notice {
+  padding: 16px 14px;
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  background: var(--paper-dark);
+}
+.initiative-preset-notice strong {
+  color: var(--khaki);
+  font-weight: 900;
+}
+
 /* ============================================================
    항공 정비 페이즈 UI
 ============================================================ */

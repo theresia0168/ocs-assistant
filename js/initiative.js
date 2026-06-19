@@ -110,7 +110,48 @@ function initiativeConfirm() {
 
 // ── 외부 진입점 (turn.js PHASE_ACTIONS에서 호출) ─────────────
 function renderInitiativeUI(el) {
+  if (!el) return;
+
+  // 시나리오에 선 플레이어가 사전 지정되어 있고, 첫 턴이면
+  // 주사위 굴림 없이 바로 확정 표시
+  const presetFirst = currentScenario?.startTurn?.firstPlayer;
+  if (presetFirst && state.currentTurnN === 1) {
+    el.innerHTML = _buildPresetFirstPlayerHTML(presetFirst);
+    return;
+  }
+
   _renderInitiativeUI(el);
+}
+
+// ── 시나리오 지정 선 플레이어 (굴림 생략) ────────────────────
+function _buildPresetFirstPlayerHTML(sideKey) {
+  const sides     = _getInitiativeSides();
+  const sideLabel = sides.find(s => s.key === sideKey)?.label ?? sideKey;
+  const dateStr   = (state.year && state.month && state.day)
+    ? formatTurnDate(state.year, state.month, state.day)
+    : '';
+
+  return `
+    <div class="initiative-ui">
+
+      <div class="initiative-preset-notice">
+        ${dateStr} 턴의 선 플레이어는 <strong>${sideLabel}</strong> 입니다.
+      </div>
+
+      <div class="initiative-proceed-row">
+        <button class="btn btn-primary initiative-proceed-btn"
+                onclick="initiativeConfirmPreset('${sideKey}')">
+          다음 페이즈 ▶
+        </button>
+      </div>
+
+    </div>`;
+}
+
+/** 시나리오 지정 선 플레이어 확정 → state 반영 후 페이즈 전진 */
+function initiativeConfirmPreset(sideKey) {
+  state.firstPlayer = sideKey;
+  nextPhase();
 }
 
 // ── 내부 렌더링 디스패처 ─────────────────────────────────────

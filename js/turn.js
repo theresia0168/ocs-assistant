@@ -300,7 +300,13 @@ const PHASE_ACTIONS = {
     },
   },
   'initiative': {
-    desc: '주사위를 굴려 이번 턴의 선 플레이어를 결정합니다.',
+    desc() {
+      const presetFirst = currentScenario?.startTurn?.firstPlayer;
+      if (presetFirst && state.currentTurnN === 1) {
+        return '시나리오에 지정된 선 플레이어로 자동 진행합니다.';
+      }
+      return '주사위를 굴려 이번 턴의 선 플레이어를 결정합니다.';
+    },
     render(el) {
       renderInitiativeUI(el);
     },
@@ -350,7 +356,7 @@ function renderPhaseAction() {
     if (!cur) {
       descText = '이번 턴의 모든 페이즈가 완료되었습니다.';
     } else {
-      descText = def?.desc || `${cur.label} 입니다.`;
+      descText = (typeof def?.desc === 'function' ? def.desc() : def?.desc) || `${cur.label} 입니다.`;
     }
     descEl.innerHTML = `<p class="phase-banner-desc-text">${descText}</p>`;
   }
@@ -463,7 +469,7 @@ function updateBannerUI() {
     playerEl.style.display = player ? '' : 'none';
   }
 
-  // 날짜 — "1944년 6월 6일" 형식
+  // 날짜 — "YYYY MM dd" 형식
   if (dateEl) {
     const hasDate = !!(state.year && state.month && state.day);
     dateEl.textContent  = hasDate ? formatTurnDate(state.year, state.month, state.day) : '';
