@@ -1,0 +1,310 @@
+{
+    "id": "008-aircraft",
+    "gameId": "008",
+    "series": "Guderian's Blitzkrieg II",
+    "description": "Guderian's Blitzkrieg II 항공기 능력치 테이블",
+
+    "aircraft": {
+        "Axis": [
+            {
+                "id": "bf109e",
+                "name": "Bf.109e",
+                "en": "Bf.109e",
+                "isFighter": true,
+                "full":    { "airStr": 4, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 3, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "bf109f",
+                "name": "Bf.109f",
+                "en": "Bf.109f",
+                "isFighter": true,
+                "full":    { "airStr": 4, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 3, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "fw109a",
+                "name": "Fw.109a",
+                "en": "Fw.109a",
+                "isFighter": true,
+                "full":    { "airStr": 5, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 4, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "bf110",
+                "name": "Bf.110",
+                "en": "Bf.110",
+                "isFighter": true,
+                "full":    { "airStr": 3, "groundStr": 5, "parenthesized": false },
+                "reduced": { "airStr": 2, "groundStr": 3, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "do17z",
+                "name": "Do.17z",
+                "en": "Do.17z",
+                "isFighter": false,
+                "full":    { "airStr": 2, "groundStr": 8, "parenthesized": true },
+                "reduced": { "airStr": 1, "groundStr": 4, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "ju88",
+                "name": "Ju.88",
+                "en": "Ju.88",
+                "isFighter": false,
+                "full":    { "airStr": 2, "groundStr": 12, "parenthesized": true },
+                "reduced": { "airStr": 1, "groundStr": 6, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "he111",
+                "name": "He.111",
+                "en": "He.111",
+                "isFighter": false,
+                "full":    { "airStr": 2, "groundStr": 12, "parenthesized": true },
+                "reduced": { "airStr": 1, "groundStr": 6, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "ju87b",
+                "name": "Ju.87b",
+                "en": "Ju.87b",
+                "isFighter": false,
+                "full":    { "airStr": 1, "groundStr": 12, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 6, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "ju87d",
+                "name": "Ju.87d",
+                "en": "Ju.87d",
+                "isFighter": false,
+                "full":    { "airStr": 1, "groundStr": 17, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 9, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "hs129b",
+                "name": "Hs.129b",
+                "en": "Hs.129b",
+                "isFighter": false,
+                "full":    { "airStr": 2, "groundStr": 5, "parenthesized": true },
+                "reduced": { "airStr": 1, "groundStr": 3, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "ju52",
+                "name": "Ju.52",
+                "en": "Ju.52",
+                "isFighter": false,
+                "full":    { "airStr": 0, "groundStr": 0, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 0, "parenthesized": true },
+                "note": ""
+            }
+        ],
+        "Soviet": [
+            {
+                "id": "i16",
+                "name": "I.16",
+                "en": "I.16",
+                "isFighter": true,
+                "full":    { "airStr": 2, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 1, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "yak1",
+                "name": "Yak.1",
+                "en": "Yak.1",
+                "isFighter": true,
+                "full":    { "airStr": 2, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 1, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "lagg3",
+                "name": "LaGG.3",
+                "en": "LaGG.3",
+                "isFighter": true,
+                "full":    { "airStr": 2, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 1, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "guardlagg3",
+                "name": "근위 LaGG.3",
+                "en": "Guard LaGG.3",
+                "isFighter": true,
+                "full":    { "airStr": 3, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 2, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "mig3",
+                "name": "MiG.3",
+                "en": "MiG.3",
+                "isFighter": true,
+                "full":    { "airStr": 2, "groundStr": 1, "parenthesized": false },
+                "reduced": { "airStr": 1, "groundStr": 0, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "p40",
+                "name": "P.40",
+                "en": "P.40",
+                "isFighter": true,
+                "full":    { "airStr": 3, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 2, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "la5",
+                "name": "La.5",
+                "en": "La.5",
+                "isFighter": true,
+                "full":    { "airStr": 4, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 3, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "guardla5",
+                "name": "근위 La.5",
+                "en": "Guard La.5",
+                "isFighter": true,
+                "full":    { "airStr": 5, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 4, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "yak7b",
+                "name": "Yak.7b",
+                "en": "Yak.7b",
+                "isFighter": true,
+                "full":    { "airStr": 3, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 2, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "guardyak7b",
+                "name": "근위 Yak.7b",
+                "en": "Guard Yak.7b",
+                "isFighter": true,
+                "full":    { "airStr": 4, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 3, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "yak9",
+                "name": "Yak.9",
+                "en": "Yak.9",
+                "isFighter": true,
+                "full":    { "airStr": 4, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 3, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "guardyak9",
+                "name": "근위 Yak.9",
+                "en": "Guard Yak.9",
+                "isFighter": true,
+                "full":    { "airStr": 5, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 4, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "hurrillc",
+                "name": "Hurri.llc",
+                "en": "Hurri.llc",
+                "isFighter": true,
+                "full":    { "airStr": 3, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 2, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "po2",
+                "name": "Po.2",
+                "en": "Po.2",
+                "isFighter": false,
+                "full":    { "airStr": 1, "groundStr": 2, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 1, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "p39",
+                "name": "P.39",
+                "en": "P.39",
+                "isFighter": true,
+                "full":    { "airStr": 3, "groundStr": 3, "parenthesized": false },
+                "reduced": { "airStr": 2, "groundStr": 2, "parenthesized": false },
+                "note": ""
+            },
+            {
+                "id": "pe8",
+                "name": "Pe.8",
+                "en": "Pe.8",
+                "isFighter": false,
+                "full":    { "airStr": 3, "groundStr": 19, "parenthesized": true },
+                "reduced": { "airStr": 2, "groundStr": 10, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "tb3",
+                "name": "TB.3",
+                "en": "TB.3",
+                "isFighter": false,
+                "full":    { "airStr": 0, "groundStr": 8, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 4, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "il4",
+                "name": "IL.4",
+                "en": "IL.4",
+                "isFighter": false,
+                "full":    { "airStr": 0, "groundStr": 9, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 5, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "sb2",
+                "name": "SB.2",
+                "en": "SB.2",
+                "isFighter": false,
+                "full":    { "airStr": 1, "groundStr": 2, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 1, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "a20",
+                "name": "A.20",
+                "en": "A.20",
+                "isFighter": false,
+                "full":    { "airStr": 3, "groundStr": 7, "parenthesized": true },
+                "reduced": { "airStr": 2, "groundStr": 4, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "g2",
+                "name": "G.2",
+                "en": "G.2",
+                "isFighter": false,
+                "full":    { "airStr": 0, "groundStr": 0, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 0, "parenthesized": true },
+                "note": ""
+            },
+            {
+                "id": "li2",
+                "name": "Li.2",
+                "en": "Li.2",
+                "isFighter": false,
+                "full":    { "airStr": 0, "groundStr": 0, "parenthesized": true },
+                "reduced": { "airStr": 0, "groundStr": 0, "parenthesized": true },
+                "note": ""
+            }
+        ]
+    }
+}
