@@ -89,20 +89,30 @@ function dfReset() { dfState = null; }
 
 function dfStart(opts) {
   // presetDefender: 방어자 유닛이 미리 주어지는 경우 (요격 등)
+  const hasPresetAtk = !!(opts.attackerUnits?.length);
   const hasPresetDef = !!(opts.presetDefender?.length);
+
   dfState = {
     // 공격자가 없으면 setup, 공격자만 있으면 setup_def_only
-    // 요격처럼 방어자만 preset인 경우도 setup (공격자 수 입력 필요)
-    phase: (opts.attackerUnits && !hasPresetDef) ? 'setup_def_only'
-         : (opts.attackerUnits &&  hasPresetDef && opts.presetAttacker) ? 'voluntary'
+    // 요격처럼 방어자만 preset인 경우도 setup (공격자 쪽 선택 필요)
+    phase: (hasPresetAtk && !hasPresetDef) ? 'setup_def_only'
+         : (hasPresetAtk &&  hasPresetDef && opts.presetAttacker) ? 'voluntary'
          : 'setup',
     round: 0,
-    attackerUnits: opts.attackerUnits
+    attackerUnits: hasPresetAtk
       ? opts.attackerUnits.map(u => ({ ...u, aborted: false }))
-      : null,
-    // 방어자가 미리 주어지면 세팅, 아니면 setup에서 수 입력
-    defenderUnits: hasPresetDef ? opts.presetDefender : [],
-    defPreset: hasPresetDef,   // true면 방어자 수 입력 건너뜀
+      : [{ id:0, name:'유닛 1', str:1, aborted:false, aircraftId:null, aircraftState:null }],
+    defenderUnits: hasPresetDef
+      ? opts.presetDefender
+      : [{ id:0, name:'유닛 1', str:1, aborted:false, aircraftId:null, aircraftState:null }],
+    attackerPreset: hasPresetAtk,
+    defPreset: hasPresetDef,
+    // 프리셋이 아닌 쪽의 기종 드롭다운에 어느 진영 데이터를 보여줄지: 'own'(아군) | 'opposing'(상대)
+    attackerSide: opts.attackerSide || 'own',
+    defenderSide: opts.defenderSide || 'opposing',
+    // 유닛 추가 최대 개수 제한 (예: 요격 = 1). null이면 무제한(최대 8 권장)
+    maxAttackerUnits: opts.maxAttackerUnits || null,
+    maxDefenderUnits: opts.maxDefenderUnits || null,
     attackerLabel: opts.attackerLabel || '공격자 (Attacker)',
     defenderLabel: opts.defenderLabel || '방어자 (Defender)',
     selectedAtk: null, selectedDef: null,
@@ -127,13 +137,13 @@ function renderDogfight() {
   }
 }
 
-function renderDfSetup(defOnly) {
+function renderDfSetup() {
   const df = dfState;
   const atkLabel = df.attackerLabel || '공격자 (Attacker)';
   const defLabel = df.defenderLabel || '방어자 (Defender)';
 
-  // 공격자 섹션: 미리 주어진 경우 표시만, 아니면 수 입력
-  const atkSection = defOnly ? `
+  // 공격자 섹션: 프리셋이면 표시만, 아니면 유닛 리스트(+기종 선택)
+  const atkSection = df.attackerPreset ? `
     <div class="df-side atk-side">
       <div class="df-side-label atk-label">${atkLabel}</div>
       ${df.attackerUnits.map(u => `
@@ -141,16 +151,9 @@ function renderDfSetup(defOnly) {
           <span class="df-unit-name">${u.name}</span>
           <span class="df-unit-str-wrap" style="font-size:0.75rem;color:var(--ink-faded);">공대공 전력 ${u.str}</span>
         </div>`).join('')}
-    </div>` : `
-    <div class="df-side atk-side">
-      <div class="df-side-label atk-label">${atkLabel}</div>
-      <div class="field-group">
-        <label class="field-label">항공 유닛 수</label>
-        <input class="field-input" type="number" id="dfAtkCount" value="1" min="1" max="8" step="1">
-      </div>
-    </div>`;
+    </div>` : renderDfSetupUnitList('atk', df.attackerUnits, df.attackerSide, df.maxAttackerUnits, atkLabel);
 
-  // 방어자 섹션: preset이면 목록 표시, 아니면 수 입력
+  // 방어자 섹션: 프리셋이면 표시만, 아니면 유닛 리스트(+기종 선택)
   const defSection = df.defPreset ? `
     <div class="df-side def-side">
       <div class="df-side-label def-label">${defLabel}</div>
@@ -159,14 +162,7 @@ function renderDfSetup(defOnly) {
           <span class="df-unit-name">${u.name}</span>
           <span class="df-unit-str-wrap" style="font-size:0.75rem;color:var(--ink-faded);">공대공 전력 ${u.str}</span>
         </div>`).join('')}
-    </div>` : `
-    <div class="df-side def-side">
-      <div class="df-side-label def-label">${defLabel}</div>
-      <div class="field-group">
-        <label class="field-label">항공 유닛 수</label>
-        <input class="field-input" type="number" id="dfDefCount" value="1" min="1" max="8" step="1">
-      </div>
-    </div>`;
+    </div>` : renderDfSetupUnitList('def', df.defenderUnits, df.defenderSide, df.maxDefenderUnits, defLabel);
 
   return `
     <div class="card">
@@ -183,6 +179,136 @@ function renderDfSetup(defOnly) {
     </div>`;
 }
 
+// 프리셋이 아닌 쪽(공격자/방어자)의 유닛 리스트 + 기종 선택 UI
+function renderDfSetupUnitList(side, units, sideMode, maxUnits, label) {
+  const sideKey    = (typeof resolveSideKey === 'function') ? resolveSideKey(sideMode) : null;
+  const hasPresets = (typeof getAircraftOptionsForSide === 'function') && getAircraftOptionsForSide(sideKey).length > 0;
+  const canAddMore = !maxUnits || units.length < maxUnits;
+
+  const rows = units.map((u, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i+1}</div>
+      <div class="bom-unit-fields">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" id="dfSetupAircraft_${side}_${i}" style="width:140px;"
+                  onchange="dfSetupPickAircraft('${side}', ${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId, sideKey)}
+          </select>
+        </div>` : ''}
+        <div class="field-group">
+          <label class="field-label">공대공 전력</label>
+          <input class="field-input" type="number" id="dfSetupStr_${side}_${i}" value="${u.str}" min="0" step="0.5" style="width:70px;">
+        </div>
+        ${u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">상태</label>
+          <div class="btn-row" style="gap:4px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState!=='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="dfSetupSetAircraftState('${side}',${i},'full')">풀</button>
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState==='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="dfSetupSetAircraftState('${side}',${i},'reduced')">손실</button>
+          </div>
+        </div>` : ''}
+      </div>
+      ${units.length > 1 ? `<button class="bom-del-btn" onclick="dfSetupRemoveUnit('${side}', ${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  return `
+    <div class="df-side ${side === 'atk' ? 'atk-side' : 'def-side'}">
+      <div class="df-side-label ${side === 'atk' ? 'atk-label' : 'def-label'}">${label}</div>
+      <div class="bom-unit-list">${rows}</div>
+      ${canAddMore ? `<button class="btn btn-secondary" style="margin-top:6px;width:100%;" onclick="dfSetupAddUnit('${side}')">+ 유닛 추가</button>` : ''}
+    </div>`;
+}
+
+// ── 공중전 설정 단계 — 유닛 추가/삭제/기종 선택 핸들러 ─────────
+
+function dfSetupSaveUnits(side) {
+  const df = dfState;
+  if (!df) return;
+  const units = side === 'atk' ? df.attackerUnits : df.defenderUnits;
+  units.forEach((u, i) => {
+    const el = document.getElementById(`dfSetupStr_${side}_${i}`);
+    if (el) u.str = parseFloat(el.value) || 0;
+  });
+}
+
+function dfSetupAddUnit(side) {
+  const df = dfState;
+  if (!df) return;
+  dfSetupSaveUnits(side);
+  const units = side === 'atk' ? df.attackerUnits : df.defenderUnits;
+  const max   = side === 'atk' ? df.maxAttackerUnits : df.maxDefenderUnits;
+  if (max && units.length >= max) return;
+  units.push({ id: units.length, name: `유닛 ${units.length+1}`, str: 1, aborted: false, aircraftId: null, aircraftState: null });
+  airUI();
+}
+
+function dfSetupRemoveUnit(side, i) {
+  const df = dfState;
+  if (!df) return;
+  dfSetupSaveUnits(side);
+  const units = side === 'atk' ? df.attackerUnits : df.defenderUnits;
+  units.splice(i, 1);
+  units.forEach((u, idx) => { u.id = idx; if (!u.aircraftId) u.name = `유닛 ${idx+1}`; });
+  airUI();
+}
+
+function dfSetupPickAircraft(side, i, aircraftId) {
+  const df = dfState;
+  if (!df) return;
+  dfSetupSaveUnits(side);
+  const units = side === 'atk' ? df.attackerUnits : df.defenderUnits;
+  const u = units[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.aircraftState = null;
+    airUI();
+    return;
+  }
+
+  const sideMode = side === 'atk' ? df.attackerSide : df.defenderSide;
+  const sideKey  = (typeof resolveSideKey === 'function') ? resolveSideKey(sideMode) : null;
+  const ac = (typeof getAircraftOptionsForSide === 'function')
+    ? getAircraftOptionsForSide(sideKey).find(a => a.id === aircraftId)
+    : null;
+  if (!ac) return;
+
+  u.aircraftId    = ac.id;
+  u.name          = ac.name;
+  u.str           = ac.full?.airStr ?? 0;
+  u.aircraftState = 'full';
+
+  airUI();
+}
+
+function dfSetupSetAircraftState(side, i, stateName) {
+  const df = dfState;
+  if (!df) return;
+  dfSetupSaveUnits(side);
+  const units = side === 'atk' ? df.attackerUnits : df.defenderUnits;
+  const u = units[i];
+  if (!u || !u.aircraftId) return;
+
+  const sideMode = side === 'atk' ? df.attackerSide : df.defenderSide;
+  const sideKey  = (typeof resolveSideKey === 'function') ? resolveSideKey(sideMode) : null;
+  const ac = (typeof getAircraftOptionsForSide === 'function')
+    ? getAircraftOptionsForSide(sideKey).find(a => a.id === u.aircraftId)
+    : null;
+  if (!ac) return;
+
+  const stats = stateName === 'reduced' ? ac.reduced : ac.full;
+  if (!stats) return;
+
+  u.aircraftState = stateName;
+  u.str = stats.airStr ?? 0;
+
+  airUI();
+}
+
 function dfBack() {
   const fn = dfState?.onBack;
   dfReset();
@@ -191,20 +317,10 @@ function dfBack() {
 
 function dfBegin() {
   const df = dfState;
-  // 공격자 설정
-  if (!df.attackerUnits) {
-    const atkCount = parseInt(document.getElementById('dfAtkCount').value) || 1;
-    df.attackerUnits = Array.from({length: atkCount}, (_, i) => ({
-      id: i, name: `공격자 유닛 ${i+1}`, str: 1, aborted: false
-    }));
-  }
-  // 방어자 설정 (preset이 아닌 경우만 입력값 사용)
-  if (!df.defPreset) {
-    const defCount = parseInt(document.getElementById('dfDefCount').value) || 1;
-    df.defenderUnits = Array.from({length: defCount}, (_, i) => ({
-      id: i, name: `방어자 유닛 ${i+1}`, str: 1, aborted: false
-    }));
-  }
+  // 프리셋이 아닌 쪽은 화면에 남아있는 수동 입력값을 마지막으로 한 번 더 저장
+  if (!df.attackerPreset) dfSetupSaveUnits('atk');
+  if (!df.defPreset)      dfSetupSaveUnits('def');
+
   df.round = 0;
   const defCount = df.defenderUnits.length;
   df.phase = defCount > 1 ? 'voluntary' : 'select';
@@ -513,17 +629,17 @@ function renderIcAsk() {
 function icDecline() { icState.phase='done'; airUI(); }
 
 function icAccept() {
-  // 요격: 요격기는 항상 1기로 고정, 임무 수행 중인 유닛이 "방어자"(preset)
+  // 요격: 요격기는 상대 진영 프리셋에서 최대 1기만 선택, 임무 수행 중인 유닛이 "방어자"(preset)
   dfStart({
-    attackerUnits: [{ id: 0, name: '요격기 1', str: 1, aborted: false }],
-    presetAttacker: true,   // 공격자도 preset — setup 화면 건너뜀
     presetDefender: icState.missionUnits.map(u => ({
       id: u.id, name: u.name, str: u.airStr ?? u.str ?? 1, aborted: false
     })),
+    attackerSide: 'opposing',   // 요격기는 임무 수행 측의 반대 진영
+    maxAttackerUnits: 1,        // 요격기는 항상 1기 고정
     attackerLabel: '요격기 (Interceptor) — 방어자 측',
     defenderLabel: '임무 유닛 (Mission) — 공격자 측',
     onDone: (snap) => {
-      // 요격 공중전에서 임무 유닛(방어자 역할)이 중단된 경우 bombState에 반영
+      // 요격 공중전에서 임무 유닛(방어자 역할)이 중단된 경우 반영
       if (snap?.defenderUnits && icState?.missionUnits) {
         snap.defenderUnits.forEach(du => {
           const u = icState.missionUnits.find(u => u.id === du.id);
@@ -825,7 +941,12 @@ function renderCAP() {
   }
   if (step.id === 'dogfight') {
     // 공중전 시작 후 즉시 재렌더
+    // CAP는 접근하는 적 항공기가 공격자(상대 진영), 아군 초계기가 방어자(아군) 역할
     dfStart({
+      attackerSide: 'opposing',
+      defenderSide: 'own',
+      attackerLabel: '접근 항공기 (적) — 공격자 측',
+      defenderLabel: '전투기 초계 (아군) — 방어자 측',
       onDone: () => { capState.step=2; dfReset(); airUI(); },
       onBack: () => { capState.step=0; dfReset(); airUI(); },
     });

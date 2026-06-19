@@ -38,6 +38,42 @@ function getCurrentSideKey() {
   return p === 'first' ? firstKey : secondKey;
 }
 
+/** 현재 진영의 반대 진영 key 반환 */
+function getOpposingSideKey() {
+  const sideKey = getCurrentSideKey();
+  if (!sideKey) return null;
+  const sides = currentScenario?.sides ? Object.keys(currentScenario.sides) : [];
+  return sides.find(k => k !== sideKey) ?? null;
+}
+
+/** 'own' | 'opposing' | 구체적 sideKey 문자열 → 실제 sideKey로 해석 */
+function resolveSideKey(which) {
+  if (which === 'own')      return getCurrentSideKey();
+  if (which === 'opposing') return getOpposingSideKey();
+  return which || null;
+}
+
+/** 특정 진영(sideKey)에 속한 항공기 목록을 평탄화하여 반환: [{...aircraft, group}] */
+function getAircraftOptionsForSide(sideKey) {
+  if (!currentAircraftData?.aircraft || !sideKey) return [];
+
+  const lookupKeys = _getAircraftLookupKeys(sideKey);
+  const seen = new Set();
+  const list = [];
+
+  lookupKeys.forEach(key => {
+    const group = currentAircraftData.aircraft[key];
+    if (!group) return;
+    group.forEach(ac => {
+      if (seen.has(ac.id)) return;
+      seen.add(ac.id);
+      list.push({ ...ac, group: key });
+    });
+  });
+
+  return list;
+}
+
 /** 진영 키로 항공기 데이터를 찾기 위한 후보 키 목록 생성
  *  (nations 배열 → side.en → side.label → sideKey 순으로 시도, 매칭되는 키를 모두 사용) */
 function _getAircraftLookupKeys(sideKey) {
@@ -51,28 +87,9 @@ function _getAircraftLookupKeys(sideKey) {
   return keys;
 }
 
-/** 현재 진영에 속한 항공기 목록을 평탄화하여 반환: [{...aircraft, group}] */
+/** 현재 진영(아군)에 속한 항공기 목록 — getAircraftOptionsForSide에 위임 */
 function getAircraftOptionsForCurrentSide() {
-  if (!currentAircraftData?.aircraft) return [];
-
-  const sideKey = getCurrentSideKey();
-  if (!sideKey) return [];
-
-  const lookupKeys = _getAircraftLookupKeys(sideKey);
-  const seen = new Set();
-  const list = [];
-
-  lookupKeys.forEach(key => {
-    const group = currentAircraftData.aircraft[key];
-    if (!group) return;
-    group.forEach(ac => {
-      if (seen.has(ac.id)) return; // 중복 키로 같은 기종이 두 번 매칭되는 것 방지
-      seen.add(ac.id);
-      list.push({ ...ac, group: key });
-    });
-  });
-
-  return list;
+  return getAircraftOptionsForSide(getCurrentSideKey());
 }
 
 /** id로 항공기 데이터 단건 조회 (현재 진영 범위 내) */
@@ -80,9 +97,10 @@ function findAircraftById(id) {
   return getAircraftOptionsForCurrentSide().find(ac => ac.id === id) || null;
 }
 
-/** <select> 옵션 HTML 생성 — 국가별 <optgroup>으로 묶음 */
-function buildAircraftSelectOptionsHTML(selectedId) {
-  const options = getAircraftOptionsForCurrentSide();
+/** <select> 옵션 HTML 생성 — 국가별 <optgroup>으로 묶음
+ *  sideKey를 생략하면 현재 진영(아군) 기준으로 조회 */
+function buildAircraftSelectOptionsHTML(selectedId, sideKey) {
+  const options = getAircraftOptionsForSide(sideKey || getCurrentSideKey());
   if (!options.length) return '';
 
   const byGroup = {};
