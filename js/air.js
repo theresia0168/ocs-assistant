@@ -805,16 +805,24 @@ function aaLossDamaged(idx) {
 function renderAAReInput() {
   const st = aaState;
   const u = st.missionUnits[st.lossUnitIdx];
+
+  // 프리셋 기종이 지정되어 있으면 손실 후(reduced) 능력치를 자동으로 불러옴
+  const ac = (u.aircraftId && typeof findAircraftById === 'function') ? findAircraftById(u.aircraftId) : null;
+  const reducedStr = ac?.reduced?.groundStr;
+  const suggested  = reducedStr != null ? reducedStr : Math.max(0, u.groundStr - 1);
+
   return `
     <div class="card">
       <div class="card-title"><span class="icon">✏</span> 대공 사격 — 손실 후 화력 재입력</div>
       <div class="df-info-box" style="margin-bottom:14px;">
         <p><strong>${u.name}</strong>이(가) 스텝 손실 후 임무를 계속합니다.</p>
-        <p style="margin-top:6px;font-size:0.8rem;color:var(--ink-faded);">손실 후 현재 공대지 화력을 입력하세요.</p>
+        <p style="margin-top:6px;font-size:0.8rem;color:var(--ink-faded);">
+          ${ac ? '기종 데이터의 손실 후 능력치를 자동으로 불러왔습니다. 필요하면 직접 수정하세요.' : '손실 후 현재 공대지 화력을 입력하세요.'}
+        </p>
       </div>
       <div class="field-group">
         <label class="field-label">손실 후 공대지 화력 (현재 ${u.groundStr})</label>
-        <input class="field-input" type="number" id="aaReInputStr" value="${Math.max(0, u.groundStr - 1)}" min="0" step="0.5" style="max-width:120px;">
+        <input class="field-input" type="number" id="aaReInputStr" value="${suggested}" min="0" step="0.5" style="max-width:120px;">
       </div>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-primary" onclick="aaReInputDone()">확인 ▶</button>
@@ -827,6 +835,7 @@ function aaReInputDone() {
   const u = st.missionUnits[st.lossUnitIdx];
   const newStr = parseFloat(document.getElementById('aaReInputStr').value) || 0;
   u.groundStr = newStr;
+  if (u.aircraftId) u.aircraftState = 'reduced'; // 프리셋 유닛이면 손실 상태로 동기화
   st.lossPhase = 'done';
   aaDone();
 }
