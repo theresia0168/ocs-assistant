@@ -1121,7 +1121,7 @@ let interdictState = {};
 function interdictInit() {
   interdictState = {
     step: 'move',
-    units: [{ id:0, name:'유닛 1', airStr:1, groundStr:2, isFighter:false, aborted:false, stepLost:false }],
+    units: [{ id:0, name:'유닛 1', airStr:1, groundStr:2, isFighter:false, aborted:false, stepLost:false, aircraftId:null, aircraftState:null }],
     inEnemyAirspace: false,
     aaResult: null,
     finalGroundStr: 0,
@@ -1157,10 +1157,21 @@ function renderInterdict() {
 // STEP 1 — 이동 + 유닛 편성
 function renderInterdictMove() {
   const units = interdictState.units;
+  const hasPresets = (typeof getAircraftOptionsForCurrentSide === 'function')
+    && getAircraftOptionsForCurrentSide().length > 0;
+
   const rows = units.map((u, i) => `
     <div class="bom-unit-row">
       <div class="bom-unit-idx">${i+1}</div>
       <div class="bom-unit-fields">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" id="iAircraft_${i}" style="width:150px;" onchange="interdictPickAircraft(${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId)}
+          </select>
+        </div>` : ''}
         <div class="field-group">
           <label class="field-label">공대공 전력</label>
           <input class="field-input" type="number" id="iAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:70px;">
@@ -1173,6 +1184,14 @@ function renderInterdictMove() {
           <input type="checkbox" id="iFighter_${i}" ${u.isFighter ? 'checked' : ''}>
           <span class="field-label" style="margin:0;">전투기</span>
         </label>
+        ${u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">상태</label>
+          <div class="btn-row" style="gap:4px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState!=='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="interdictSetAircraftState(${i},'full')">풀</button>
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState==='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="interdictSetAircraftState(${i},'reduced')">손실</button>
+          </div>
+        </div>` : ''}
       </div>
       ${units.length > 1 ? `<button class="bom-del-btn" onclick="interdictRemoveUnit(${i})">✕</button>` : ''}
     </div>`).join('');
@@ -1181,7 +1200,7 @@ function renderInterdictMove() {
     <div class="card">
       <div class="card-title"><span class="icon">✈</span> STEP 1 — 임무 목표 헥스로 이동</div>
       <div class="air-manual-desc" style="margin-bottom:12px;">
-        <p>항공 저지 유닛을 <strong>임무 목표 헥스</strong>로 이동시킨 뒤, 각 유닛의 전력을 입력하세요.</p>
+        <p>항공 저지 유닛을 <strong>임무 목표 헥스</strong>로 이동시킨 뒤, 각 유닛의 전력을 입력하세요.${hasPresets ? ' 기종을 선택하면 능력치가 자동으로 채워집니다.' : ''}</p>
       </div>
       <div class="bom-unit-list">${rows}</div>
       <div class="btn-row" style="margin-top:8px;">
@@ -1197,7 +1216,7 @@ function renderInterdictMove() {
 function interdictAddUnit() {
   interdictSaveUnits();
   const i = interdictState.units.length;
-  interdictState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, groundStr:2, isFighter:false, aborted:false, stepLost:false });
+  interdictState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, groundStr:2, isFighter:false, aborted:false, stepLost:false, aircraftId:null, aircraftState:null });
   airUI();
 }
 
@@ -1217,6 +1236,51 @@ function interdictSaveUnits() {
     if (gs) u.groundStr = parseFloat(gs.value) || 0;
     if (fn) u.isFighter = fn.checked;
   });
+}
+
+/** 드롭다운에서 기종 선택 → 능력치 자동 채움 (풀 스텝 기준) */
+function interdictPickAircraft(i, aircraftId) {
+  interdictSaveUnits(); // 다른 유닛의 수동 입력값 보존
+  const u = interdictState.units[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.aircraftState = null;
+    airUI();
+    return;
+  }
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(aircraftId) : null;
+  if (!ac) return;
+
+  u.aircraftId    = ac.id;
+  u.name          = ac.name;
+  u.isFighter     = !!ac.isFighter;
+  u.airStr        = ac.full?.airStr    ?? 0;
+  u.groundStr     = ac.full?.groundStr ?? 0;
+  u.aircraftState = 'full';
+
+  airUI();
+}
+
+/** 선택된 기종의 풀/손실(리듀스드) 상태 전환 */
+function interdictSetAircraftState(i, stateName) {
+  interdictSaveUnits();
+  const u = interdictState.units[i];
+  if (!u || !u.aircraftId) return;
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(u.aircraftId) : null;
+  if (!ac) return;
+
+  const stats = stateName === 'reduced' ? ac.reduced : ac.full;
+  if (!stats) return;
+
+  u.aircraftState = stateName;
+  u.airStr         = stats.airStr    ?? 0;
+  u.groundStr      = stats.groundStr ?? 0;
+
+  airUI();
 }
 
 function interdictSaveSetup() {

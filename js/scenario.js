@@ -173,6 +173,11 @@ function selectScenario(id) {
   const scenario = _getAllScenarios().find(s => s.id === id);
   if (!scenario) return;
 
+  // 항공기 프리셋 데이터 — 날씨 로드와 별개로 비동기 로드 (실패해도 무시하고 수동 입력으로 폴백)
+  if (typeof loadAircraftDataForGame === 'function') {
+    loadAircraftDataForGame(scenario.gameId);
+  }
+
   const tableFile = scenario.weather?.tableFile;
 
   if (tableFile) {
