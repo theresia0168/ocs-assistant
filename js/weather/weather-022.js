@@ -177,8 +177,7 @@ class WeatherHandler022 extends WeatherHandlerBase {
 
   // ── UI 렌더 ───────────────────────────────────────────────
 
-  renderUI(el) {
-    if (!el) return;
+  _renderRollUI(el) {
     const tbl          = this.weatherData;
     const pending      = this._pending;
     const groundLabels = this.state.weatherLabels['groundCondition'] || {};

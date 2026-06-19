@@ -292,7 +292,13 @@ function renderPhases() {
 
 const PHASE_ACTIONS = {
   'weather': {
-    desc: '주사위를 굴려 이번 턴의 날씨를 결정합니다.',
+    desc() {
+      const initial = currentScenario?.weather?.initial;
+      if (initial && state.currentTurnN === 1) {
+        return '시나리오에 지정된 날씨로 자동 진행합니다.';
+      }
+      return '주사위를 굴려 이번 턴의 날씨를 결정합니다.';
+    },
     render(el) {
       const handler = getWeatherHandler();
       if (handler) handler.renderUI(el);
@@ -324,6 +330,11 @@ const PHASE_ACTIONS = {
   'f_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMoveBarrageUI(el); } },
   's_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMoveBarrageUI(el); } },
 };
+
+// 시나리오 지정 날씨 확정 (굴림 생략) — HTML onclick에서 호출
+function weatherConfirmPreset() {
+  nextPhase();
+}
 
 // weather Handler 브릿지 — HTML onclick에서 호출
 function weatherHandlerRoll() {
