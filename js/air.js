@@ -1076,7 +1076,7 @@ function renderBombDogfightCheck() {
   return `
     <div class="card">
       <div class="card-title"><span class="icon">✈</span> STEP 2 — 적 활성 항공 유닛 확인</div>
-      <div class="df-info-box"><p>임무 목표 헥스 인근에 <strong>적 활성 항공 유닛</strong>이 존재합니까?</p></div>
+      <div class="df-info-box"><p>임무 목표 헥스에 <strong>적 활성 항공 유닛</strong>이 존재합니까?</p></div>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-secondary" onclick="bombNoEnemyAir()">아니오 — 공중전 없음 ▶</button>
         <button class="btn btn-primary"   onclick="bombYesEnemyAir()">예 — 공중전 수행 ▶</button>
@@ -1415,7 +1415,7 @@ function renderInterdictDogfightCheck() {
   return `
     <div class="card">
       <div class="card-title"><span class="icon">✈</span> STEP 2 — 적 활성 항공 유닛 확인</div>
-      <div class="df-info-box"><p>임무 목표 헥스 인근에 <strong>적 활성 항공 유닛</strong>이 존재합니까?</p></div>
+      <div class="df-info-box"><p>임무 목표 헥스에 <strong>적 활성 항공 유닛</strong>이 존재합니까?</p></div>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-secondary" onclick="interdictNoDogfight()">아니오 — 공중전 없음 ▶</button>
         <button class="btn btn-primary"   onclick="interdictYesDogfight()">예 — 공중전 수행 ▶</button>
