@@ -38,20 +38,40 @@ function getCurrentSideKey() {
   return p === 'first' ? firstKey : secondKey;
 }
 
-/** 현재 진영(국가들)에 속한 항공기 목록을 평탄화하여 반환: [{...aircraft, nation}] */
+/** 진영 키로 항공기 데이터를 찾기 위한 후보 키 목록 생성
+ *  (nations 배열 → side.en → side.label → sideKey 순으로 시도, 매칭되는 키를 모두 사용) */
+function _getAircraftLookupKeys(sideKey) {
+  if (!sideKey) return [];
+  const side = currentScenario?.sides?.[sideKey];
+  const keys = [];
+  if (side?.nations && Array.isArray(side.nations)) keys.push(...side.nations);
+  if (side?.en)    keys.push(side.en);
+  if (side?.label) keys.push(side.label);
+  keys.push(sideKey); // axis, soviet 같은 진영 키 자체로도 시도
+  return keys;
+}
+
+/** 현재 진영에 속한 항공기 목록을 평탄화하여 반환: [{...aircraft, group}] */
 function getAircraftOptionsForCurrentSide() {
   if (!currentAircraftData?.aircraft) return [];
 
   const sideKey = getCurrentSideKey();
-  const nations = sideKey ? (currentScenario?.sides?.[sideKey]?.nations || []) : [];
-  if (!nations.length) return [];
+  if (!sideKey) return [];
 
+  const lookupKeys = _getAircraftLookupKeys(sideKey);
+  const seen = new Set();
   const list = [];
-  nations.forEach(nation => {
-    (currentAircraftData.aircraft[nation] || []).forEach(ac => {
-      list.push({ ...ac, nation });
+
+  lookupKeys.forEach(key => {
+    const group = currentAircraftData.aircraft[key];
+    if (!group) return;
+    group.forEach(ac => {
+      if (seen.has(ac.id)) return; // 중복 키로 같은 기종이 두 번 매칭되는 것 방지
+      seen.add(ac.id);
+      list.push({ ...ac, group: key });
     });
   });
+
   return list;
 }
 
@@ -65,14 +85,14 @@ function buildAircraftSelectOptionsHTML(selectedId) {
   const options = getAircraftOptionsForCurrentSide();
   if (!options.length) return '';
 
-  const byNation = {};
+  const byGroup = {};
   options.forEach(ac => {
-    if (!byNation[ac.nation]) byNation[ac.nation] = [];
-    byNation[ac.nation].push(ac);
+    if (!byGroup[ac.group]) byGroup[ac.group] = [];
+    byGroup[ac.group].push(ac);
   });
 
-  return Object.entries(byNation).map(([nation, list]) => `
-    <optgroup label="${nation}">
+  return Object.entries(byGroup).map(([group, list]) => `
+    <optgroup label="${group}">
       ${list.map(ac => `<option value="${ac.id}" ${ac.id === selectedId ? 'selected' : ''}>${ac.name}</option>`).join('')}
     </optgroup>`).join('');
 }
