@@ -950,12 +950,12 @@ function renderCAP() {
   }
   if (step.id === 'dogfight') {
     // 공중전 시작 후 즉시 재렌더
-    // CAP는 접근하는 적 항공기가 공격자(상대 진영), 아군 초계기가 방어자(아군) 역할
+    // CAP는 공중전을 수행하는 아군 초계기가 공격자, 접근하는 적 항공기가 방어자 역할
     dfStart({
-      attackerSide: 'opposing',
-      defenderSide: 'own',
-      attackerLabel: '접근 항공기 (적) — 공격자 측',
-      defenderLabel: '전투기 초계 (아군) — 방어자 측',
+      attackerSide: 'own',
+      defenderSide: 'opposing',
+      attackerLabel: '전투기 초계 (아군) — 공격자 측',
+      defenderLabel: '접근 항공기 (적) — 방어자 측',
       onDone: () => { capState.step=2; dfReset(); airUI(); },
       onBack: () => { capState.step=0; dfReset(); airUI(); },
     });
