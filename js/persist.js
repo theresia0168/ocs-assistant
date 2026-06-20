@@ -218,6 +218,18 @@ function deleteSlot(id) {
   renderSaveModal();
 }
 
+function overwriteSlot(id) {
+  if (!currentScenario) return;
+  const slots = listSaveSlots();
+  const slot = slots.find(s => s.id === id);
+  if (!slot) return;
+  if (!confirm(`'${slot.name}' 저장을 현재 상태로 덮어쓸까요?`)) return;
+  slot.savedAt = Date.now();
+  slot.snapshot = buildSnapshot();
+  localStorage.setItem(SAVE_SLOTS_KEY, JSON.stringify(slots));
+  renderSaveModal();
+}
+
 // ── 파일로 내보내기 / 가져오기 (다른 기기로 옮길 때) ──────────────
 
 function downloadSlot(id) {
@@ -346,6 +358,7 @@ function renderSaveModal() {
         </div>
         <div class="save-slot-actions">
           <button class="btn btn-primary save-slot-btn" onclick="loadSlot('${s.id}')">불러오기</button>
+          <button class="btn btn-secondary save-slot-btn" onclick="overwriteSlot('${s.id}')" ${!currentScenario ? 'disabled' : ''}>덮어쓰기</button>
           <button class="btn btn-secondary save-slot-btn" onclick="downloadSlot('${s.id}')">다운로드</button>
           <button class="btn btn-danger save-slot-btn" onclick="deleteSlot('${s.id}')">삭제</button>
         </div>
