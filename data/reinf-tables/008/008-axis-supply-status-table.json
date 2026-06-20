@@ -1,7 +1,7 @@
 {
-  "id": "008-german-supply-table",
-  "label": "독일 보급 테이블",
-  "en": "German Supply Table",
+  "id": "008-axis-supply-table",
+  "label": "추축국 보급 테이블",
+  "en": "Axis Supply Table",
   "rule": "Supply Status",
   "dice": "2d6",
 

@@ -35,12 +35,16 @@
 //           "values": { "GBII": 6, "EatG": 2, "CB": 0 } }
 //       ],
 //       "modifiers": [
-//         { "id": "schwerpunkt", "label": "...", "amount": 2, "auto": true },   // OOA의 schwerpunkt 필드로 자동 판정
+//         { "id": "schwerpunkt", "label": "...", "amount": 2, "auto": true },   // 아래 Schwerpunkt 맵 선정 로직 참고
 //         { "id": "maikop", "label": "...", "amount": 1, "auto": false }        // 사용자가 체크박스로 직접 토글
 //       ]
 //     }
+//   - Schwerpunkt 맵 선정 (scenario.reinforcement.maps 기준):
+//     · 맵 세트가 1개뿐이면 그 맵이 자동으로 Schwerpunkt → 항상 +amount 적용
+//     · 맵 세트가 2개 이상이면 플레이어가 그중 하나를 Schwerpunkt로 직접 선택(reinfSchwerpunktChoice) →
+//       선택된 맵에 대해 +amount 적용 (기본값은 OOA의 historical schwerpunkt 필드로 미리 채워줌)
 //   - Supply Status = scenario.reinforcement.supplyMaps(또는 maps) 중 현재 기간에 해당하는 값의 합
-//                     + (schwerpunkt가 활성 맵에 포함되면 자동 +해당 amount)
+//                     + (Schwerpunkt 맵이 정해져 있으면 +해당 amount)
 //                     + (사용자가 체크한 수동 modifier들의 amount)
 //   - 2d6을 굴려 diceBuckets로 행을 정하고, Supply Status를 컬럼에 맞게 clamp(1- / 13+)해 결과 SP를 조회
 // ============================================================
@@ -53,6 +57,7 @@ let _reinfLastTurnSideKey    = null;      // 마지막으로 렌더링된 턴+�
 let reinfSupplyRollState  = null; // { d1, d2, total, status, resultText }
 let reinfReplaceRollState = null; // { d1, d2, total, resultText }
 let reinfSupplyModifiers  = {};   // { [modifierId]: boolean } — 수동 modifier 체크 상태 (턴 변경에도 유지)
+let reinfSchwerpunktChoice = {};  // { [sideKey]: mapId } — 맵 세트가 여럿일 때 플레이어가 고른 Schwerpunkt (턴 변경에도 유지)
 
 // ── 데이터 로드 ──────────────────────────────────────────────
 function loadReinforcementTable(scenario, sideKey) {
@@ -112,7 +117,7 @@ function renderReinfUI(el) {
     <div class="phase-info-ui reinf-ui">
       ${renderReinfUnitsCard(sideData, activeMaps, sideLabel)}
       <div class="reinf-roll-row">
-        ${renderGermanSupplyCard(supplyData, sideData, activeMaps)}
+        ${renderGermanSupplyCard(supplyData, sideData, activeMaps, sideKey)}
         ${renderReinfReplaceCard(sideData)}
       </div>
       ${renderReinfReorgCard()}
@@ -227,7 +232,19 @@ function getCurrentSchwerpunkt(sideData) {
   return best;
 }
 
-function computeSupplyStatus(supplyData, sideData, activeMaps) {
+// 맵 세트가 1개뿐이면 그 맵으로 자동 확정, 2개 이상이면 플레이어가 고른 값(없으면 historical 기본값)
+function getSchwerpunktMap(sideKey, sideData, activeMaps) {
+  if (!activeMaps || activeMaps.length === 0) return null;
+  if (activeMaps.length === 1) return activeMaps[0];
+
+  const chosen = reinfSchwerpunktChoice[sideKey];
+  if (chosen && activeMaps.includes(chosen)) return chosen;
+
+  const historical = getCurrentSchwerpunkt(sideData);
+  return (historical && activeMaps.includes(historical)) ? historical : null;
+}
+
+function computeSupplyStatus(supplyData, sideData, activeMaps, schwerpunktMap) {
   const period      = findSupplyStatusPeriod(supplyData);
   const supplyMaps  = currentScenario?.reinforcement?.supplyMaps || activeMaps;
   const breakdown   = [];
@@ -240,13 +257,14 @@ function computeSupplyStatus(supplyData, sideData, activeMaps) {
     });
   }
 
-  const schwerpunkt = getCurrentSchwerpunkt(sideData);
   (supplyData.modifiers || []).forEach(mod => {
-    if (mod.auto) {
-      if (mod.id === 'schwerpunkt' && schwerpunkt && activeMaps.includes(schwerpunkt)) {
+    if (mod.id === 'schwerpunkt') {
+      if (schwerpunktMap) {
         total += mod.amount;
-        breakdown.push({ label: `${mod.label} (${schwerpunkt})`, amount: mod.amount });
+        breakdown.push({ label: `${mod.label} (${schwerpunktMap})`, amount: mod.amount });
       }
+    } else if (mod.auto) {
+      // (현재 schwerpunkt 외 다른 auto modifier는 없음 — 향후 추가 대비)
     } else if (reinfSupplyModifiers[mod.id]) {
       total += mod.amount;
       breakdown.push({ label: mod.label, amount: mod.amount });
@@ -262,7 +280,7 @@ function clampSupplyColumnIndex(columns, statusTotal) {
   return statusTotal - 1; // columns[1] === "2" → statusTotal 2 → index 1
 }
 
-function renderGermanSupplyCard(supplyData, sideData, activeMaps) {
+function renderGermanSupplyCard(supplyData, sideData, activeMaps, sideKey) {
   if (!supplyData) {
     return `
       <div class="card reinf-roll-card">
@@ -271,9 +289,11 @@ function renderGermanSupplyCard(supplyData, sideData, activeMaps) {
       </div>`;
   }
 
-  const status      = computeSupplyStatus(supplyData, sideData, activeMaps);
-  const manualMods  = (supplyData.modifiers || []).filter(m => !m.auto);
-  const roll        = reinfSupplyRollState;
+  const schwerpunktMap  = getSchwerpunktMap(sideKey, sideData, activeMaps);
+  const schwerpunktMod  = (supplyData.modifiers || []).find(m => m.id === 'schwerpunkt');
+  const status          = computeSupplyStatus(supplyData, sideData, activeMaps, schwerpunktMap);
+  const manualMods      = (supplyData.modifiers || []).filter(m => !m.auto && m.id !== 'schwerpunkt');
+  const roll            = reinfSupplyRollState;
 
   return `
     <div class="card reinf-roll-card">
@@ -287,6 +307,16 @@ function renderGermanSupplyCard(supplyData, sideData, activeMaps) {
         ${status.breakdown.map(b => `<div class="reinf-status-row"><span>${b.label}</span><span>+${b.amount}</span></div>`).join('')}
         <div class="reinf-status-row reinf-status-total"><span>Supply Status</span><span>${status.total}</span></div>
       </div>
+
+      ${schwerpunktMod && activeMaps.length > 1 ? `
+        <div class="field-group" style="margin-top:8px;">
+          <label class="supply-drm-check-label" style="display:block;margin-bottom:4px;">${schwerpunktMod.label} (+${schwerpunktMod.amount}) — 맵 세트 선택:</label>
+          ${activeMaps.map(m => `
+            <label class="supply-drm-check">
+              <input type="radio" name="schwerpunktMap-${sideKey}" value="${m}" ${schwerpunktMap === m ? 'checked' : ''} onchange="reinfSetSchwerpunkt('${m}')">
+              ${m}
+            </label>`).join('')}
+        </div>` : ''}
 
       ${manualMods.length ? `
         <div class="field-group" style="margin-top:8px;">
@@ -320,13 +350,21 @@ function reinfToggleModifier(id) {
   if (el) renderReinfUI(el);
 }
 
+function reinfSetSchwerpunkt(map) {
+  const sideKey = getSideKeyForStep(state.step);
+  reinfSchwerpunktChoice[sideKey] = map;
+  const el = document.getElementById('phaseActionContent');
+  if (el) renderReinfUI(el);
+}
+
 function reinfRollSupplyStatus() {
   const sideKey    = getSideKeyForStep(state.step);
   const supplyData = SUPPLY_STATUS_DATA[sideKey];
   if (!supplyData) return;
-  const sideData   = REINF_DATA[sideKey];
-  const activeMaps = currentScenario?.reinforcement?.maps || [];
-  const status     = computeSupplyStatus(supplyData, sideData, activeMaps);
+  const sideData        = REINF_DATA[sideKey];
+  const activeMaps      = currentScenario?.reinforcement?.maps || [];
+  const schwerpunktMap  = getSchwerpunktMap(sideKey, sideData, activeMaps);
+  const status          = computeSupplyStatus(supplyData, sideData, activeMaps, schwerpunktMap);
 
   const r = () => Math.floor(Math.random() * 6) + 1;
   const d1 = r(), d2 = r();

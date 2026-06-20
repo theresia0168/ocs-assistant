@@ -31,11 +31,12 @@
 
     "reinforcement": {
         "tableFiles": {
-            "axis": "reinf-tables/008-ooa-axis.json"
+            "axis": "reinf-tables/008/008-ooa-axis.json",
+            "soviet": "reinf-tables/008/008-ooa-soviet.json"
         },
         "maps": ["GBII"],
         "supplyStatusTables": {
-            "axis": "reinf-tables/008-supply-status-table.json"
+            "axis": "reinf-tables/008/008-axis-supply-status-table.json"
         },
         "supplyMaps": ["GBII"]
     },

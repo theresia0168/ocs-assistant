@@ -1,0 +1,3326 @@
+{
+  "gameId": "008",
+  "side": "soviet",
+  "maps": ["GBII", "EatG", "CB"],
+  "_notes": [
+    "원문: Soviet Order of Arrival (Guderian's Blitzkrieg II / Enemy at the Gates / Case Blue 연계 OOA, CB Russian Booklet revised 2011).",
+    "map 표기 없이 'Remove:' 류만 있는 항목은 map:'Any'로 표기 (어떤 맵 조합이든 항상 적용).",
+    "'Add to Emergency Reinforcements' 류는 pool:'emergency' 필드로 표기 (즉시 배치되는 일반 증원과 구분).",
+    "'Guards Exchange:', 'Guards Corps Exchange:', 'Replace:', 'Available for Guards Air Unit Exchange:' 류는 유닛 교체(부대 구성/근위부대 전환)이며 description 필드에 원문을 그대로 기록 (type:'exchange').",
+    "'Disband:' 류는 부대 해체이며 type:'remove'로 표기하고 note 필드에 'Disband' 표기.",
+    "각 월의 첫 턴에는 schwerpunkt(Historical Main Effort)와 partisanAttacks(해당 월의 Partisan Attacks Available 수치)를 기록.",
+    "'•' 류 부가 설명(예: No Retreat rule 종료 등)은 type:'note'로 별도 entry 처리, map:'Any'로 표기.",
+    "transfer 항목은 fromMap/toMap 모두 기록 — 표시 여부는 런타임에 시나리오의 maps 배열로 판단 (둘 다 포함 시 숨김, toMap만 포함 시 증원, fromMap만 포함 시 제거, 둘 다 미포함 시 숨김)."
+  ],
+  "schedule": [
+    {
+      "turn": { "year": 1941, "month": 10, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 0,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["9", "17", "18"] },
+          { "label": "6-2-5 Tank Bde", "components": ["24"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["3", "21"] },
+          { "label": "6x Reserve Markers", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["20", "21"] },
+          { "label": "5-1-5 Tank Bde", "components": ["33"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["9", "10", "11"] },
+          { "label": "3-3-2 Cadet Rgt", "components": ["USSR"] },
+          { "label": "Hurri-IIc", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "LaGG.3", "components": [] },
+          { "label": "Yak.1", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["316"] },
+          { "label": "2-0-3 NKVD Sec Rgt", "components": ["53 RR", "56 RR"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["13", "16", "31"] },
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "Yak-1", "components": [] },
+          { "label": "2x LaGG-3", "components": ["MMD"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["172", "184", "395"] },
+          { "label": "7-3-4 Cav Div", "components": ["72"] },
+          { "label": "Lagg.3", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["32", "238", "312"] },
+          { "label": "6-2-5 Tank Bde", "components": ["19"] },
+          { "label": "2-0-3 NKVD Sec Rgt", "components": ["76 RR", "78 RR"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["33", "38"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["257"] },
+          { "label": "4-3-6 MC Rgt", "components": ["2"] },
+          { "label": "2x SB.2", "components": [] },
+          { "label": "P.40", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3x I.16", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "10-0-1 Inf Div", "components": ["421"] },
+          { "label": "I.15", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["25", "28"] },
+          { "label": "6-2-5 Tank Bde", "components": ["22"] },
+          { "label": "2-0-3 NKVD Sec Rgt", "components": ["90 RR", "151 RR"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["88", "252"] },
+          { "label": "4-3-6 MC Rgt", "components": ["11", "36"] },
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "6x Reserve Markers", "components": [] },
+          { "label": "4x Truck Points", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["323", "324", "340"] },
+          { "label": "12-2-2 Inf Div", "components": ["322", "325", "331"] },
+          { "label": "10-0-1 Inf Div", "components": ["326"] },
+          { "label": "MiG.3", "components": [] },
+          { "label": "P.40", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["343"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["93"] },
+          { "label": "7-3-6 Tank Bde", "components": ["32"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Tula", "930", "1005", "1310"] },
+          { "label": "G.2", "components": [] },
+          { "label": "3x Li.2", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "57 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["333", "335", "337", "351"] },
+          { "label": "11-1-1 Inf Div", "components": ["341", "349"] },
+          { "label": "SB.2", "components": [] },
+          { "label": "Pe.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "3 Abn Corps", "components": ["5", "6", "212 Inf Bde"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-6 MC Rgt", "components": ["38"] },
+          { "label": "16x 1-2-3 Separate Ski Battalions Available", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-4 Cav Div", "components": ["79"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["78"] },
+          { "label": "11-1-1 Militia Div", "components": ["2 Mos", "3 Mos", "3 Com", "4 Mos"] },
+          { "label": "Pe.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "8-3-3 NKVD Inf Div", "components": ["Crimea"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 0,
+      "entries": [
+        { "map": "Any", "type": "note", "text": "No Retreat rule automatically ends" },
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["413"] },
+          { "label": "8-4-5 Mtn Cav Div", "components": ["20"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "37 Army HQ", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-4 Cav Div", "components": ["44"] },
+          { "label": "5-1-5 Lt Tank Bde", "components": ["112"] },
+          { "label": "6-2-5 Tank Bde", "components": ["26"] },
+          { "label": "3-2-3 Mtrd Inf Rgt", "components": ["156"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "2x SB.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Replace: 5-1-5 Lt Tank Bde (146) with 6-2-5 Tank Bde (146)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["11", "16"] },
+          { "label": "Yak.1", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "7-3-6 Mech Bde", "components": ["130"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4 Abn Corps", "components": ["7 “Abn” Inf Bde", "8", "214 Abn Bde"] },
+          { "label": "6-2-4 Mtn Cav Div", "components": ["17", "18"] },
+          { "label": "7-3-4 Cav Div", "components": ["24"] },
+          { "label": "6-2-4 Cav Div", "components": ["73"] },
+          { "label": "2-3-4 Cav Rgt", "components": ["Ind-1"] },
+          { "label": "4-2-2 Inf Bde", "components": ["56"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["Ind"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["54"] },
+          { "label": "7x 1-2-3 Separate Ski Battalions Available", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "TB.3", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "7-3-4 Cav Div", "components": ["17"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["328", "330", "357", "415"] },
+          { "label": "12-3-5 Mech Inf Div", "components": ["82 M"] },
+          { "label": "6-2-4 Cav Div", "components": ["74"] },
+          { "label": "4-2-4 Cav Div", "components": ["75"] },
+          { "label": "11-1-1 Inf Div", "components": ["62"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 8-4-8 Gd Tank Bde (1 Gd)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "7-3-4 Militia Cav Div", "components": ["1 Kras"] },
+          { "label": "8-4-5 Militia Cav Div", "components": ["2 Kras", "3 Kras"] },
+          { "label": "Su.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-4-3 Naval Inf Bde", "components": ["66", "71"] },
+          { "label": "4-2-3 Cav Div Dismtd", "components": ["82"] },
+          { "label": "6-2-5 Tank Bde", "components": ["31", "58"] },
+          { "label": "3x Po.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Corps Exchange: 2 Gd Cav Corps (20 Cav Div) for 8-4-5 Mtn Cav Div (20)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["51"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-3 Naval Inf Bde", "components": ["64"] },
+          { "label": "3-1-2 NKVD Inf Rgt", "components": ["34", "156"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 14-4-3 Gd Inf Div (8 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["239", "348"] },
+          { "label": "11-1-1 Inf Div", "components": ["87"] },
+          { "label": "4-2-2 Inf Bde", "components": ["36", "37", "40", "41"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "8-4-5 Cav Div", "components": ["5"] },
+          { "label": "7-3-4 Cav Div", "components": ["9"] },
+          { "label": "6-2-4 Cav Div", "components": ["31"] },
+          { "label": "Dovator Cav Group", "components": ["50 Cav Div", "53 Cav Div"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["13"] },
+          { "label": "SB.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1 Gd Cav Corps", "components": ["1 Gd", "2 Gd", "7 Gd Cav Div"] },
+          { "label": "2 Gd Cav Corps", "components": ["3 Gd", "4 Gd Cav Div"] },
+          { "label": "11-1-1 Inf Div", "components": ["354"] },
+          { "label": "4-4-3 Inf Bde", "components": ["29"] },
+          { "label": "4-2-2 Inf Bde", "components": ["47", "55"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (9 Gd)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "11-1-1 Militia Div", "components": ["Saratov"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "10 Army HQ", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "8 Abn Corps", "components": ["17", "18", "19 “Abn” Inf Bde"] },
+          { "label": "4-2-2 Inf Bde", "components": ["35"] },
+          { "label": "7-3-6 Tank Bde", "components": ["35"] },
+          { "label": "G.2", "components": [] },
+          { "label": "Li.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 1,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1 Shock Army HQ", "components": [] },
+          { "label": "6-2-5 Tank Bde", "components": ["23"] },
+          { "label": "12-2-2 Inf Div", "components": ["365"] },
+          { "label": "11-1-1 Inf Div", "components": ["371", "379"] },
+          { "label": "11-1-1 Militia Div", "components": ["5 Mos"] },
+          { "label": "3-2-2 Naval Inf Bde", "components": ["84"] },
+          { "label": "4-2-2 Inf Bde", "components": ["17", "43", "44", "49", "50", "133"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Comp"] },
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "IL.2", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3-1-2 NKVD Inf Rgt", "components": ["23"] },
+          { "label": "MiG.3", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["102"] },
+          { "label": "3-1-3 NKVD Mtrd Inf Rgt", "components": ["33"] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "2 Abn Corps", "components": ["2", "3", "4 Inf Bde"] }
+        ] },
+        { "map": "Any", "type": "note", "text": "Massive Assaults can be declared from this turn forward." }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["350", "363"] },
+          { "label": "10 Abn Corps", "components": ["23", "24", "25 “Abn” Inf Bde"] },
+          { "label": "1 Abn Corps", "components": ["1", "204", "211 Abn Bde"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["17", "18"] },
+          { "label": "4-2-2 Inf Bde", "components": ["46", "60"] },
+          { "label": "(1)-0-3 RR Rgt", "components": ["Kal"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Comp", "282"] },
+          { "label": "Hurri-IIc", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-3 Tank Bde", "components": ["6(II)"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["12"] },
+          { "label": "4-3-3 Naval Bde", "components": ["83 (I)"] },
+          { "label": "3-2-3 Mtrd Inf Rgt", "components": ["6"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["201 Lat", "342", "373"] },
+          { "label": "11-1-1 Inf Div", "components": ["334", "344", "359", "391"] },
+          { "label": "4-2-2 Inf Bde", "components": ["28", "30"] },
+          { "label": "2-4-4 Cav Rgt", "components": ["1 Sep"] },
+          { "label": "2-3-4 Cav Rgt", "components": ["Ind-2"] },
+          { "label": "7-3-4 Cav Div", "components": ["83"] },
+          { "label": "6-2-5 Tank Bde", "components": ["68", "69"] },
+          { "label": "2x Truck Points", "components": [] },
+          { "label": "LaGG.3", "components": ["MMD"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Available for Guards Air Unit Exchange: LaGG.3" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["76"] },
+          { "label": "8-4-5 Militia Cav Div", "components": ["Stalingrad"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "MiG.3", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "10-2-2 Mtn Inf Div", "components": ["76"] },
+          { "label": "I.15", "components": [] },
+          { "label": "I.16", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["241", "352", "375"] },
+          { "label": "4-3-3 Naval Inf Bde", "components": ["62"] },
+          { "label": "4-2-2 Inf Bde", "components": ["26"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["24"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "Po.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "61 Army HQ", "components": [] },
+          { "label": "11-1-1 Inf Div", "components": ["329", "356"] },
+          { "label": "12-2-2 Inf Div", "components": ["336"] },
+          { "label": "2x P.40", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "IL.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["338", "358", "360"] },
+          { "label": "6 Abn Corps", "components": ["11", "12", "13 “Abn” Inf Bde"] },
+          { "label": "9 Abn Corps", "components": ["20", "21", "22 “Abn” Inf Bde"] },
+          { "label": "6-2-5 Tank Bde", "components": ["70", "71"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Ind-1"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["346", "387"] },
+          { "label": "10-0-1 Inf Div", "components": ["134", "385"] },
+          { "label": "7 Abn Corps", "components": ["14", "15", "16 “Abn” Inf Bde"] },
+          { "label": "4-3-3 Naval Inf Bde", "components": ["74"] },
+          { "label": "4-2-2 Inf Bde", "components": ["18", "38"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11-1-1 Militia Div", "components": ["Yaro"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Corps Exchange: 3 Gd Cav Corps (5 Gd, 6 Gd, 32 Cav Div) for 5 Cav Corps (3 Cav Div, 14 Cav Div) and 6-2-4 Cav Div (32)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["48"] },
+          { "label": "2x Reserve Markers", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-3-3 Naval Bde", "components": ["78", "79"] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["317"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["14", "15", "19", "52"] },
+          { "label": "4-4-3 Naval Inf Bde", "components": ["75"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2 Cav Corps", "components": ["62", "64", "70 Cav Div"] },
+          { "label": "6 Cav Corps", "components": ["26", "28", "30 Cav Div"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Donbas Cav Grp", "components": ["all"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Kostenko Op Grp HQ", "components": [] },
+          { "label": "4-2-2 Inf Bde", "components": ["20", "27", "45"] },
+          { "label": "4-4-3 Naval Inf Bde", "components": ["154"] },
+          { "label": "6-2-4 Cav Div", "components": ["57"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 1,
+      "entries": [
+        { "map": "Any", "type": "note", "text": "Remove all Worker Alert Units" },
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3 Shock Army HQ", "components": [] },
+          { "label": "4 Shock Army HQ", "components": [] },
+          { "label": "10-0-1 Inf Div", "components": ["355"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Comp"] },
+          { "label": "4-2-2 Inf Bde", "components": ["248", "253"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 6-4-3 Gd Inf Bde (1 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "12-3-5 Mtrd Inf Div (red)", "components": ["7 Gd (m)"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["248", "278", "293"] },
+          { "label": "11-1-1 Inf Div", "components": ["38", "244"] },
+          { "label": "10-0-1 Inf Div", "components": ["103", "162", "242"] },
+          { "label": "12-1-4 Inf Div (Red Symbol)", "components": ["106"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "28 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["124"] },
+          { "label": "4-3-2 Inf Bde", "components": ["78"] },
+          { "label": "Truck Point", "components": [] },
+          { "label": "2x MiG.3", "components": [] },
+          { "label": "Yak.1", "components": [] },
+          { "label": "Su.2", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "MiG.3", "components": [] },
+          { "label": "Yak.1", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "15 Cav Corps", "components": ["1 Mtn", "23 Cav Div"] },
+          { "label": "17 Cav Corps", "components": ["10", "12", "13 Cav Div"] },
+          { "label": "5-1-5 Tank Bde", "components": ["55"] },
+          { "label": "6-2-5 Tank Bde", "components": ["63"] },
+          { "label": "4-2-2 Inf Bde", "components": ["103"] },
+          { "label": "3-2-3 Mtrd Inf Rgt", "components": ["54"] },
+          { "label": "2x Wagon Points", "components": [] },
+          { "label": "LaGG.3", "components": [] },
+          { "label": "I.16", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "8-4-5 Militia Cav Div", "components": ["2 Kras", "3 Kras"] },
+          { "label": "LaGG.3", "components": [] },
+          { "label": "SB.2", "components": [] },
+          { "label": "TB.3", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "39 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["234", "361"] },
+          { "label": "6-2-5 Tank Bde", "components": ["80"] },
+          { "label": "2-3-4 Cav Rgt", "components": ["2", "29"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Comp"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "2x LaGG-3", "components": [] },
+          { "label": "Yak.7b", "components": ["MMD"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "TB.3", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (11 Gd, 12 Gd)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2x Pe.2", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["2 Gd"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["49", "212", "240"] },
+          { "label": "11-1-1 Inf Div", "components": ["369", "381"] },
+          { "label": "7-3-6 Tank Bde", "components": ["81"] },
+          { "label": "4-2-2 Inf Bde", "components": ["31", "51"] },
+          { "label": "4-3-2 Inf Bde", "components": ["39"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["457", "653"] },
+          { "label": "Po.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "optional", "units": [
+          { "label": "1-5-3 Commando Co", "components": ["16", "17", "18"] }
+        ], "note": "see 3.8e" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["41"] },
+          { "label": "11-1-1 Inf Div", "components": ["253", "277"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["52"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "3 Gd Cav Corps", "components": ["5 Gd", "6 Gd", "32 Cav Div"] },
+          { "label": "6-2-5 Tank Bde", "components": ["121"] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "5-1-5 Tank Bde", "components": ["140"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["83"] },
+          { "label": "4-2-2 Inf Bde", "components": ["42"] },
+          { "label": "4-3-2 Inf Bde", "components": ["48"] },
+          { "label": "6-0-rr Rail Arty Rgt", "components": [] },
+          { "label": "Po.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "6-2-4 Mtn Cav Div", "components": ["18"] },
+          { "label": "7-3-4 Mtn Cav Div", "components": ["21"] },
+          { "label": "7-3-4 Cav Div", "components": ["24", "52", "83"] },
+          { "label": "6-2-4 Cav Div", "components": ["55"] },
+          { "label": "4-2-3 Cav Div Dismtd", "components": ["82"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Mech Bde", "components": ["21"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["Moscow"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["54"] },
+          { "label": "8 Cav Corps", "components": ["21 Mtn Cav Div", "52 Cav Div", "55 Cav Div"] },
+          { "label": "11 Cav Corps", "components": ["18 Mtn Cav Div", "24 Cav Div", "82 Dismtd  Cav Div"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1 Cav Corps", "components": ["35", "56", "66 Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["158"] },
+          { "label": "11-1-1 Inf Div", "components": ["135"] },
+          { "label": "4-2-3 NKVD Inf Bde", "components": ["3"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11-1-1 Militia Div", "components": ["2 Mos", "4 Mos", "5 Mos"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5 Cav Corps", "components": ["30", "34", "60 Cav Div"] },
+          { "label": "6 Cav Corps", "components": ["49 Cav Div"] },
+          { "label": "8-4-8 Gd Tank Bde", "components": ["4 Gd"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6 Cav Corps", "components": ["30 Cav Div"] },
+          { "label": "8-4-8 Tank Bde", "components": ["132"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "5-1-5 Tank Bde", "components": ["39"] },
+          { "label": "4-2-6 MC Rgt", "components": ["13"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7 Cav Corps", "components": ["11", "83", "91 Cav Div"] },
+          { "label": "Po.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11-1-1 Militia Div", "components": ["3 Mos"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["23", "24"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "7-3-4 Militia Cav Div", "components": ["1 Kras"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["146"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["153", "156", "157"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (14 Gd)" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "8-4-5 Militia Cav Div", "components": ["Stalingrad"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "8-4-5 Militia Cav Div", "components": ["Rostov"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 29 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Gd Tank Bde", "components": ["5 Gd"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["142"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["109"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 1,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["117"] },
+          { "label": "Yak-1", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["64"] },
+          { "label": "4-3-3 Naval Bde", "components": ["68", "76", "81"] },
+          { "label": "3-1-2 NKVD Inf Rgt", "components": ["95"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["79", "90"] },
+          { "label": "Truck Point", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "I.15", "components": [] },
+          { "label": "2x I.16", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Pe.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["364", "370"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["159", "160", "161"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11-1-1 Militia Div", "components": ["3 Com"] },
+          { "label": "4-3-6 MC Rgt", "components": ["36"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-3-4 Tank Bde", "components": ["Stalingrad"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["23"] },
+          { "label": "3x 26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["139", "143"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["95"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["130"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "8-0-1 Inf Div", "components": ["145"] },
+          { "label": "2-1-2 Militia Rgt", "components": ["Tula"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Kostenko Op Grp HQ", "components": [] },
+          { "label": "2-1-4 Cav Div", "components": ["43"] },
+          { "label": "I-16", "components": ["MMD"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["4"] },
+          { "label": "4-4-6 Gd MC Rgt", "components": ["1 Gd"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2x 75-1-0 Katy Bde", "components": [] },
+          { "label": "2x Wagon Points", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (13 Gd)" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Su.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "8-3-3 NKVD Inf Div", "components": ["11"] },
+          { "label": "Pe.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "SB.2", "components": [] },
+          { "label": "Su.2", "components": [] },
+          { "label": "TB.3", "components": [] },
+          { "label": "IL.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-3 Tank Bde", "components": ["6 Gd (II)"] },
+          { "label": "4-3-6 Tank Bde", "components": ["78"] },
+          { "label": "Yak.1", "components": [] },
+          { "label": "Pe.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 12-2-5 Gd Inf Div (2 Gd (m)), 13-3-3 Gd Inf Div (16 Gd), 8-4-8 Gd Tank Bde (2 Gd, 3 Gd)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["158"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["1"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x Hurri.IIc", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (15 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["24", "362", "380"] },
+          { "label": "4-3-2 Inf Bde", "components": ["86"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["40"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "P.39", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 2,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["115"] },
+          { "label": "2x Yak.7b", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2x 26-1-1 Arty Bde", "components": [] },
+          { "label": "2x Po.2", "components": [] },
+          { "label": "SB.2", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2x Su.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["45", "97"] },
+          { "label": "3-4-4 Abn Rgt", "components": ["250"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "5-1-5 Tank Bde", "components": ["56"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["19"] },
+          { "label": "LaGG.3", "components": [] },
+          { "label": "I.16", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "I.16", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["94"] },
+          { "label": "11-1-1 Inf Div", "components": ["384"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "I.16", "components": [] },
+          { "label": "and I.16", "components": ["MMD"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Available for Guards Air Unit Exchange: 2x Yak.7b" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] },
+          { "label": "2x Hurri-IIc", "components": [] },
+          { "label": "2x Yak.7b", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "8 Cav Corps", "components": ["52 Cav Div"] },
+          { "label": "Hurri.IIc", "components": ["MMD"] },
+          { "label": "LaGG.3", "components": ["MMD"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["82"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (17 Gd, 20 Gd), 12-2-2 Gd Inf Div (18 Gd, 21 Gd, 22 Gd), 6-4-3 Gd Inf Bde (2 Gd)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["416"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "8-3-3 NKVD Inf Div", "components": ["Crimea"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x Yak.7b", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "2x P.40", "components": ["MMD"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["397"] },
+          { "label": "11-1-1 Inf Div", "components": ["116"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["302"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["121", "257"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7 Cav Corps", "components": ["91 Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 2,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "10-0-1 Inf Div", "components": ["171"] },
+          { "label": "12-2-2 Inf Div", "components": ["69"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["55"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["301"] },
+          { "label": "6-2-5 Tank Bde", "components": ["65", "84"] },
+          { "label": "LaGG.3", "components": [] },
+          { "label": "MiG.1", "components": [] },
+          { "label": "MiG.3", "components": [] },
+          { "label": "Pe.2", "components": ["Gd"] },
+          { "label": "TB.3", "components": [] },
+          { "label": "IL.2", "components": ["Gd"] },
+          { "label": "P.40", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "I.15", "components": [] },
+          { "label": "2x Pe.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "17 Cav Corps", "components": ["10 Cav Div"] },
+          { "label": "2x I.15", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["91"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["170"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["7"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-1-5 Tank Bde", "components": ["37", "38"] },
+          { "label": "I.16", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["42", "55", "200"] },
+          { "label": "4-3-6 Tank Bde", "components": ["79"] },
+          { "label": "2x 6-0-rr Rail Arty Rgt", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["24", "70"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["138"] },
+          { "label": "2x Reserve Markers", "components": [] },
+          { "label": "Po.2", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["271"] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["63"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["60"] },
+          { "label": "6-2-5 Tank Bde", "components": ["192"] },
+          { "label": "12-2-2 Inf Div", "components": ["28"] },
+          { "label": "11-1-1 Inf Div", "components": ["284"] },
+          { "label": "4-2-2 Inf Bde", "components": ["132", "157", "161"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "1-2-3 Sep Ski Bn", "components": ["All"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["175"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "1-2-3 Sep Ski Bn", "components": ["All"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["207"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["151"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4 Tank Corps", "components": ["45", "47", "102 Tank Bde", "4 Mtr Inf Bde"] },
+          { "label": "4-3-2 Inf Bde", "components": ["150"] },
+          { "label": "4-2-2 Inf Bde", "components": ["144", "145", "146", "147"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "Pe.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["116", "131", "153"] },
+          { "label": "7-3-6 Tank Bde", "components": ["202"] },
+          { "label": "5 Tank Corps", "components": ["24", "41", "70 Tank Bde", "5 Mtr Inf Bde"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (26 Gd), 12-3-5 Gd Inf Div (3 Gd (m)), 6-4-3 Gd Inf Bde (3 Gd, 4 Gd), 8-4-8 Gd Tank Bde (6 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["26"] },
+          { "label": "8-4-8 Gd Tank Bde", "components": ["1 Gd"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "21 Tank Corps", "components": ["64", "198", "199 Tank Bde", "21 Mtrd Inf Bde"] },
+          { "label": "22 Tank Corps", "components": ["3", "13", "36 Tank Bde"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["91"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["3", "64"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["148"] },
+          { "label": "12-2-2 Inf Div", "components": ["45"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2 Tank Corps", "components": ["26", "27", "148 Tank Bde", "2 Mtr Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["201"] },
+          { "label": "4-2-2 Inf Bde", "components": ["123", "136"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["266"] },
+          { "label": "24 Tank Corps", "components": ["4 Gd", "54 Tank Bde", "24 Mtrd Inf Bde"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "8-4-8 Gd Tank Bde", "components": ["4 Gd"] },
+          { "label": "7-3-6 Tank Bde", "components": ["54"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "48 Army HQ", "components": [] },
+          { "label": "1 Tank Corps", "components": ["1 Gd", "49", "89 Tank Bde", "1 Mtr Inf Bde"] },
+          { "label": "3 Tank Corps", "components": ["50", "51", "103 Tank Bde", "3 Mtrd Inf Bde"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["23"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "23 Tank Corps", "components": ["6", "130", "131 Tank Bde", "23 Mtrd Inf Bde"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["131"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["6"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["271"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["88"] },
+          { "label": "4-2-2 Inf Bde", "components": ["104"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 3,
+      "entries": [
+        { "map": "Any", "type": "note", "text": "Lack of Responsiveness of Air Units ends" },
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "53 Army HQ", "components": [] },
+          { "label": "15 Tank Corps", "components": ["96", "105", "113 Tank Bde", "17 Mtr Inf Bde"] },
+          { "label": "12-2-2 Inf Div", "components": ["215"] },
+          { "label": "4-2-2 Inf Bde", "components": ["105", "108", "110", "114", "130", "141", "229"] },
+          { "label": "4-3-2 Inf Bde", "components": ["112", "120", "125", "127", "128"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "Il.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 12-2-2 Gd Inf Div (28 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "8-4-8 Gd Tank Bde", "components": ["3 Gd"] },
+          { "label": "7-3-6 Tank Bde", "components": ["25"] },
+          { "label": "6-2-5 Tank Bde", "components": ["22", "31"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-1-4 Cav Div", "components": ["115"] },
+          { "label": "5-1-5 Tank Bde", "components": ["140"] },
+          { "label": "4-2-2 Inf Bde", "components": ["149"] },
+          { "label": "2x Yak.1", "components": [] },
+          { "label": "Yak.1", "components": ["Gd"] },
+          { "label": "I.15", "components": [] },
+          { "label": "IL.2", "components": [] },
+          { "label": "IL.4", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "I.16", "components": [] },
+          { "label": "SB.2", "components": [] },
+          { "label": "Pe.2", "components": ["Gd"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["113", "155"] },
+          { "label": "4-3-3 Naval Bde", "components": ["138", "142"] },
+          { "label": "7-3-4 Cav Div", "components": ["63"] },
+          { "label": "2x TB.3", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["104"] },
+          { "label": "9 Tank Corps", "components": ["23", "95", "187 Tank Bde", "10 Mtr Inf Bde"] },
+          { "label": "10 Tank Corps", "components": ["178", "183", "186 Tank Bde", "11 Mtr Inf Bde"] },
+          { "label": "4-2-2 Inf Bde", "components": ["129"] },
+          { "label": "8 Cav Corps", "components": ["112 Cav Div"] },
+          { "label": "7-3-6 Tank Bde", "components": ["157"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "P.39", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["90"] },
+          { "label": "6-2-5 Tank Bde", "components": ["156"] },
+          { "label": "(1)-0-3 RR Rgt", "components": ["V oro", "V oro"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["9", "10"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["64", "235"] },
+          { "label": "7-3-6 Tank Bde", "components": ["177"] },
+          { "label": "6 Tank Corps", "components": ["22", "100", "200 Tank Bde", "6 Mtr Inf Bde"] },
+          { "label": "7 Tank Corps", "components": ["3 Gd", "62", "87 Tank Bde", "7 Mtr Inf Bde"] },
+          { "label": "2x 6-0-rr Rail Arty Rgt", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Gd Inf Div (27 Gd)" },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "5-1-5 Tank Bde", "components": ["2"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["389"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "41 Army HQ", "components": [] },
+          { "label": "6-2-5 Tank Bde", "components": ["184"] },
+          { "label": "8 Tank Corps", "components": ["25", "31", "93 Tank Bde", "8 Mtr Inf Bde"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["85", "86"] },
+          { "label": "(5)-1-1 UR Inf Bde", "components": ["90", "91"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["114"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["77"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "10-3-3 Mtn Inf Div", "components": ["77"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "2-4-4 Cav Rgt", "components": ["1 Sep"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["16"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["417"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12 Tank Corps", "components": ["30", "86", "97 Tank Bde", "13 Mtr Inf Bde"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["102", "228"] },
+          { "label": "6-2-5 Tank Bde", "components": ["168"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["117"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (30 Gd, 31 Gd), 12-2-2 Gd Inf Div (29 Gd)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["203"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["151"] },
+          { "label": "4-3-2 Inf Bde", "components": ["148"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["150", "162"] },
+          { "label": "8-3-3 NKVD Mtrd Inf Div", "components": ["8"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2 Abn Corps", "components": ["2", "3", "4 Inf Bde"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["32 Gd"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11 Tank Corps", "components": ["53", "59", "160 Tank Bde", "12 Mtr Inf Bde"] },
+          { "label": "4-4-6 Gd MC Rgt", "components": ["2 Gd"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["119"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["137"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["33 Gd"] },
+          { "label": "2-3-4 Cav Rgt", "components": ["255"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "3 Abn Corps", "components": ["5", "6", "212 Inf Bde"] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "4-3-3 Naval Bde", "components": ["78"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "4-4-3 Naval Bde", "components": ["66"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 1 },
+      "schwerpunkt": "GBII",
+      "partisanAttacks": 4,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5 Tank Army HQ", "components": [] },
+          { "label": "4-2-2 Inf Bde", "components": ["106", "109", "111", "118", "122"] },
+          { "label": "5-3-6 MC Bde", "components": ["1"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "13 Tank Corps", "components": ["85", "88", "167 Tank Bde", "20 Mtrd Inf Bde"] },
+          { "label": "11-1-1 Inf Div", "components": ["308"] },
+          { "label": "6-2-5 Tank Bde", "components": ["166"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["70"] },
+          { "label": "2x Wagon Points", "components": [] },
+          { "label": "3x SB.2", "components": [] },
+          { "label": "Pe.2", "components": [] },
+          { "label": "IL.4", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "LaGG.3", "components": [] },
+          { "label": "IL.2", "components": ["Gd"] },
+          { "label": "P.40", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["414"] },
+          { "label": "17 Cav Corps", "components": ["15", "116 Cav Div"] },
+          { "label": "I.15", "components": [] },
+          { "label": "2x IL.2", "components": [] },
+          { "label": "Li.2", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["15"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "24 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["73"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["126", "134", "135"] },
+          { "label": "6-0-rr Rail Arty Rgt", "components": [] },
+          { "label": "Truck Point", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["18"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "14 Tank Corps", "components": ["136", "138", "139 Tank Bde", "21 Mtrd Inf Bde"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "8-3-3 NKVD Mtrd Inf Div", "components": ["9"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["179"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "24 Tank Corps", "components": ["130 Tank Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["176"] },
+          { "label": "6-2-5 Tank Bde", "components": ["158"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["2"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["130"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["151"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["82", "237"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["6"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "LaGG.3", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["9"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Li.2", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["84", "112"] },
+          { "label": "11-1-1 Inf Div", "components": ["284", "350"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["92", "120", "153"] },
+          { "label": "6-2-5 Tank Bde", "components": ["101", "118", "154"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["91"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["22"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["118"] },
+          { "label": "7-3-6 Tank Bde", "components": ["188"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "18 Tank Corps", "components": ["110", "180", "181 Tank Bde", "18 Mtr Inf Bde"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "17 Tank Corps", "components": ["66", "67", "174 Tank Bde", "31 Mtr Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["99"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["318"] },
+          { "label": "2-3-4 Cav Rgt", "components": ["32"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["52", "53", "117", "118"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "12-2-2 Gd Inf Div", "components": ["33 Gd"] },
+          { "label": "12-2-2 Inf Div", "components": ["172"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["274"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "25 Tank Corps", "components": ["111", "162", "175 Tank Bde", "16 Mtr Inf Bde"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["157"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x 6-0-rr Rail Arty Rgt", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "23 Tank Corps", "components": ["189 Tank Bde", "9 Mtrd Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["159"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["10"] },
+          { "label": "1-2-5 KV Tank Co", "components": ["13", "14", "17", "18", "20", "22"] },
+          { "label": "MiG.3", "components": [] },
+          { "label": "2x Pe.2", "components": [] },
+          { "label": "A.20", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "23 Tank Corps", "components": ["130", "131 Tank Bde", "23 Mtrd Inf Bde"] },
+          { "label": "4-3-3 Naval Bde", "components": ["78"] },
+          { "label": "MiG.1", "components": [] },
+          { "label": "I.16", "components": [] },
+          { "label": "SB.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-3-5 Lt Tank Bde", "components": ["Maikop"] },
+          { "label": "LaGG.3", "components": ["Gd"] },
+          { "label": "2x Su.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "LaGG.3", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "51 Army HQ", "components": [] },
+          { "label": "13-3-3 Inf Div", "components": ["302"] },
+          { "label": "12-2-2 Inf Div", "components": ["203"] },
+          { "label": "11-1-1 Inf Div", "components": ["138"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "13-3-3 Gd Inf Div", "components": ["9 Gd"] },
+          { "label": "11-1-1 Inf Div", "components": ["309"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "17 Tk Corps", "components": ["66", "67", "174 Tank Bdes", "31 Mtrd Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["201"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["89"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["206"] },
+          { "label": "7-3-6 Tank Bde", "components": ["117"] },
+          { "label": "6-2-5 Tank Bde", "components": ["116"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["96", "100"] },
+          { "label": "11-1-1 Inf Div", "components": ["219"] },
+          { "label": "7-3-6 Tank Bde", "components": ["182"] },
+          { "label": "6-2-5 Tank Bde", "components": ["134"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["74"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["73"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["49", "160"] },
+          { "label": "11-1-1 Inf Div", "components": ["173", "214"] },
+          { "label": "10-0-1 Inf Div", "components": ["298"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["52"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4 Tank Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["205"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "28 Army HQ", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["19"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["96", "119", "240"] },
+          { "label": "13-3-3 Inf Div", "components": ["167"] },
+          { "label": "Yak.7b", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "12 Tank Corps", "components": ["86 Tank Bde"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "62 Army HQ", "components": [] },
+          { "label": "63 Army HQ", "components": [] },
+          { "label": "64 Army HQ", "components": [] },
+          { "label": "13-3-3 Inf Div", "components": ["1"] },
+          { "label": "12-2-2 Inf Div", "components": ["147", "153", "161", "181", "192", "195", "196", "197"] },
+          { "label": "11-1-1 Inf Div", "components": ["127"] },
+          { "label": "A.20", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["87", "126"] },
+          { "label": "4-4-3 Naval Inf Bde", "components": ["154"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-6 Tank Bde", "components": ["34"] },
+          { "label": "7-3-6 Tank Bde", "components": ["248", "255"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7-3-4 Cav Div", "components": ["25"] },
+          { "label": "All remaining non-MMD I.16", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["141"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "5-0-5 Tank Bde", "components": ["191"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["164"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "9 Army HQ", "components": [] },
+          { "label": "12 Army HQ", "components": [] },
+          { "label": "18 Army HQ", "components": [] },
+          { "label": "37 Army HQ", "components": [] },
+          { "label": "14-4-3 Inf Div", "components": ["30"] },
+          { "label": "12-2-2 Inf Div", "components": ["31", "51", "106", "216", "275", "295", "318", "347", "353", "383"] },
+          { "label": "11-1-1 Inf Div", "components": ["349"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["19"] },
+          { "label": "7-3-6 Tank Bde", "components": ["5 Gd"] },
+          { "label": "5-1-5 Tank Bde", "components": ["15"] },
+          { "label": "4-2-2 Inf Bde", "components": ["16"] },
+          { "label": "26-1-1 Arty Bde", "components": [] },
+          { "label": "4x Wagon Points", "components": [] },
+          { "label": "2x Truck Points", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["86", "238"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Yak.1", "components": ["MMD"] },
+          { "label": "2x MiG.3", "components": ["MMD"] },
+          { "label": "I.16", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "28 Tank Corps", "components": ["39", "55", "56 Tank Bde", "32 Mtrd Inf Bde"] },
+          { "label": "6-2-5 Tank Bde", "components": ["189"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["47"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11 Cav Corps", "components": ["18 Mtn Cav Div"] },
+          { "label": "4-2-2 Inf Bde", "components": ["116"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["163", "193"] },
+          { "label": "7-3-6 Tank Bde", "components": ["169"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["69"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["2 Gd"] },
+          { "label": "12-2-2 Inf Div", "components": ["176", "261", "339"] },
+          { "label": "11-1-1 Inf Div", "components": ["255"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["229"] },
+          { "label": "11-1-1 Inf Div", "components": ["18"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "60 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["232"] },
+          { "label": "4-3-2 Inf Bde", "components": ["74", "75", "91"] },
+          { "label": "6-2-5 Tank Bde", "components": ["196"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["63", "131", "159"] },
+          { "label": "10-0-1 Inf Div", "components": ["204"] },
+          { "label": "3-3-2 Std Rgt", "components": ["1", "2", "3"] },
+          { "label": "3-3-2 School Rgt", "components": ["Vinnitsa", "Zhitomir"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3-3-2 School Rgt", "components": ["Grozny", "Krsndr"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "4-3-2 Inf Bde", "components": ["78"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 29 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["135"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["41"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 8,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12 Tank Corps", "components": ["106 Tank Bde"] },
+          { "label": "6-2-5 Tank Bde", "components": ["236"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["43"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "66 Army HQ", "components": [] },
+          { "label": "13-3-3 Inf Div", "components": ["25 Gd"] },
+          { "label": "12-2-2 Inf Div", "components": ["207", "315"] },
+          { "label": "7-3-6 Tank Bde", "components": ["173"] },
+          { "label": "5-0-5 Tank Bde", "components": ["246"] },
+          { "label": "4-2-2 Inf Bde", "components": ["124", "152", "250"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["54", "75"] },
+          { "label": "2-3-3 Inf Bn", "components": ["Czech"] },
+          { "label": "Yak.7b", "components": [] },
+          { "label": "IL.2", "components": [] },
+          { "label": "IL.4", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "3x MiG.3", "components": [] },
+          { "label": "Pe.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["61"] },
+          { "label": "4-2-2 Inf Bde", "components": ["107", "256"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["Mak-ala"] },
+          { "label": "2-3-4 Cav Rgt", "components": ["63"] }
+        ] },
+        { "map": "CB", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "11-1-1 Mil Div", "components": ["1 Baku", "2 Baku", "3 Baku"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "2x Su.2", "components": [] },
+          { "label": "SB.2", "components": [] },
+          { "label": "TB.3", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["264"] },
+          { "label": "7-3-6 Tank Bde", "components": ["213", "256"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 14-4-3 Gd Inf Div (35 Gd), 13-3-3 Gd Inf Div (38 Gd, 41 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11 Cav Corps", "components": ["82 Dismtd Cav Div"] },
+          { "label": "4-2-2 Inf Bde", "components": ["131", "248", "253"] },
+          { "label": "7-3-6 Tank Bde", "components": ["157"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "22 Tank Corps", "components": ["133", "173", "176", "182 Tank Bde", "22 Mtrd Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["115"] },
+          { "label": "6-2-5 Tank Bde", "components": ["36"] },
+          { "label": "5-1-5 Tank Bde", "components": ["217"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["33"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Gd Inf Div (37 Gd), 13-3-3 Gd Inf Div (36 Gd, 40 Gd)" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "11-1-1 Militia Div", "components": ["Saratov"] },
+          { "label": "22 Tank Corps", "components": ["All", "not counting the new units arriving this turn above"] },
+          { "label": "6-2-5 Tank Bde", "components": ["133"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["319"] },
+          { "label": "3-2-2 School Rgt", "components": ["Rostov"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "6 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["172", "387"] },
+          { "label": "11-1-1 Inf Div", "components": ["116", "309"] },
+          { "label": "10-0-1 Inf Div", "components": ["299"] },
+          { "label": "6-2-5 Tank Bde", "components": ["10", "58"] },
+          { "label": "8-4-8 Gd Tank Bde", "components": ["6 Gd"] },
+          { "label": "4-2-2 Inf Bde", "components": ["52"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["156", "159"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["306"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["292"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["124", "395"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "13-3-3 Gd Inf Div", "components": ["41 Gd"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "6-4-3 Gd Inf Bde", "components": ["4 Gd"] },
+          { "label": "3-2-2 Naval Inf Bde", "components": ["84"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["161"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["4 Gd"] },
+          { "label": "14-4-3 Inf Div", "components": ["39 Gd"] },
+          { "label": "16 Tank Corps", "components": ["107", "109", "164 Tank Bde", "15 Mtrd Inf Bde"] },
+          { "label": "26 Tank Corps", "components": ["19", "157", "216 Tank Bde", "14 Mtrd Inf Bde"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-4-3 Gd Inf Bde", "components": ["5 Gd", "6 Gd", "7 Gd", "8 Gd", "9 Gd", "10 Gd"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "5 Tank Army HQ", "components": [] },
+          { "label": "2 Tank Corps", "components": ["26", "27", "148 Tank Bde", "2 Mtr Inf Bde"] },
+          { "label": "13-3-3 Gd Inf Div", "components": ["38 Gd"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "38 Army HQ", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-2-2 Naval Inf Bde", "components": ["86"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["208"] },
+          { "label": "11-1-1 Inf Div", "components": ["422"] },
+          { "label": "6-2-5 Tank Bde", "components": ["254"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "8-2-3 NKVD Inf Div", "components": ["Grozny"] },
+          { "label": "4-2-2 Inf Bde", "components": ["34 (II)"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x La.5", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["155"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "4-3-3 Naval Inf Bde", "components": ["62"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "13-3-3 Est Inf Div", "components": ["7 Est"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["51 (II)"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["230"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["120", "221"] },
+          { "label": "11-1-1 Inf Div", "components": ["231"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "17 Cav Corps", "components": ["all"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4 Gd Cav Corps", "components": ["9 Gd", "10 Gd", "11 Gd", "12 Gd Cav Div"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "1 Tank Corps", "components": ["1 Gd Tank Bde", "49", "89 Tank Bde", "1 Mtr Inf Bde"] },
+          { "label": "12-2-2 Inf Div", "components": ["23", "24", "64"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["33 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["Stalingrad"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["115"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-3-4 Tank Bde", "components": ["Stalingrad"] },
+          { "label": "14 Tank Corps", "components": ["136", "138", "139 Tank Bde", "21 Mtrd Inf Bde"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["52 (II)", "157 (II)"] },
+          { "label": "4-4-3 Naval Bde", "components": ["83 (II)", "255"] }
+        ] },
+        { "map": "CB", "type": "exchange", "description": "Guards Exchange: 12-2-2 Gd Inf Div (34 Gd)" },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["42", "115"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["36", "65"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 10,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["172"] },
+          { "label": "Pe.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 12-2-2 Gd Inf Div (42 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["111"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-4-3 Inf Bde", "components": ["92"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["38"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["77", "78", "110"] },
+          { "label": "MiG.3", "components": [] },
+          { "label": "Pe.2", "components": ["Gd"] },
+          { "label": "TB.3", "components": [] },
+          { "label": "Li.2", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "1-2-5 KV Tank Co", "components": ["13", "14", "17", "18", "20", "22"] },
+          { "label": "6-2-5 Tank Bde", "components": ["168"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["57", "119"] },
+          { "label": "8-3-3 NKVD Inf Div", "components": ["Ordzonze"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["Nat.Gd"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "Su.2", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["6"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "13-3-3 Gd Inf Div", "components": ["9 Gd"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 5 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["233"] },
+          { "label": "7-3-6 Tank Bde", "components": ["105"] },
+          { "label": "5-0-5 Tank Bde", "components": ["241"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "4 Tank Army HQ", "components": [] },
+          { "label": "SB.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "2-3-4 Cav Rgt", "components": ["Ind-3"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["976", "1331"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["29"] },
+          { "label": "4-2-2 Inf Bde", "components": ["106"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["296"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["60"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["212"] },
+          { "label": "1 Mech Corps", "components": ["19", "35", "37 Mech Bde", "219 Tank Bde", "57 MC Bn"] },
+          { "label": "IL.2", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["364"] },
+          { "label": "4-2-2 Inf Bde", "components": ["141"] },
+          { "label": "5-1-5 Tank Bde", "components": ["33"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "2x Yak.7b", "components": [] },
+          { "label": "La.5", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Yak.7b", "components": [] },
+          { "label": "I.15", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["93", "243"] },
+          { "label": "2 Mech Corps", "components": ["18", "34", "43 Mech Bde", "33 Tank Bde", "66 MC Bn"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "13-3-3 Est Inf Div", "components": ["249 Est"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "3 Tank Corps", "components": ["3 Mtr Inf Bde"] },
+          { "label": "LaGG.3", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2 Tank Corps", "components": ["99", "169 Tank Bde", "58 Mtrd Inf Bde"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2 Tank Corps", "components": ["27", "148 Tank Bde", "2 Mtr Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["99"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["164"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3 Mech Corps", "components": ["1", "3", "10 Mech Bde", "1 Gd", "49 Tank Bde", "58 MC Bn"] },
+          { "label": "La.5", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "8 Tank Corps", "components": ["25", "31", "93 Tank Bde", "8 Mtr Inf Bde"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["193", "273"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "28 Tank Corps", "components": ["all"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "58 Army HQ", "components": [] },
+          { "label": "4-2-2 Inf Bde", "components": ["43 (II)"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["31"] },
+          { "label": "La.5", "components": ["MMD"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "(5)-1-1 UR Bde", "components": ["116"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["150"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["188"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 29 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 8,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20x 3-2-3 Ski Bde (Sep) Available for Building", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["52"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4 Cav Corps", "components": ["61", "81 Cav Div"] },
+          { "label": "7-3-6 Tank Bde", "components": ["47", "180"] },
+          { "label": "6x Reserve Markers", "components": [] },
+          { "label": "3x La.5", "components": [] },
+          { "label": "SB.2", "components": [] },
+          { "label": "Po.2", "components": [] },
+          { "label": "B.25", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "23 Tank Corps", "components": ["6", "189 Tank Bde", "9 Mtrd Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["105", "176", "188"] },
+          { "label": "6-2-5 Tank Bde", "components": ["163", "189"] },
+          { "label": "I.16", "components": [] },
+          { "label": "TB.3", "components": [] },
+          { "label": "IL.4", "components": [] },
+          { "label": "A.20", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Tuapse Op Grp HQ", "components": [] },
+          { "label": "4-2-2 Inf Bde", "components": ["59", "159"] },
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["40"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["32"] },
+          { "label": "2-5-3 NKVD Com -mando Bn", "components": ["OMSBON"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["76"] },
+          { "label": "IL.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "12 Army HQ", "components": [] },
+          { "label": "2x I.15", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "7-3-3 Tank Bde", "components": ["6 Gd (II)"] },
+          { "label": "4-2-2 Inf Bde", "components": ["152"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["78", "116"] },
+          { "label": "2-4-4 Cav Rgt", "components": ["1 Sep"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["73"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "17 Tk Corps", "components": ["66", "67", "174 Tank Bdes", "31 Mtrd Inf Bde"] },
+          { "label": "12-2-2 Inf Div", "components": ["212"] },
+          { "label": "11-1-1 Inf Div", "components": ["62"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-0-rr Rail Arty Rgt", "components": [] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 12-2-2 Gd Inf Div (43 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["117"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "65 Army HQ", "components": [] },
+          { "label": "5-5-8 MC Rgt", "components": ["8"] },
+          { "label": "1 Tank Corps", "components": ["117", "159 Tank Bde", "44 Mtr Inf Bde"] },
+          { "label": "4-2-2 Inf Bde", "components": ["96 (II)", "160"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "1 Tank Corps", "components": ["1 Gd", "49", "89 Tank Bde", "1 Mtr Inf Bde"] },
+          { "label": "7-3-6 Tank Bde", "components": ["159"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "8-3-3 NKVD Inf Div", "components": ["Sukhum"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "4 Tank Corps", "components": ["45", "47", "102 Tank Bde", "4 Mtr Inf Bde"] },
+          { "label": "13-3-3 Inf Div", "components": ["258"] },
+          { "label": "11-1-1 Inf Div", "components": ["252"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["253"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["111"] },
+          { "label": "75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "12-2-5 Gd Inf Div", "components": ["2 Gd (m)"] },
+          { "label": "7-3-6 Tank Bde", "components": ["243"] },
+          { "label": "4-2-2 Inf Bde", "components": ["118", "122", "134", "135"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["3 Gd", "24 Gd"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["41"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "MiG.3", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3x 26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["74", "81"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "La.5", "components": ["MMD"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4 Mech Corps", "components": ["36", "59", "60 Mech Bde", "55", "158 Tank Bn", "44 Arm Car Bn", "61 MC Bn"] },
+          { "label": "6-3-5 Flm Tank Bde", "components": ["235"] },
+          { "label": "1-3-6 Flm Co", "components": ["510", "511"] },
+          { "label": "4x Truck Points", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["158"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["100", "101"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (48 Gd)" },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "8 Cav Corps", "components": ["21 Mtn Cav Div", "55", "112 Cav Divs"] },
+          { "label": "12-2-2 Inf Div", "components": ["119", "346"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["155"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 22 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "8-4-8 Gd Tank Bde", "components": ["8 Gd"] },
+          { "label": "10x (1)-0-0 Pontoon Grp", "components": [] },
+          { "label": "3x 26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 12-2-2 Inf Div (47 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 26 },
+      "entries": [
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["165"] },
+          { "label": "3x Truck Points", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["229"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "13-3-3 Gd Inf Div", "components": ["23 Gd"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1 Gd Army HQ", "components": [] },
+          { "label": "14-4-3 Inf Div", "components": ["44 Gd"] },
+          { "label": "1 Gd Mech Corps", "components": ["1 Gd", "2 Gd", "3 Gd Mech Bde", "16 Gd Tank Bn", "17 Gd Tank Bn"] },
+          { "label": "13 Mech Corps", "components": ["17", "61", "62 Mech Bde", "13 Tank Bde"] },
+          { "label": "6-2-5 Tank Bde", "components": ["85"] },
+          { "label": "4-2-4 Tank Bn", "components": ["35"] },
+          { "label": "4-2-2 Inf Bde", "components": ["93", "97 (II)"] },
+          { "label": "5x 75-1-0 Katy Bde", "components": [] },
+          { "label": "Yak.7b", "components": [] },
+          { "label": "La.5", "components": [] },
+          { "label": "I.16", "components": [] },
+          { "label": "IL.4", "components": [] },
+          { "label": "P.40", "components": [] },
+          { "label": "Li.2", "components": [] },
+          { "label": "A.20", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "13x 3-2-3 Ski Bde (Sep) Available for Building", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "63 Army HQ", "components": [] },
+          { "label": "13 Tank Corps", "components": ["all"] },
+          { "label": "6-2-5 Tank Bde", "components": ["114", "193"] },
+          { "label": "Yak.1", "components": [] },
+          { "label": "SB.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["7"] },
+          { "label": "La.5", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "TB.3", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Mech Bde", "components": ["46", "47", "48"] },
+          { "label": "4-2-4 Tank Bn", "components": ["38"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Replace: 9 Tank Corps (10 Mtr Inf Bde) with 9 Tank Corps (8 Mtr Inf Bde), 15 Tank Corps (96, 105, 113 Tank Bde, 17 Mtr Inf Bde) with 15 Tank Corps (II) (88, 113, 195 Tank Bde, 52 Mtr Inf Bde)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-3-3 Mtrd Inf Bde", "components": ["2"] },
+          { "label": "6x Reserve Markers", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["111 (II)"] },
+          { "label": "3-2-2 Inf Rgt", "components": ["691.R"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["28", "29", "32"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-4-8 Gd Tank Bn", "components": ["1 Gd", "2 Gd", "4 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["81", "82"] },
+          { "label": "2x Truck Points", "components": [] },
+          { "label": "4x Wagon Points", "components": [] },
+          { "label": "Pe.2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["Women"] },
+          { "label": "La.5", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 12-2-2 Gd Inf Div (46 Gd)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["267"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3-4-2 Mtn Inf Rgt", "components": ["67"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "7-3-4 Cav Div", "components": ["63"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["399"] },
+          { "label": "13-3-3 Gd Inf Div", "components": ["19 Gd"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["109"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (50 Gd)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "5 Gd Cav Corps", "components": ["11 Gd", "12 Gd", "63 Cav Div"] },
+          { "label": "2x Wagon Points", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "4 Gd Cav Corps", "components": ["11 Gd", "12 Gd Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 8-4-8 Gd Tank Bde (10 Gd), 7-3-6 Gd Tank Bde (9 Gd)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3-2-2 Inf Rgt", "components": ["814"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Available for Guards Air Unit Exchange: 2x La.5" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "14-4-3 Inf Div", "components": ["1 Gd"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-3-6 Gd Tank Bn", "components": ["5 Gd"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (51 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-2-2 Inf Rgt", "components": ["Ind-2"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Guards Exchange: 14-4-3 Inf Div", "components": ["52 Gd"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 29 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-3 Naval Bde", "components": ["116"] },
+          { "label": "3x 26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["98"] },
+          { "label": "4-3-6 Gd Tank Bn", "components": ["7 Gd", "8 Gd", "9 Gd"] },
+          { "label": "4-2-2 Inf Bde", "components": ["94"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["92"] },
+          { "label": "75-1-0 Katy Bde", "components": [] },
+          { "label": "Yak.1", "components": [] },
+          { "label": "2x Yak.9", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["250"] },
+          { "label": "2x LaGG.3", "components": [] },
+          { "label": "MiG.3", "components": [] },
+          { "label": "I.16", "components": [] },
+          { "label": "SB.2", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["156"] },
+          { "label": "Yak.7b", "components": [] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "2x I.16", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "25 Tank Corps", "components": ["111", "162", "175 Tank Bde", "16 Mtr Inf Bde"] },
+          { "label": "12-2-2 Inf Div", "components": ["279"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3x 26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2 Gd Army HQ", "components": [] },
+          { "label": "3 Gd Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["49 Gd"] },
+          { "label": "6 Mech Corps", "components": ["51", "54", "55 Mech Bde", "77", "78 Tank Bn", "41 Arm Car Bn", "63 MC Bn"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4 Gd Cav Corps", "components": ["30", "110 Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3 Tank Army HQ", "components": [] },
+          { "label": "3 Tank Corps", "components": ["57 Mtr Inf Bde"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (53 Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["384"] },
+          { "label": "1 Abn Corps", "components": ["1", "204", "211 Abn Bde"] },
+          { "label": "4 Abn Corps", "components": ["7 “Abn” Inf Bde", "8", "214 Abn Bde"] },
+          { "label": "5 Abn Corps", "components": ["9", "10", "201 Abn Bde"] },
+          { "label": "6 Abn Corps", "components": ["11", "12", "13 “Abn” Inf Bde"] },
+          { "label": "8 Abn Corps", "components": ["17", "18", "19 “Abn” Inf Bde"] },
+          { "label": "9 Abn Corps", "components": ["20", "21", "22 “Abn” Inf Bde"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-3-6 Gd Tank Bn", "components": ["6 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["166", "234"] },
+          { "label": "4-2-2 Inf Bde", "components": ["90"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 1 Gd Tank Corps (15 Gd, 16 Gd, 17 Gd Tank Bde, 1 Gd Mtrd Inf Bde) for 26 Tank Corps (all)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3 Mech Corps", "components": ["34 Arm Car Bn"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5 Shock Army HQ", "components": [] },
+          { "label": "1 Gd Mech Corps", "components": ["116 Arty Rgt"] },
+          { "label": "5 Mech Corps", "components": ["45 Arm Car Bn", "45", "49", "50 Mech Bde", "168", "188 Tank Bn", "64 MC Bn"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "3 Tank Corps", "components": ["50", "51", "103 Tank Bdes", "57 Mtrd Inf Bde"] },
+          { "label": "18 Tank Corps", "components": ["110", "180", "181 Tank Bde", "18 Mtr Inf Bde"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-2 Inf Bde", "components": ["87"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-2-3 NKVD Inf Bde", "components": ["21"] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "7 Tank Corps", "components": ["3 Gd", "62", "87 Tank Bde", "7 Mtr Inf Bde"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["27", "34", "36", "37", "39", "40", "245"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["123"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-3-6 Gd Tank Bn", "components": ["10 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["114", "119", "125"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 3 Gd Mech Corps (7 Gd, 8 Gd, 9 Gd Mech Bde, 41 Gd, 42 Gd Tank Bn) for 4 Mech Corps (all)" },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (54 Gd)" },
+        { "map": "CB", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (55 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["229"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2 Gd Mech Corps", "components": ["4 Gd", "5 Gd", "6 Gd Mech Bde", "21 Gd", "22 Gd Tank Bn", "117 Gd Arty Rgt"] },
+          { "label": "23 Tank Corps", "components": ["3", "39", "135 Tank Bde", "56 Mtrd Inf Bde"] },
+          { "label": "4-2-2 Inf Bde", "components": ["98"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["99"] },
+          { "label": "3-4-2 Mtn Inf Rgt", "components": ["251"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x Yak.9", "components": [] },
+          { "label": "Yak.9", "components": ["MMD"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["133"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 2 Gd Tank Corps (4 Gd, 25 Gd, 26 Gd Tank Bde, 4 Gd Mtrd Inf Bde) for 24 Tank Corps (all)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 29 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-3-6 Gd Tank Bn", "components": ["14 Gd", "48 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["212"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 3 Gd Tank Corps (3 Gd, 18 Gd, 19 Gd Tank Bde, 2 Gd Mtrd Inf Bde) for 7 Tank Corps (all)" },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (57 Gd, 58 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x 75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["51", "126", "198"] },
+          { "label": "4-3-6 Gd MC Rgt", "components": ["3 Gd"] },
+          { "label": "4-2-3 NKVD Bde", "components": ["16"] },
+          { "label": "4-2-2 Inf Bde", "components": ["229"] },
+          { "label": "(2)-4-3 NKVD Bdr Rgt", "components": ["25"] },
+          { "label": "4x Truck Points", "components": [] },
+          { "label": "Spit.V", "components": [] },
+          { "label": "Hurri.IIc", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (60 Gd)" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2x MiG.3", "components": [] },
+          { "label": "2x La.5", "components": [] },
+          { "label": "Pe.2", "components": ["Gd"] },
+          { "label": "Po.2", "components": [] },
+          { "label": "B.25", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["221"] },
+          { "label": "4-2-2 Inf Bde", "components": ["79 (II)", "111"] },
+          { "label": "3-4-2 Mtn Inf Rgt", "components": ["2", "33"] },
+          { "label": "2x Truck Points", "components": [] },
+          { "label": "Yak.7b", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "3 Tank Army HQ", "components": [] },
+          { "label": "10 Tank Corps", "components": ["178", "183", "186 Tank Bde", "11 Mtrd Inf Bde"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x 75-1-0 Katy Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (59 Gd)" },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 4 Gd Tank Corps (12 Gd, 13 Gd, 14 Gd Tank Bde, 3 Gd Mtrd Inf Bde) for 17 Tank Corps (all)" },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "4 Gd Cav Corps", "components": ["110 Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["23"] },
+          { "label": "2x Yak.9", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["141"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2 Tank Army HQ", "components": [] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 7-3-6 Gd Tank Bde (11 Gd)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["243"] },
+          { "label": "4-2-3 NKVD Inf Bde", "components": ["17"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["45"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 4 Gd Mech Corps (13 Gd, 14 Gd, 15 Gd Mech Bde, 41 Tank Bn) for 13 Mech Corps (all), 5 Gd Mech Corps (10 Gd, 11 Gd, 12 Gd Mech Bde, 52 Gd, 53 Gd Tank Bn) for 6 Mech Corps (all)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3-3-4 Abn Rgt", "components": ["Ind"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7 Cav Corps", "components": ["11 Cav Div", "83 Cav Div"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-3-6 Gd Tank Bn", "components": ["15 Gd", "47 Gd"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (61 Gd, 62 Gd)" },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["277"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["90"] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "4 Gd Cav Corps", "components": ["9 Gd", "10 Gd", "30 Cav Div"] },
+          { "label": "5 Gd Cav Corps", "components": ["11 Gd", "12 Gd", "63 Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6 Gd Cav Corps", "components": ["8 Gd", "13 Gd", "8 Cav Div"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Inf Div", "components": ["1 Gd"] },
+          { "label": "4-3-6 Gd Tank Bn", "components": ["11 Gd", "12 Gd", "13 Gd"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (66 Gd), 12-2-2 Inf Div (67 Gd)" },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "28 Army HQ", "components": [] },
+          { "label": "12-2-2 Gd Inf Div", "components": ["34 Gd"] },
+          { "label": "12-2-2 Inf Div", "components": ["248"] },
+          { "label": "8-4-8 Gd Tank Bde", "components": ["6 Gd"] },
+          { "label": "4-2-2 Inf Bde", "components": ["52 (II)", "99", "152", "156", "159"] },
+          { "label": "2-4-4 Cav Rgt", "components": ["1 Sep"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["116"] },
+          { "label": "5 Wagon Points", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "40 Army HQ", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1 Tank Army HQ", "components": [] },
+          { "label": "4-2-4 Tank Bn", "components": ["42", "43", "56", "57", "238"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "29 Army HQ", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "44 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["151", "271", "320", "347", "409", "416"] },
+          { "label": "6-4-3 Gd Inf Bde", "components": ["7 Gd"] },
+          { "label": "4-2-2 Inf Bde", "components": ["43 (II)"] },
+          { "label": "6-2-5 Tank Bde", "components": ["63"] },
+          { "label": "5-1-5 Tank Bde", "components": ["2", "15"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["76"] },
+          { "label": "3x Wagon Points", "components": [] },
+          { "label": "3x Truck Points", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "68 Army HQ", "components": [] },
+          { "label": "19 Tank Corps", "components": ["79", "101", "202 Tank Bde", "19 Mtrd Inf Bde"] },
+          { "label": "14-4-3 Gd Inf Div", "components": ["10 Gd Abn"] },
+          { "label": "13-3-3 Gd Inf Div", "components": ["2 Gd Abn"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-3-2 Inf Bde", "components": ["127"] }
+        ] },
+        { "map": "EatG", "type": "conditional", "condition": "At any Soviet HQ in Trace Supply", "units": [
+          { "label": "Popov Op Grp HQ", "components": [] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "69 Army HQ", "components": [] },
+          { "label": "4-2-4 Tank Bn", "components": ["136"] },
+          { "label": "6-4-3 Gd Mtrd Inf Bde", "components": ["5 Gd", "7 Gd"] },
+          { "label": "MiG.3", "components": [] },
+          { "label": "Yak.7b", "components": [] },
+          { "label": "Yak.9", "components": [] },
+          { "label": "Pe.2", "components": ["Gd"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Yak.1", "components": [] },
+          { "label": "IL.4", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["108"] },
+          { "label": "4-2-2 Inf Bde", "components": ["133"] },
+          { "label": "3-4-2 Mtn Inf Rgt", "components": ["23"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "LaGG.3", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "12 Tank Corps", "components": ["30", "97", "106 Tank Bde", "13 Mtrd Inf Bde"] },
+          { "label": "15 Tank Corps (II)", "components": ["88", "113", "195 Tank Bde", "52 Mtrd Inf Bde"] },
+          { "label": "12-2-2 Inf Div", "components": ["53"] },
+          { "label": "1 Gd Cav Corps", "components": ["1 Gd", "2 Gd", "7 Gd Cav Div"] },
+          { "label": "13-3-3 Gd Inf Div", "components": ["48 Gd"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["244"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Replace: 9 Tank Corps (187 Tank Bde) with 9 Tank Corps (108 Tank Bde)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Gd Tank Bde", "components": ["33 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["7"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-2-5 Gd Tank Bde", "components": ["27 Gd"] },
+          { "label": "4-2-5 Lt Tank Bde", "components": ["226", "227", "230"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["9 Gd Abn"] },
+          { "label": "4-3-6 Gd Tank Bn", "components": ["3 Gd"] },
+          { "label": "4-2-2 Inf Bde", "components": ["33"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Available for Guards Air Unit Exchange: 2x Yak.9" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-3-6 Gd Tank Bde", "components": ["34 Gd"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Corps Exchange: 5 Gd Tank Corps (20 Gd, 21 Gd, 22 Gd Tank Bde, 6 Gd Mtrd Inf Bde) for 4 Tank Corps (all)" },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (70 Gd), 13-3-3 Inf Div (68 Gd, 69 Gd)" },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "7-3-6 Tank Bde", "components": ["52"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["7 Gd Abn"] },
+          { "label": "La.5", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "8 Cav Corps", "components": ["21 Mtn Cav Div", "55", "112 Cav Divs"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-4-5 AG Bn", "components": ["1437"] },
+          { "label": "7 Gd Cav Corps", "components": ["14 Gd", "15 Gd", "16 Gd Cav Div"] },
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-2-5 Tank Bde", "components": ["13"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "26-1-1 Arty Bde", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["4 Gd Abn"] },
+          { "label": "3x Yak.9", "components": [] },
+          { "label": "2x Yak.9", "components": ["MMD"] }
+        ] },
+        { "map": "GBII", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "19 Cav Corps", "components": ["8", "51 Cav Div"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "7-3-3 Gd Tank Bde", "components": ["23 Gd"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["3 Gd Abn"] },
+          { "label": "4-2-4 Tank Bn", "components": ["215"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (76 Gd)" },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (75 Gd, 79 Gd), 13-3-3 Inf Div (71 Gd, 72 Gd, 74 Gd, 77 Gd), 12-2-2 Inf Div (73 Gd, 78 Gd, 80 Gd, 81 Gd), La.5, IL.2 (Gd)" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Yak.1", "components": [] },
+          { "label": "Pe.2", "components": ["Gd"] },
+          { "label": "IL.4", "components": [] },
+          { "label": "P.40", "components": [] },
+          { "label": "Spit.V", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "8-3-3 NKVD Inf Div", "components": ["1 VV"] }
+        ] },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "LaGG.3", "components": [] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Li-2", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["1 Gd Abn"] },
+          { "label": "8-2-4 Gd Tank Bde", "components": ["28 Gd", "29 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["249"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "3 Mech Corps", "components": ["34 Arm Car Bn"] },
+          { "label": "4-2-2 Inf Bde", "components": ["146"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-4-5 AG Bn", "components": ["1436"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["226"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5 Gd Mech Corps", "components": ["24 Gd Tank Bde"] },
+          { "label": "4-3-6 Gd Tank Bn", "components": ["53 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["255"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "5 Gd Mech Corps", "components": ["52 Gd", "53 Gd Tank Bn"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "11-1-1 Inf Div", "components": ["308"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["63", "64", "65", "83"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3 Gd Mech Corps", "components": ["35 Gd Tank Bde"] },
+          { "label": "4 Gd Mech Corps", "components": ["36 Gd Tank Bde"] },
+          { "label": "(5)-2-1 Gd UR Bde", "components": ["1 Gd"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "3 Gd Mech Corps", "components": ["41 Gd Tank Bn"] },
+          { "label": "4 Gd Tank Corps", "components": ["41 Tank Bn"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["32", "137"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-6 Gd Tank Bn", "components": ["30 Gd"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (82 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "La.5", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 26 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 29 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "La.5", "components": [] },
+          { "label": "IL.4", "components": [] },
+          { "label": "P.39", "components": [] },
+          { "label": "P.39", "components": ["Gd"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2x Yak.7b", "components": [] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3-2-2 Inf Rgt", "components": ["807"] },
+          { "label": "Yak.1", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "70 Army HQ", "components": [] },
+          { "label": "12-2-2 Inf Div", "components": ["213"] },
+          { "label": "(5)-1-1 UR Bde", "components": ["152", "154", "155"] },
+          { "label": "6-4-3 Gd Naval Bde", "components": ["11 Gd"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["121"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "8-3-5 Gd Flm Tank Bde", "components": ["31 Gd"] },
+          { "label": "4-2-4 Tank Bn", "components": ["230"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-3-5 Flm Tank Bde", "components": ["235"] }
+        ] },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-2-5 Gd Tank Bde", "components": ["32 Gd"] },
+          { "label": "6-4-5 AG Bn", "components": ["1448", "1449"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2 Mech Corps", "components": ["36 Tank Bde", "33 Arm Car Bn"] },
+          { "label": "14-4-3 Gd Inf Div", "components": ["8 Gd Abn"] },
+          { "label": "6-4-3 Gd Mtrd Inf Bde", "components": ["3 Gd"] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (91 Gd), 12-2-2 Gd Inf Div (85 Gd)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3-4-4 Abn Rgt", "components": ["31"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-4-5 AG Bn", "components": ["1435", "1444"] },
+          { "label": "7-3-6 Gd Tank Bde", "components": ["42 Gd", "43 Gd"] }
+        ] },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "All remaining 3-2-3 Ski Bde", "components": ["Sep"] }
+        ], "note": "Disband" },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (83 Gd, 84 Gd)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6 Gd Army HQ", "components": [] },
+          { "label": "4-2-4 Tank Bn", "components": ["224"] },
+          { "label": "4-2-2 Inf Bde", "components": ["Korean"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "All remaining 3-2-3 Ski Bde", "components": ["Sep"] }
+        ], "note": "Disband" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "21 Army HQ", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "13-3-3 Gd Inf Div", "components": ["5 Gd Abn"] },
+          { "label": "Truck Point", "components": [] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "10 Gd Army HQ", "components": [] },
+          { "label": "11 Gd Army HQ", "components": [] }
+        ] },
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Gd Inf Div (22 (II) Gd)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["161"] }
+        ] },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7 Gd Army HQ", "components": [] },
+          { "label": "8 Gd Army HQ", "components": [] },
+          { "label": "4-2-4 Tank Bn", "components": ["59", "60", "61"] },
+          { "label": "6-4-3 Gd Inf Bde", "components": ["12 Gd", "13 Gd", "14 Gd"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "62 Army HQ", "components": [] },
+          { "label": "64 Army HQ", "components": [] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (86 Gd), 13-3-3 Inf Div (88 Gd, 89 Gd, 90 Gd), 12-2-2 Inf Div (87 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 22 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "exchange", "description": "Guards Exchange: 13-3-3 Inf Div (94 Gd)" },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (93 Gd), 13-3-3 Inf Div (92 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 29 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 1 },
+      "schwerpunkt": "EatG",
+      "partisanAttacks": 6,
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Yak.7b", "components": ["Gd"] },
+          { "label": "Yak.9", "components": [] },
+          { "label": "IL.2", "components": ["Gd"] }
+        ] },
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "13-3-3 Inf Div", "components": ["4"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 5 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2 Gd Mech Corps", "components": ["37 Gd Tank Bde"] }
+        ] },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2 Gd Mech Corps", "components": ["21 Gd Tank Bn"] }
+        ] },
+        { "map": "EatG", "type": "exchange", "description": "Guards Exchange: 14-4-3 Inf Div (95 Gd, 96 Gd), 13-3-3 Inf Div (97 Gd)" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["237"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 12 },
+      "entries": [
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-2-4 Tank Bn", "components": ["258", "320"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-2-2 Inf Bde", "components": ["147"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 19 },
+      "entries": []
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 22 },
+      "entries": [
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "12-2-2 Inf Div", "components": ["199"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "14-4-3 Gd Inf Div", "components": ["6 Gd Abn"] }
+        ] }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 29 },
+      "entries": []
+    }
+  ]
+}
