@@ -329,6 +329,9 @@ const PHASE_ACTIONS = {
 
   'f_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMoveBarrageUI(el); } },
   's_move_barrage': { desc: '해군 또는 공군으로 포격/폭격을 수행합니다.', render(el) { renderMoveBarrageUI(el); } },
+
+  'f_supply': { desc: '모든 유닛의 보급 상태를 판정합니다.', render(el) { renderSupplyUI(el); } },
+  's_supply': { desc: '모든 유닛의 보급 상태를 판정합니다.', render(el) { renderSupplyUI(el); } },
 };
 
 // 시나리오 지정 날씨 확정 (굴림 생략) — HTML onclick에서 호출
@@ -539,7 +542,7 @@ function renderAirRefitUI(el) {
           <li><strong>비활성(Inactive)</strong> 항공 유닛을 정비하여 <strong>활성(Active)</strong> 상태로 전환합니다.</li>
           <li>항공 유닛 정비를 수행하는 <strong>항공 기지(Air Base)마다 1T</strong>를 지불합니다.</li>
           <li>지불한 기지에서 <strong>항공 기지 레벨당 항공 유닛 최대 2기</strong>까지 정비할 수 있습니다.
-              <span id="airRefitMax" style="font-weight:900;"></span>기
+              <span id="airRefitMax" style="font-weight:900;"></span>
               (항공 기지 레벨 * 2)</li>
         </ul>
       </div>
@@ -637,17 +640,56 @@ function renderMovementUI(el) {
         <ul class="phase-info-list">
           <li>하나의 유닛 또는 스택을 <strong>이동력(MA)</strong> 한도 내에서 <strong>이동</strong>시킬 수 있습니다.<br>
               <span style="font-size:0.78rem;color:var(--ink-faded);">※ 한 유닛/스택의 이동을 마치기 전, 다른 유닛/스택의 이동을 시작할 수 없습니다.</span></li>
-          <li>이동 전에 유닛/스택이 해당 턴에 취할 <strong>모드</strong>를 선택할 수 있습니다.</li>
+          <li><strong>이동 전에</strong> 유닛/스택이 해당 턴에 취할 <strong>모드</strong>를 선택할 수 있습니다.</li>
           <li>이동 전에 분견대를 분할할 수 있습니다.</li>
           <li>차량(Truck) 또는 궤도(Track) 이동 유형의 유닛은 이동 전 연료를 소모해야 합니다.</li>
           <li>유닛/스택의 이동 중 3MP를 소모하여 <strong>오버런(이동 중 전투)</strong>을 수행할 수 있습니다.<br>
-              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 3MP를 소모해 진입할 수 없는 헥스를 대상으로 오버런을 수행할 수 없습니다.</span><br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 3MP를 초과하는 이동력을 소모해 진입해야 하는 헥스를 대상으로 오버런을 수행할 수 없습니다.</span><br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 이동력 산정 시 도로의 효과는 적용되지 않습니다.</span><br>
               <span style="font-size:0.78rem;color:var(--ink-faded);">※ 전투 결과로 돌파를 얻을 수 없습니다.</span></li>
           <li>힙샷을 포함한 <strong>항공 임무</strong>를 수행할 수 있습니다.<br>
               <span style="font-size:0.78rem;color:var(--ink-faded);">※ 폭격은 수행할 수 없습니다.</span></li>
           <li>공병 능력을 가진 유닛이 <strong>항공 기지, 진지, 항만 수리</strong>등을 수행할 수 있습니다.</li>
           <li>철도 공병 유닛이 철도의 궤간을 변환할 수 있습니다.</li>
           <li>SP는 한 페이즈에 한 번만 이동할 수 있습니다.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 보급 페이즈 UI  (Supply Phase — Rule 5.0)
+// ============================================================
+function renderSupplyUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">📦 보급 판정</div>
+        <ul class="phase-info-list">
+          <li><strong>직접 보급</strong> — 보급원으로부터 <strong>5MP + 1헥스</strong> 이내인 유닛은 보급됩니다.</li>
+          <li><strong>HQ 보급</strong> — 사령부(HQ)로부터 <strong>해당 HQ 보급 범위 MP + 1헥스</strong> 이내인 유닛은 보급됩니다.</li>
+          <li>위 두 방식 모두 불가능한 유닛은 <strong>지도 상의 SP</strong>를 소모하여 보급을 받을 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 지도 상 SP 1T당 2RE까지 보급을 제공할 수 있습니다.</span></li>
+          <li>이마저도 불가능한 유닛은 <strong>보급 단절(Out of Supply, OOS)</strong> 상태가 됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⚠ OOS 유닛 처리</div>
+        <ul class="phase-info-list">
+          <li>OOS 상태인 유닛은 <strong>소모(Attrition) 판정</strong>을 받아야 합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 소모 테이블은 별도 페이지를 참고하세요. (현재 본 앱에는 추가되지 않음)</span></li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🔄 내부 비축(Organic Stock) 재충전</div>
+        <ul class="phase-info-list">
+          <li>이번 페이즈에 <strong>직접 보급</strong> 또는 <strong>HQ 보급</strong> 중 어느 한쪽으로 SP 소모가 가능한 유닛은, 이전에 사용한 <strong>내부 비축</strong>을 다시 채울 수 있습니다.</li>
+          <li>내부 비축 <strong>사용 단계 당 2T</strong>를 소비해 재충전합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 복수 스텝 유닛은 <strong>1RE당 2T</strong>를 소비합니다.</span></li>
         </ul>
       </div>
 
