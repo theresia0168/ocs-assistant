@@ -261,6 +261,15 @@
                 "note": ""
             },
             {
+                "id": "il2",
+                "name": "IL.2",
+                "en": "IL.2",
+                "isFighter": false,
+                "full":    { "airStr": 3, "groundStr": 8, "parenthesized": true },
+                "reduced": { "airStr": 2, "groundStr": 4, "parenthesized": true },
+                "note": ""
+            },
+            {
                 "id": "il4",
                 "name": "IL.4",
                 "en": "IL.4",
