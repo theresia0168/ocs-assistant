@@ -39,7 +39,11 @@
             "axis": "reinf-tables/008/008-axis-supply-status-table.json",
             "soviet": "reinf-tables/008/008-soviet-supply-status-table.json"
         },
-        "supplyMaps": ["GBII"]
+        "supplyMaps": ["GBII"],
+        "replacementTables": {
+            "axis": "reinf-tables/008/008-axis-replacement-table.json",
+            "soviet": "reinf-tables/008/008-soviet-replacement-table.json"
+        }
     },
 
     "sides": {

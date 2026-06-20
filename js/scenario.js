@@ -178,6 +178,14 @@ function selectScenario(id) {
   const scenario = _getAllScenarios().find(s => s.id === id);
   if (!scenario) return;
 
+  // 새 시나리오를 시작하면 자동저장이 곧 이 새 상태로 덮어씌워진다 —
+  // 진행 중이던 다른 자동저장이 있다면 실수로 잃기 전에 한 번 확인한다.
+  const auto = typeof getAutoSaveEntry === 'function' ? getAutoSaveEntry() : null;
+  if (auto && auto.snapshot?.currentScenario?.id !== scenario.id) {
+    const ok = confirm('자동저장된 진행 상황이 있습니다. 새 시나리오를 시작하면 자동저장이 덮어씌워집니다.\n계속하시겠습니까? (취소 후 "세이브/로드"에서 자동저장을 불러올 수 있습니다)');
+    if (!ok) return;
+  }
+
   // 항공기 프리셋 데이터 — 날씨 로드와 별개로 비동기 로드 (실패해도 무시하고 수동 입력으로 폴백)
   if (typeof loadAircraftDataForGame === 'function') {
     loadAircraftDataForGame(scenario.gameId);

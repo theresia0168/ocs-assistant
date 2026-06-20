@@ -49,6 +49,12 @@
   color: var(--paper);
   text-shadow: 2px 2px 0 var(--ink);
 }
+.lobby-save-load-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+}
 
 /* 단계 레이블 */
 .lobby-stage-label {

@@ -1,0 +1,53 @@
+{
+  "id": "008-soviet-replacement-table",
+  "label": "소련군 보충 테이블",
+  "en": "Soviet Repls",
+  "rule": "Soviet Repls",
+  "dice": "2d6",
+
+  "minKey": 4,
+  "maxKey": 12,
+
+  "columns": ["Fighter", "Other Air", "Pax", "Eq", "Truck", "Arty", "Emergency"],
+  "columnsKo": ["전투기", "기타 항공기", "Pax Repl", "Eq Repl", "Truck Point", "Arty 재건", "비상증원(Emergency)"],
+
+  "table": {
+    "4":  [0, 0, 0, 0, 0, 0, 0],
+    "5":  [0, 0, 1, 0, 0, 0, 0],
+    "6":  [0, 0, 2, 0, 0, 0, 0],
+    "7":  [1, 0, 2, 1, 0, 0, 0],
+    "8":  [1, 0, 3, 1, 0, 0, 0],
+    "9":  [1, 1, 4, 1, 0, 1, 0],
+    "10": [2, 1, 5, 2, 1, 1, 1],
+    "11": [2, 2, 6, 2, 1, 1, 2],
+    "12": [3, 2, 6, 3, 2, 2, 2]
+  },
+
+  "rollModifierByPeriod": [
+    { "label": "1941",  "start": { "year": 1941, "month": 1 }, "end": { "year": 1941, "month": 12 }, "amount": -1 },
+    { "label": "1942",  "start": { "year": 1942, "month": 1 }, "end": { "year": 1942, "month": 12 }, "amount": 0 },
+    { "label": "1943+", "start": { "year": 1943, "month": 1 }, "end": null,                          "amount": 1 }
+  ],
+
+  "manualModifiers": [
+    { "id": "moscowGermanHeld", "label": "모스크바 독일군 점령", "amount": -3 }
+  ],
+
+  "doubleRollCondition": {
+    "id": "donGermans",
+    "label": "Don강 북부(EatG C7.26 ~ C46.07 사이)에 독일군 유닛 존재 — 이번 턴 2회 굴림"
+  },
+
+  "fighters": "Yak-1, LaGG-3, MiG-3, Yak-7b, P-40, P-39, Hurri-II, La-5, Yak-9",
+  "otherAir": "그 외 모든 항공기",
+
+  "notes": [
+    "보충 테이블에 대하여 항상 1회만 굴립니다 (단, Don강 북부 조건 충족 시 2회).",
+    "Eq Repl로는 항공기를 재건할 수 없습니다. 재건 불가 기종: SB-2, I-15, I-16, G-2, TB-3, Su-2.",
+    "Air Repl은 즉시 사용해야 하며, 사용할 항공기가 없으면 소멸합니다.",
+    "Verkhniy Baskunchak(Case Blue E14.10) 또는 Astrakhan(하나 또는 둘 다)을 독일군이 점령 중이면 항공기 보충을 1 감소시킵니다.",
+    "Truck/Arty 보충은 전멸 더미에 의해 제한 받지 않고 즉시 추가하고, Arty 보충 수만큼 포병/Katyusha 여단을 재건할 수 있습니다(죽은 유닛이 없으면 재건되지 않음).",
+    "Emergency 결과는 비상증원 풀에서 그 수만큼의 유닛 카운터를 해방시킵니다.",
+    "맵 세트를 모두 사용 중이지 않다면, 보충 포인트마다 1d6을 굴려 1-3 GBII, 4-5 EatG, 6 Main Effort가 있는 맵 세트로 배치합니다(CB만 사용 중이면 6에 CB로 배치)."
+  ]
+}

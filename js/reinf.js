@@ -51,11 +51,15 @@
 
 let REINF_DATA               = {}; // { [sideKey]: OOA 데이터 }
 let SUPPLY_STATUS_DATA       = {}; // { [sideKey]: 보급 테이블 데이터 }
+let REPLACEMENT_DATA         = {}; // { [sideKey]: 보충 테이블 데이터 (시나리오.reinforcement.replacementTables[sideKey]) }
 let _reinfLoadedKeys         = new Set(); // 로드 완료(또는 시도 완료)된 "scenarioId:sideKey" 집합 — 진영별로 독립 캐시
 let _reinfLastTurnSideKey    = null;      // 마지막으로 렌더링된 턴+진영 key (변경 시 굴림 상태 초기화)
 
 let reinfSupplyRollState  = null; // { d1, d2, total, status, resultText }
 let reinfReplaceRollState = null; // { d1, d2, total, resultText }
+let reinfGermanReplRollState = null; // { rolls: [{d1,d2,total,rolled,values}, ...], values, modText }
+let reinfReplModifiers       = {};   // { [modifierId]: boolean } — 보충 테이블 수동 modifier 체크 상태
+let reinfReplDoubleRoll      = false; // 보충 테이블 2회 굴림 조건 체크 상태
 let reinfSupplyModifiers  = {};   // { [modifierId]: boolean } — 수동 modifier 체크 상태 (턴 변경에도 유지)
 let reinfSchwerpunktChoice = {};  // { [sideKey]: mapId } — 맵 세트가 여럿일 때 플레이어가 고른 Schwerpunkt (턴 변경에도 유지)
 
@@ -78,6 +82,15 @@ function loadSupplyStatusTable(scenario, sideKey) {
     .catch(() => { SUPPLY_STATUS_DATA[sideKey] = null; return null; });
 }
 
+function loadReplacementTable(scenario, sideKey) {
+  const file = scenario?.reinforcement?.replacementTables?.[sideKey];
+  if (!file) { REPLACEMENT_DATA[sideKey] = null; return Promise.resolve(null); }
+  return fetch(`data/${file}`)
+    .then(r => r.json())
+    .then(data => { REPLACEMENT_DATA[sideKey] = data; return data; })
+    .catch(() => { REPLACEMENT_DATA[sideKey] = null; return null; });
+}
+
 // ── 단일 렌더링 진입점 ─────────────────────────────────────────
 function renderReinfUI(el) {
   if (!el) return;
@@ -92,6 +105,7 @@ function renderReinfUI(el) {
     Promise.all([
       loadReinforcementTable(currentScenario, sideKey),
       loadSupplyStatusTable(currentScenario, sideKey),
+      loadReplacementTable(currentScenario, sideKey),
     ]).then(() => {
       _reinfLoadedKeys.add(loadKey);
       const liveEl = document.getElementById('phaseActionContent');
@@ -104,13 +118,15 @@ function renderReinfUI(el) {
   const activeMaps   = currentScenario?.reinforcement?.maps || [];
   const sideData     = REINF_DATA[sideKey] || null;
   const supplyData   = SUPPLY_STATUS_DATA[sideKey] || null;
+  const replData     = REPLACEMENT_DATA[sideKey] || null;
 
   // 턴 또는 진영이 바뀌면 이전 굴림 상태 초기화 (modifier 체크 상태는 유지 — 보드 상태이므로)
   const turnSideKey = `${state.year}-${state.month}-${state.day}-${sideKey}`;
   if (_reinfLastTurnSideKey !== turnSideKey) {
-    _reinfLastTurnSideKey  = turnSideKey;
-    reinfSupplyRollState   = null;
-    reinfReplaceRollState  = null;
+    _reinfLastTurnSideKey     = turnSideKey;
+    reinfSupplyRollState      = null;
+    reinfReplaceRollState     = null;
+    reinfGermanReplRollState  = null;
   }
 
   el.innerHTML = `
@@ -118,7 +134,7 @@ function renderReinfUI(el) {
       ${renderReinfUnitsCard(sideData, activeMaps, sideLabel)}
       <div class="reinf-roll-row">
         ${renderGermanSupplyCard(supplyData, sideData, activeMaps, sideKey)}
-        ${renderReinfReplaceCard(sideData)}
+        ${replData ? renderGermanReplCard(replData) : renderReinfReplaceCard(sideData)}
       </div>
       ${renderReinfReorgCard()}
     </div>`;
@@ -439,6 +455,131 @@ function reinfReplaceRoll() {
 function renderReinfDiceHTML(roll) {
   const dice = supplyDieBadge(roll.d1) + (roll.d2 !== null && roll.d2 !== undefined ? supplyDieBadge(roll.d2) : '');
   return `${dice}<div class="dice-total">${roll.total}</div>`;
+}
+
+// ── 보충 테이블 (German Repls류 — 2d6 + 연도 보정 → 카테고리별 결과) ──────
+function findReplModifierPeriod(replData) {
+  const ym = state.year * 100 + state.month;
+  return (replData.rollModifierByPeriod || []).find(p => {
+    const startYm = p.start.year * 100 + p.start.month;
+    const endYm   = p.end ? (p.end.year * 100 + p.end.month) : Infinity;
+    return ym >= startYm && ym <= endYm;
+  }) || null;
+}
+
+function computeReplModAmount(replData) {
+  const period = findReplModifierPeriod(replData);
+  let amount = period ? period.amount : 0;
+  (replData.manualModifiers || []).forEach(m => {
+    if (reinfReplModifiers[m.id]) amount += m.amount;
+  });
+  return { period, amount };
+}
+
+function renderGermanReplCard(replData) {
+  const { period, amount: modAmount } = computeReplModAmount(replData);
+  const roll      = reinfGermanReplRollState;
+  const columns   = replData.columnsKo || replData.columns || [];
+  const dblCond   = replData.doubleRollCondition;
+
+  return `
+    <div class="card reinf-roll-card">
+      <div class="card-title">
+        <span class="icon">🔧</span> ${replData.label || '보충 테이블'}
+        ${replData.rule ? `<span class="air-step-en">${replData.rule}</span>` : ''}
+      </div>
+      ${period ? `<p class="phase-action-desc" style="margin-top:6px;">연도 보정: ${period.label} (${period.amount >= 0 ? '+' : ''}${period.amount})</p>` : ''}
+
+      ${(replData.manualModifiers || []).length ? `
+        <div class="field-group" style="margin-top:8px;">
+          ${replData.manualModifiers.map(m => `
+            <label class="supply-drm-check">
+              <input type="checkbox" ${reinfReplModifiers[m.id] ? 'checked' : ''} onchange="reinfToggleReplModifier('${m.id}')">
+              ${m.label} (${m.amount >= 0 ? '+' : ''}${m.amount})
+            </label>`).join('')}
+        </div>` : ''}
+
+      ${dblCond ? `
+        <div class="field-group" style="margin-top:8px;">
+          <label class="supply-drm-check">
+            <input type="checkbox" ${reinfReplDoubleRoll ? 'checked' : ''} onchange="reinfToggleReplDoubleRoll()">
+            ${dblCond.label}
+          </label>
+        </div>` : ''}
+
+      <div class="combat-dice-inner" style="margin-top:10px;">
+        <div class="combat-dice-controls">
+          <button class="dice-roll-btn combat-btn" style="width:100%;" onclick="reinfRollGermanRepl()">
+            <span class="roll-label">보충 굴림</span>
+            <span class="roll-formula">${replData.dice || '2d6'}${dblCond && reinfReplDoubleRoll ? ' x2' : ''}</span>
+          </button>
+        </div>
+        <div class="combat-dice-result-wrap">
+          <div class="dice-result-area combat-dice-result">
+            ${roll ? renderReinfDiceHTML(roll.rolls[0]) : `<span class="dice-placeholder">버튼을 눌러 굴리세요</span>`}
+            ${roll && roll.rolls[1] ? renderReinfDiceHTML(roll.rolls[1]) : ''}
+          </div>
+          ${roll ? `<div class="supply-result-box" style="text-align:left;">수정 결과: ${roll.modText}</div>` : ''}
+        </div>
+      </div>
+
+      ${roll ? `
+        <div class="repl-result-grid">
+          ${columns.map((c, i) => `
+            <div class="repl-result-cell${roll.values[i] ? ' has-value' : ''}">
+              <span class="repl-result-label">${c}</span>
+              <span class="repl-result-value">${roll.values[i] > 0 ? '+' : ''}${roll.values[i]}</span>
+            </div>`).join('')}
+        </div>` : ''}
+
+      ${replData.notes?.length ? `
+        <ul class="phase-info-list" style="margin-top:10px;font-size:0.78rem;">
+          ${replData.notes.map(n => `<li>${n}</li>`).join('')}
+        </ul>` : ''}
+    </div>`;
+}
+
+function reinfToggleReplModifier(id) {
+  reinfReplModifiers[id] = !reinfReplModifiers[id];
+  const el = document.getElementById('phaseActionContent');
+  if (el) renderReinfUI(el);
+}
+
+function reinfToggleReplDoubleRoll() {
+  reinfReplDoubleRoll = !reinfReplDoubleRoll;
+  const el = document.getElementById('phaseActionContent');
+  if (el) renderReinfUI(el);
+}
+
+function rollReplOnce(replData, modAmount) {
+  const r = () => Math.floor(Math.random() * 6) + 1;
+  const d1 = r(), d2 = r();
+  const base   = d1 + d2;
+  const minKey = replData.minKey ?? 1;
+  const maxKey = replData.maxKey ?? 12;
+  const rolled = Math.min(maxKey, Math.max(minKey, base + modAmount));
+  const values = replData.table[String(rolled)] || replData.table[String(maxKey)];
+  return { d1, d2, total: base, rolled, values };
+}
+
+function reinfRollGermanRepl() {
+  const sideKey  = getSideKeyForStep(state.step);
+  const replData = REPLACEMENT_DATA[sideKey];
+  if (!replData || !replData.table) return;
+
+  const { amount: modAmount } = computeReplModAmount(replData);
+  const doRoll = () => rollReplOnce(replData, modAmount);
+
+  const rolls  = (replData.doubleRollCondition && reinfReplDoubleRoll) ? [doRoll(), doRoll()] : [doRoll()];
+  const values = rolls[0].values.map((v, i) => rolls.reduce((sum, r) => sum + r.values[i], 0));
+  const modText = rolls
+    .map(r => `${r.total}${modAmount ? ` ${modAmount > 0 ? '+' : ''}${modAmount}` : ''} → ${r.rolled}`)
+    .join(' / ');
+
+  reinfGermanReplRollState = { rolls, values, modText };
+
+  const el = document.getElementById('phaseActionContent');
+  if (el) renderReinfUI(el);
 }
 
 // ── 유닛 재편성 / 통합 안내 ──────────────────────────────────────

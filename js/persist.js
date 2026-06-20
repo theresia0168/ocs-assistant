@@ -120,29 +120,66 @@ function applySnapshot(snap) {
 }
 
 // ── 자동 저장 ────────────────────────────────────────────────
+// 일정 주기가 아니라, 사용자가 화면과 상호작용(클릭/입력/변경)할 때만 저장한다.
+// 연속 상호작용 중 매번 직렬화하지 않도록 짧게 디바운스한다.
+
+const AUTOSAVE_DEBOUNCE_MS = 1000;
+let _autoSaveTimer = null;
 
 function autoSave() {
   if (!currentScenario) return;
   try {
-    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(buildSnapshot()));
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ savedAt: Date.now(), snapshot: buildSnapshot() }));
   } catch (e) { /* 저장 공간 부족 등은 무시 */ }
 }
 
-function restoreAutoSave() {
+function scheduleAutoSave() {
+  if (!currentScenario) return;
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(autoSave, AUTOSAVE_DEBOUNCE_MS);
+}
+
+['click', 'input', 'change'].forEach(evt => {
+  document.addEventListener(evt, scheduleAutoSave, { passive: true });
+});
+// 탭을 닫거나 백그라운드로 전환할 때는 디바운스 없이 즉시 저장(유실 방지)
+window.addEventListener('pagehide', autoSave);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') autoSave();
+});
+
+// 자동저장 슬롯 조회 — 구버전(스냅샷을 직접 저장) 포맷도 함께 지원
+function getAutoSaveEntry() {
   try {
     const raw = localStorage.getItem(AUTOSAVE_KEY);
-    if (!raw) return false;
-    const snap = JSON.parse(raw);
-    if (!snap?.currentScenario) return false;
-    applySnapshot(snap);
-    return true;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    const snapshot = parsed?.snapshot || parsed;
+    if (!snapshot?.currentScenario) return null;
+    return { savedAt: parsed?.savedAt || Date.now(), snapshot };
   } catch (e) {
-    return false;
+    return null;
   }
 }
 
-setInterval(autoSave, 3000);
-window.addEventListener('pagehide', autoSave);
+function restoreAutoSave() {
+  const entry = getAutoSaveEntry();
+  if (!entry) return false;
+  applySnapshot(entry.snapshot);
+  return true;
+}
+
+function loadAutoSave() {
+  const entry = getAutoSaveEntry();
+  if (!entry) return;
+  applySnapshot(entry.snapshot);
+  closeSaveModal();
+}
+
+function clearAutoSave() {
+  localStorage.removeItem(AUTOSAVE_KEY);
+  renderSaveModal();
+}
 
 // ── 수동 저장 슬롯 ────────────────────────────────────────────
 
@@ -262,10 +299,19 @@ function handleSaveSlotSubmit() {
   if (input) input.value = '';
 }
 
+function formatSlotMeta(snapshot, savedAt) {
+  const sc = snapshot?.currentScenario;
+  const st = snapshot?.state;
+  const turnLabel = st?.year ? `${st.year}년 ${st.month}월 ${st.day}일` : '—';
+  const dateLabel = new Date(savedAt).toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+  return `${sc?.title || '—'} · ${turnLabel} · ${dateLabel}`;
+}
+
 function renderSaveModal() {
   const list = document.getElementById('saveSlotList');
   if (!list) return;
   const slots = listSaveSlots();
+  const autoEntry = getAutoSaveEntry();
 
   const noScenarioWarn = !currentScenario
     ? '<div class="save-modal-warn">시나리오를 선택해야 저장할 수 있습니다.</div>'
@@ -275,28 +321,35 @@ function renderSaveModal() {
   const warnEl = document.getElementById('saveModalWarn');
   if (warnEl) warnEl.innerHTML = noScenarioWarn;
 
-  if (slots.length === 0) {
+  if (slots.length === 0 && !autoEntry) {
     list.innerHTML = '<div class="save-modal-empty">저장된 슬롯이 없습니다.</div>';
     return;
   }
 
-  list.innerHTML = slots.map(s => {
-    const sc = s.snapshot?.currentScenario;
-    const st = s.snapshot?.state;
-    const turnLabel = st?.year ? `${st.year}년 ${st.month}월 ${st.day}일` : '—';
-    const date = new Date(s.savedAt);
-    const dateLabel = date.toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
-    return `
+  const autoRow = autoEntry ? `
+    <div class="save-slot-row save-slot-row-auto">
+      <div class="save-slot-info">
+        <div class="save-slot-name">⏱ 자동저장</div>
+        <div class="save-slot-meta">${formatSlotMeta(autoEntry.snapshot, autoEntry.savedAt)}</div>
+      </div>
+      <div class="save-slot-actions">
+        <button class="btn btn-primary save-slot-btn" onclick="loadAutoSave()">불러오기</button>
+        <button class="btn btn-danger save-slot-btn" onclick="clearAutoSave()">삭제</button>
+      </div>
+    </div>` : '';
+
+  const slotRows = slots.map(s => `
       <div class="save-slot-row">
         <div class="save-slot-info">
           <div class="save-slot-name">${s.name}</div>
-          <div class="save-slot-meta">${sc?.title || '—'} · ${turnLabel} · ${dateLabel}</div>
+          <div class="save-slot-meta">${formatSlotMeta(s.snapshot, s.savedAt)}</div>
         </div>
         <div class="save-slot-actions">
           <button class="btn btn-primary save-slot-btn" onclick="loadSlot('${s.id}')">불러오기</button>
           <button class="btn btn-secondary save-slot-btn" onclick="downloadSlot('${s.id}')">다운로드</button>
           <button class="btn btn-danger save-slot-btn" onclick="deleteSlot('${s.id}')">삭제</button>
         </div>
-      </div>`;
-  }).join('');
+      </div>`).join('');
+
+  list.innerHTML = autoRow + slotRows;
 }

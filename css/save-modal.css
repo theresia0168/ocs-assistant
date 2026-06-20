@@ -126,3 +126,7 @@
   border-bottom-width: 2px;
   white-space: nowrap;
 }
+.save-slot-row-auto {
+  background: rgba(0,0,0,0.08);
+  border-style: dashed;
+}

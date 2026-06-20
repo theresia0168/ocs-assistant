@@ -1,0 +1,47 @@
+{
+  "id": "008-axis-replacement-table",
+  "label": "독일군 보충 테이블",
+  "en": "German Repls",
+  "rule": "German Repls",
+  "dice": "2d6",
+
+  "minKey": 1,
+  "maxKey": 12,
+
+  "columns": ["Fighter", "Other Air", "Pax", "Eq", "Truck", "Emergency"],
+  "columnsKo": ["전투기", "기타 항공기", "Pax Repl", "Eq Repl", "Truck Point", "비상증원(Emergency)"],
+
+  "table": {
+    "1":  [0, 0, 0, 0, -2, 0],
+    "2":  [0, 0, 0, 0, -1, 0],
+    "3":  [0, 0, 0, 0, -1, 0],
+    "4":  [0, 0, 0, 0, 0,  0],
+    "5":  [0, 0, 1, 0, 0,  0],
+    "6":  [0, 0, 1, 0, 0,  0],
+    "7":  [1, 0, 2, 0, 0,  0],
+    "8":  [1, 0, 2, 1, 0,  0],
+    "9":  [1, 1, 2, 1, 0,  0],
+    "10": [2, 1, 2, 1, 0,  0],
+    "11": [2, 1, 2, 2, 1,  1],
+    "12": [2, 2, 3, 2, 1,  2]
+  },
+
+  "rollModifierByPeriod": [
+    { "label": "1941",  "start": { "year": 1941, "month": 1 }, "end": { "year": 1941, "month": 12 }, "amount": -1 },
+    { "label": "1942",  "start": { "year": 1942, "month": 1 }, "end": { "year": 1942, "month": 12 }, "amount": 0 },
+    { "label": "1943+", "start": { "year": 1943, "month": 1 }, "end": null,                          "amount": 1 }
+  ],
+
+  "fighters": "Bf109, Fw190",
+  "otherAir": "Ju88, He111, Ju87",
+
+  "notes": [
+    "보충 테이블에 대하여 항상 1회만 굴립니다.",
+    "Case Blue 맵만 사용 중이라면 Truck 항목의 손실(음수) 결과는 무시합니다.",
+    "Axis Allied(추축 동맹군) 유닛은 보충받을 수 없으나, 독일군 보충으로 재건될 수 있습니다.",
+    "Air Repl은 즉시 사용해야 하며, 사용할 항공기가 없으면 소멸합니다. He111z는 재건 불가.",
+    "Truck/Arty 보충은 전멸 더미에 의해 제한 받지 않고 즉시 추가하고, 음수(Truck 손실)는 일반 Truck Point에서만 제거합니다.",
+    "Emergency 결과는 비상증원 풀에서 그 수만큼의 유닛 카운터를 해방시킵니다.",
+    "맵 세트를 모두 사용 중이지 않다면, 보충 포인트마다 1d6을 굴려 1-3 GBII, 4-5 EatG, 6 Schwerpunkt가 있는 맵 세트로 배치합니다(CB만 사용 중이면 6에 CB로 배치)."
+  ]
+}
