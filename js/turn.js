@@ -689,7 +689,8 @@ function renderSupplyUI(el) {
         <ul class="phase-info-list">
           <li>이번 페이즈에 <strong>직접 보급</strong> 또는 <strong>HQ 보급</strong> 중 어느 한쪽으로 SP 소모가 가능한 유닛은, 이전에 사용한 <strong>내부 비축</strong>을 다시 채울 수 있습니다.</li>
           <li>내부 비축 <strong>사용 단계 당 2T</strong>를 소비해 재충전합니다.<br>
-              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 복수 스텝 유닛은 <strong>1RE당 2T</strong>를 소비합니다.</span></li>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 부족(Low) = 2T, 고갈(Exhausted) = 4T(1SP)</span></li>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 복수 스텝 유닛은 <strong>1RE당 2T</strong>를 소비합니다. 예) 고갈 상태의 3스텝 유닛 = 고갈(4T) * 3스텝 = 12T = 3SP</span></li>
         </ul>
       </div>
 
