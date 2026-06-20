@@ -954,8 +954,8 @@ function renderCAP() {
     dfStart({
       attackerSide: 'own',
       defenderSide: 'opposing',
-      attackerLabel: '전투기 초계 (아군) — 공격자 측',
-      defenderLabel: '접근 항공기 (적) — 방어자 측',
+      attackerLabel: '초계 임무 전투기 (아군) — 공격자 측',
+      defenderLabel: '목표 헥스 활성 항공기 (적) — 방어자 측',
       onDone: () => { capState.step=2; dfReset(); airUI(); },
       onBack: () => { capState.step=0; dfReset(); airUI(); },
     });
