@@ -40,7 +40,7 @@ function calcOdds() {
   const defEff = noSupply ? defRaw * 0.5 : defRaw;
   const ratio   = defEff > 0 ? atkRaw / defEff : 0;
   const oddsStr = defEff > 0
-    ? (ratio >= 1 ? `${Math.floor(ratio)} : 1` : `1 : ${Math.ceil(1 / ratio)}`)
+    ? (ratio >= 1 ? `${Math.round(ratio)} : 1` : `1 : ${Math.round(1 / ratio)}`)
     : '— : —';
   const arDRM = atkAR - defAR;
   const arDRMStr = arDRM > 0 ? `+${arDRM}` : `${arDRM}`;
@@ -99,8 +99,8 @@ function getCRTColIndex(ratioNum, terrain) {
 function calcRatioNum(atkRaw, defEff) {
   if (defEff <= 0) return 99;
   const r = atkRaw / defEff;
-  if (r >= 1) return Math.floor(r);
-  else        return -Math.ceil(1/r);
+  if (r >= 1) return Math.round(r);
+  else        return -Math.round(1/r);
 }
 
 function getCRTRowIndex(diceVal) {
