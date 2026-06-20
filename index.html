@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/date-addon.css">
   <link rel="stylesheet" href="css/air.css">
   <link rel="stylesheet" href="css/lobby.css">
+  <link rel="stylesheet" href="css/save-modal.css">
 </head>
 <body>
 
@@ -38,7 +39,10 @@
   <header>
     <div class="header-top">
       <span>HQ OPERATIONAL COMMAND ∙ FIELD INTELLIGENCE</span>
-      <span id="clock">-- -- --</span>
+      <span class="header-top-right">
+        <button class="save-load-btn" onclick="openSaveModal()">💾 세이브 / 로드</button>
+        <span id="clock">-- -- --</span>
+      </span>
     </div>
     <div class="header-main">
       <div class="header-emblem">⚔</div>
@@ -154,7 +158,7 @@
     <!-- 작전 메모 -->
     <div class="card">
       <div class="card-title"><span class="icon">✏</span> 작전 메모</div>
-      <textarea class="field-input" rows="4" placeholder="작전 상황, 공급 현황, 특이사항 등 기록..." style="resize:vertical;"></textarea>
+      <textarea class="field-input" id="memoText" rows="4" placeholder="작전 상황, 공급 현황, 특이사항 등 기록..." style="resize:vertical;"></textarea>
     </div>
 
   </div><!-- /turn -->
@@ -388,6 +392,31 @@
 </div><!-- /page-wrap -->
 </div><!-- /mainApp -->
 
+<!-- ============================================================
+     세이브 / 로드 모달
+============================================================ -->
+<div id="saveModal" class="save-modal" style="display:none;">
+  <div class="save-modal-overlay" onclick="closeSaveModal()"></div>
+  <div class="save-modal-panel">
+    <div class="save-modal-header">
+      <span>💾 세이브 / 로드</span>
+      <button class="save-modal-close" onclick="closeSaveModal()">✕</button>
+    </div>
+    <div class="save-modal-body">
+      <div class="save-modal-new-row">
+        <input class="field-input" id="saveSlotNameInput" type="text" placeholder="저장 이름 (선택)">
+        <button class="btn btn-primary" id="saveSlotSaveBtn" onclick="handleSaveSlotSubmit()">현재 상태 저장</button>
+      </div>
+      <div class="save-modal-import-row">
+        <button class="btn btn-secondary" onclick="triggerImportFile()">📥 파일에서 불러오기</button>
+        <input type="file" id="saveFileInput" accept=".json,.ocsasave.json" style="display:none;" onchange="handleImportFile(event)">
+      </div>
+      <div id="saveModalWarn"></div>
+      <div class="save-slot-list" id="saveSlotList"></div>
+    </div>
+  </div>
+</div>
+
 <script src="js/weather/weather-core.js"></script>
 <script src="js/weather/weather-008.js"></script>
 <script src="js/weather/weather-022.js"></script>
@@ -399,6 +428,7 @@
 <script src="js/aircraft.js"></script>
 <script src="js/air.js"></script>
 <script src="js/scenario.js"></script>
+<script src="js/persist.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

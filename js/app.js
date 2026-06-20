@@ -43,4 +43,6 @@ initBarrage();
 renderAirActionSelect();  // 항공 임무 초기 화면
 setInterval(updateClock, 1000);
 updateClock();
-showLobby();              // 로비 화면으로 시작
+if (!restoreAutoSave()) {
+  showLobby();             // 저장된 진행 상황이 없으면 로비 화면으로 시작
+}

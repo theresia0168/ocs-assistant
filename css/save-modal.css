@@ -1,0 +1,128 @@
+/* ============================================================
+   세이브 / 로드 모달
+============================================================ */
+
+.header-top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.save-load-btn {
+  font-family: var(--font);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  background: var(--olive);
+  color: var(--paper);
+  border: 1px solid var(--khaki);
+  cursor: pointer;
+  border-radius: 2px;
+}
+.save-load-btn:hover { background: var(--olive-lt); }
+
+.save-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.save-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+}
+.save-modal-panel {
+  position: relative;
+  width: min(480px, 92vw);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-bottom: 4px solid var(--ink);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.save-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+.save-modal-close {
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.save-modal-body {
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.save-modal-new-row {
+  display: flex;
+  gap: 8px;
+}
+.save-modal-new-row .field-input { flex: 1; }
+.save-modal-import-row {
+  display: flex;
+  justify-content: flex-end;
+}
+.save-modal-warn {
+  font-size: 0.72rem;
+  color: var(--red-stamp);
+}
+.save-modal-empty {
+  font-size: 0.78rem;
+  color: var(--ink-faded);
+  text-align: center;
+  padding: 16px 0;
+}
+.save-slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.save-slot-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.05);
+}
+.save-slot-name {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+.save-slot-meta {
+  font-size: 0.68rem;
+  color: var(--ink-faded);
+  margin-top: 2px;
+}
+.save-slot-actions {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+.save-slot-btn {
+  flex: 1;
+  font-size: 0.68rem;
+  padding: 5px 4px;
+  border-bottom-width: 2px;
+  white-space: nowrap;
+}
