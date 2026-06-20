@@ -26,6 +26,11 @@ const SCENARIO_INDEX = [
 // 로비 진입 / 탈출
 // ============================================================
 
+// 헤더 타이틀 클릭 — 시리즈(게임) 선택 화면으로 복귀
+function returnToLobby() {
+  showLobby(true);
+}
+
 function showLobby(resetStage = true) {
   if (resetStage) {
     lobbyStage = 'game';

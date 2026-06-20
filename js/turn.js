@@ -54,8 +54,8 @@ const PLAYER_PHASES = (prefix) => [
   { id: `${prefix}_supply`,   label: '보급 페이즈',  en: 'Supply Phase',   steps: null },
   { id: `${prefix}_reaction`, label: '반응 페이즈',  en: 'Reaction Phase',
     steps: [
-      { id: `${prefix}_react_move`, label: '이동 단계', en: 'Movement' },
-      { id: `${prefix}_react_fire`, label: '포격 단계', en: 'Barrage'  },
+      { id: `${prefix}_react_move`, label: '이동 단계',      en: 'Movement'          },
+      { id: `${prefix}_react_fire`, label: '포격/폭격 단계', en: 'Barrage / Bombing' },
     ]},
   { id: `${prefix}_combat`,   label: '전투 페이즈',  en: 'Combat Phase',
     steps: [
@@ -108,6 +108,19 @@ function getPlayerForStep(stepIdx) {
   return null;
 }
 
+// 주어진 step의 플레이어(first/second)에 대응하는 시나리오 진영(side) key 반환
+// 예: state.firstPlayer === 'soviet' 이고 p === 'second' 이면 'axis'를 반환
+function getSideKeyForStep(stepIdx) {
+  const p = getPlayerForStep(stepIdx);
+  if (!p) return null;
+
+  const firstKey  = state.firstPlayer;
+  const sides     = currentScenario?.sides ? Object.keys(currentScenario.sides) : [];
+  const secondKey = sides.find(k => k !== firstKey) ?? null;
+
+  return p === 'first' ? firstKey : secondKey;
+}
+
 // 플레이어 턴 레이블 — 플레이어 페이즈에 진입했을 때만 반환
 // state.firstPlayer 가 설정된 경우 진영명을 괄호 안에 표시
 function getPlayerLabel(stepIdx) {
@@ -121,16 +134,14 @@ function getPlayerLabel(stepIdx) {
     return side?.label || side?.en || null;
   }
 
-  const firstKey  = state.firstPlayer;                                        // 선 플레이어 진영 key
-  const sides     = currentScenario?.sides ? Object.keys(currentScenario.sides) : [];
-  const secondKey = sides.find(k => k !== firstKey) ?? null;                  // 후 플레이어 진영 key
+  const sideKey = getSideKeyForStep(stepIdx);
 
   if (p === 'first') {
-    const label = firstKey ? _sideLabel(firstKey) : null;
+    const label = sideKey ? _sideLabel(sideKey) : null;
     return label ? `선 플레이어(${label}) 턴` : '선 플레이어 턴';
   }
   if (p === 'second') {
-    const label = secondKey ? _sideLabel(secondKey) : null;
+    const label = sideKey ? _sideLabel(sideKey) : null;
     return label ? `후 플레이어(${label}) 턴` : '후 플레이어 턴';
   }
   return null;
@@ -321,6 +332,9 @@ const PHASE_ACTIONS = {
   'f_air': { desc: '비활성 항공 유닛을 정비합니다.', render(el) { renderAirRefitUI(el); } },
   's_air': { desc: '비활성 항공 유닛을 정비합니다.', render(el) { renderAirRefitUI(el); } },
 
+  'f_reinf': { desc: '증원 유닛을 받고, 보급/보충 테이블을 굴려 SP와 보충을 결정합니다.', render(el) { renderReinfUI(el); } },
+  's_reinf': { desc: '증원 유닛을 받고, 보급/보충 테이블을 굴려 SP와 보충을 결정합니다.', render(el) { renderReinfUI(el); } },
+
   'f_move_withdraw': { desc: '보급선이 끊긴 전투 유닛의 탈출을 시도합니다.', render(el) { renderBreakoutUI(el); } },
   's_move_withdraw': { desc: '보급선이 끊긴 전투 유닛의 탈출을 시도합니다.', render(el) { renderBreakoutUI(el); } },
 
@@ -332,6 +346,30 @@ const PHASE_ACTIONS = {
 
   'f_supply': { desc: '모든 유닛의 보급 상태를 판정합니다.', render(el) { renderSupplyUI(el); } },
   's_supply': { desc: '모든 유닛의 보급 상태를 판정합니다.', render(el) { renderSupplyUI(el); } },
+
+  'f_react_move': { desc: '비활성 플레이어가 예비 모드를 해제한 유닛으로 이동/오버런을 수행합니다.', render(el) { renderReactMoveUI(el); } },
+  's_react_move': { desc: '비활성 플레이어가 예비 모드를 해제한 유닛으로 이동/오버런을 수행합니다.', render(el) { renderReactMoveUI(el); } },
+
+  'f_react_fire': { desc: '해/공군 또는 예비 모드를 해제한 지상 유닛으로 포격/폭격을 수행합니다.', render(el) { renderReactFireUI(el); } },
+  's_react_fire': { desc: '해/공군 또는 예비 모드를 해제한 지상 유닛으로 포격/폭격을 수행합니다.', render(el) { renderReactFireUI(el); } },
+
+  'f_combat_arty':   { desc: '포병 유닛으로 포격을 수행합니다.', render(el) { renderCombatArtyUI(el); } },
+  's_combat_arty':   { desc: '포병 유닛으로 포격을 수행합니다.', render(el) { renderCombatArtyUI(el); } },
+
+  'f_combat_combat': { desc: '모드, 보급, 전투 규칙을 준수하여 전투를 수행합니다.', render(el) { renderCombatCombatUI(el); } },
+  's_combat_combat': { desc: '모드, 보급, 전투 규칙을 준수하여 전투를 수행합니다.', render(el) { renderCombatCombatUI(el); } },
+
+  'f_exploit_move':    { desc: '돌파 마커 유닛 또는 예비 모드 해제 유닛으로 이동/오버런을 수행합니다.', render(el) { renderExploitMoveUI(el); } },
+  's_exploit_move':    { desc: '돌파 마커 유닛 또는 예비 모드 해제 유닛으로 이동/오버런을 수행합니다.', render(el) { renderExploitMoveUI(el); } },
+
+  'f_exploit_fire':    { desc: '해/공군 또는 예비 모드를 해제한 지상 유닛으로 포격을 수행합니다.', render(el) { renderExploitFireUI(el); } },
+  's_exploit_fire':    { desc: '해/공군 또는 예비 모드를 해제한 지상 유닛으로 포격을 수행합니다.', render(el) { renderExploitFireUI(el); } },
+
+  'f_exploit_combat':  { desc: '예비 모드를 해제한 유닛 또는 돌파 마커 유닛으로 전투를 수행합니다.', render(el) { renderExploitCombatUI(el); } },
+  's_exploit_combat':  { desc: '예비 모드를 해제한 유닛 또는 돌파 마커 유닛으로 전투를 수행합니다.', render(el) { renderExploitCombatUI(el); } },
+
+  'f_clean': { desc: '마커를 정리하고 턴을 마무리합니다.', render(el) { renderCleanUI(el); } },
+  's_clean': { desc: '마커를 정리하고 턴을 마무리합니다.', render(el) { renderCleanUI(el); } },
 };
 
 // 시나리오 지정 날씨 확정 (굴림 생략) — HTML onclick에서 호출
@@ -709,6 +747,190 @@ function renderMoveBarrageUI(el) {
         <ul class="phase-info-list">
           <li>해군 유닛으로 함포 사격을 수행할 수 있습니다.</li>
           <li>항공 유닛으로 폭격을 수행할 수 있습니다.</li>
+          <li><strong>포격/폭격 탭</strong>을 사용하세요.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 전투 페이즈 / 포병 포격 단계 UI  (Artillery Barrage Segment)
+// ============================================================
+function renderCombatArtyUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li><strong>포병(Artillery) 유닛</strong>으로 포격을 수행할 수 있습니다.</li>
+          <li>오직 <strong>포병 유닛을 사용한 포격만</strong> 가능합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 해군/항공 포격은 이 단계에서 수행할 수 없습니다.</span></li>
+          <li><strong>포격/폭격 탭</strong>을 사용하세요.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 전투 페이즈 / 전투 단계 UI  (Combat Segment)
+// ============================================================
+function renderCombatCombatUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li>모드, 보급, 전투 규칙을 준수하여 <strong>전투</strong>를 수행합니다.</li>
+          <li>전투 결과로 <strong>돌파(Exploitation)</strong>를 얻은 유닛에는 <strong>돌파 마커</strong>를 놓습니다.</li>
+          <li><strong>전투 계산기 탭</strong>을 사용하세요.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 돌파 페이즈 / 이동 단계 UI  (Exploitation Movement Segment)
+// ============================================================
+function renderExploitMoveUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li><strong>돌파 마커가 놓인 유닛</strong>은 <strong>1/2 MA</strong>로 이동/오버런할 수 있습니다.</li>
+          <li><strong>예비 모드를 해제한 유닛</strong>은 <strong>전체 MA</strong>로 이동/오버런할 수 있습니다.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 돌파 페이즈 / 포격 단계 UI  (Exploitation Barrage Segment)
+// ============================================================
+function renderExploitFireUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li><strong>해군 또는 공군 유닛</strong>으로 포격이 가능합니다.</li>
+          <li><strong>예비 모드를 해제한 지상 유닛</strong>으로 포격이 가능합니다.</li>
+          <li><strong>포격/폭격 탭</strong>을 사용하세요.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 돌파 페이즈 / 전투 단계 UI  (Exploitation Combat Segment)
+// ============================================================
+function renderExploitCombatUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li><strong>예비 모드를 해제한 유닛</strong> 또는 <strong>돌파 마커 유닛</strong>으로 전투를 수행할 수 있습니다.</li>
+          <li><strong>전투 계산기 탭</strong>을 사용하세요.</li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⚠ 주의사항</div>
+        <ul class="phase-info-list">
+          <li><strong>전투 결과로 돌파를 얻을 수 없습니다.</strong></li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 정리 페이즈 UI  (Clean Phase)
+// ============================================================
+function renderCleanUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🧹 정리 작업</div>
+        <ul class="phase-info-list">
+          <li>모든 <strong>DG(Disrupted/Disorganized)</strong> 및 <strong>돌파 마커</strong>를 제거합니다.</li>
+          <li><strong>연료 공급 마커</strong>를 비공급면으로 뒤집거나 제거합니다.</li>
+          <li><strong>상대방(비활성 플레이어)</strong>에 의해 놓인 모든 <strong>철도 방해 마커</strong>를 제거합니다.</li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 반응 페이즈 / 이동 단계 UI  (Reaction Movement Segment — Rule 10.0)
+// ============================================================
+function renderReactMoveUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⚠ 행동 주체</div>
+        <ul class="phase-info-list">
+          <li>이 페이즈는 <strong>현재 활성 플레이어가 아닌 상대(비활성 플레이어)</strong>가 진행합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 예) 지금이 추축국 턴이라면, 반응 페이즈는 소련 플레이어가 액션을 취합니다.</span></li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li><strong>예비(Reserve) 모드를 해제한 유닛만</strong> 이동 및 오버런을 수행할 수 있습니다.</li>
+          <li>이동/오버런 규칙은 일반 이동 페이즈와 동일하나, 예비 모드를 해제한 유닛은 <strong>표시된 이동력(MA)의 1/2</strong>로만 이동합니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 차량/궤도 이동 유형 유닛은 평소와 같이 이동 전 연료를 소모해야 합니다.</span></li>
+          <li>공병 능력을 가진 유닛이 <strong>보급품 더미를 파괴</strong>할 수 있습니다.</li>
+          <li>힙샷을 포함한 <strong>항공 임무</strong>를 수행할 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 폭격은 수행할 수 없습니다.</span></li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⚠ 주의사항</div>
+        <ul class="phase-info-list">
+          <li><strong>오버런 전투의 결과로 돌파(Exploitation)를 얻을 수 없습니다.</strong></li>
+        </ul>
+      </div>
+
+    </div>`;
+}
+
+// ============================================================
+// 반응 페이즈 / 포격·폭격 단계 UI  (Reaction Barrage Segment — Rule 10.0)
+// ============================================================
+function renderReactFireUI(el) {
+  el.innerHTML = `
+    <div class="phase-info-ui">
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">⚠ 행동 주체</div>
+        <ul class="phase-info-list">
+          <li>이 페이즈는 <strong>현재 활성 플레이어가 아닌 상대(비활성 플레이어)</strong>가 진행합니다.</li>
+        </ul>
+      </div>
+
+      <div class="phase-info-section">
+        <div class="phase-info-section-title">🏃 수행 가능한 행동</div>
+        <ul class="phase-info-list">
+          <li><strong>해군 또는 공군 유닛</strong>으로 포격/폭격을 수행할 수 있습니다.<br>
+              <span style="font-size:0.78rem;color:var(--ink-faded);">※ 해당 유닛 당 이번 턴에 한 번만 가능합니다.</span></li>
+          <li><strong>예비 모드를 해제한 지상 유닛</strong>으로 포격을 수행할 수 있습니다.</li>
           <li><strong>포격/폭격 탭</strong>을 사용하세요.</li>
         </ul>
       </div>

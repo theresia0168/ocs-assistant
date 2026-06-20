@@ -106,6 +106,13 @@ header::before {
   text-shadow: 2px 2px 0 var(--ink);
   line-height: 1;
 }
+.header-title-btn {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.header-title-btn:hover {
+  opacity: 0.8;
+}
 .header-text .subtitle {
   font-size: 0.65rem;
   font-weight: 400;

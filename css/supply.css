@@ -22,16 +22,6 @@
 }
 .supply-drm-check input { width: 16px; height: 16px; accent-color: var(--ink); }
 
-/* 주사위 숫자 배지 (간이 다이) */
-.supply-die-badge {
-  width: 42px; height: 42px;
-  display: flex; align-items: center; justify-content: center;
-  background: #f0e8d0; border: 2px solid var(--ink);
-  box-shadow: 2px 3px 0 rgba(0,0,0,0.45);
-  font-size: 1.3rem; font-weight: 900; color: var(--ink);
-  flex-shrink: 0;
-}
-
 /* SP + T 분리 입력 */
 .supply-spt-row { display: flex; align-items: center; gap: 6px; }
 .supply-spt-unit { font-size: 0.78rem; font-weight: 700; color: var(--ink-faded); }
@@ -49,3 +39,60 @@
 .supply-result-box.result--2   { border-left-color: #c87820; color: #8b4a10; }
 .supply-result-box.result--4   { border-left-color: #c84020; color: #8b1a1a; }
 .supply-result-box.result-full { border-left-color: #6a1010; color: #6a1010; background: rgba(200,64,32,0.1); }
+
+/* 증원/보급 굴림 카드: 굴림 버튼(줄바꿈) → 결과 | 해석 2열 */
+.reinf-roll-card .combat-dice-inner    { flex-direction: column; }
+.reinf-roll-card .combat-dice-controls { width: 100%; min-width: unset; }
+.reinf-roll-card .combat-dice-result-wrap {
+  flex-direction: row; align-items: stretch; gap: 10px;
+}
+.reinf-roll-card .combat-dice-result-wrap .dice-result-area  { flex: 1; margin-top: 0; }
+.reinf-roll-card .combat-dice-result-wrap .supply-result-box {
+  flex: 1; margin-top: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.supply-result-box-big strong { font-size: 1.6rem; }
+
+/* ============================================================
+   증원 페이즈 (Reinforcement Phase) — Styles
+============================================================ */
+.reinf-roll-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.reinf-roll-card { margin: 0; }
+
+.reinf-status-breakdown {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.reinf-status-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--ink-faded);
+  padding: 2px 4px;
+}
+.reinf-status-row.reinf-status-total {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-weight: 900;
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+.reinf-map-note {
+  font-size: 0.76rem;
+  color: var(--ink-faded);
+  font-style: italic;
+}
+.reinf-entry-note {
+  font-size: 0.78rem;
+  color: var(--ink-faded);
+}
+
+@media (max-width: 700px) {
+  .reinf-roll-row { grid-template-columns: 1fr; }
+}

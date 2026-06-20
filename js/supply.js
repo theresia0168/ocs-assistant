@@ -170,8 +170,8 @@ function renderAttrDiceHTML(roll) {
     <div class="dice-total">${roll.total}<small>${drmDesc}</small></div>`;
 }
 
-function supplyDieBadge(v) {
-  return `<div class="supply-die-badge">${v}</div>`;
+function supplyDieBadge(v, color = 'ivory') {
+  return `<div class="die-wrap">${makeDieFaceHTML(v, color)}<div class="die-val">${v}</div></div>`;
 }
 
 // ─────────────────────────────────────────────────────────────

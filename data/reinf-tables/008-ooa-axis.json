@@ -1,0 +1,2713 @@
+{
+  "gameId": "008",
+  "side": "axis",
+  "maps": ["GBII", "EatG", "CB"],
+  "_notes": [
+    "원문: Axis Order of Arrival (Guderian's Blitzkrieg II / Enemy at the Gates / Case Blue 연계 OOA).",
+    "map 표기 없이 'Remove:' 또는 'At any German HQ in Trace Supply:'만 있는 항목은 map:'Any'로 표기 (어떤 맵 조합이든 항상 적용).",
+    "'Add to Emergency Reinforcements' 류는 pool:'emergency' 필드로 표기 (즉시 배치되는 일반 증원과 구분).",
+    "'Exchange:' 항목은 유닛 교체(부대 구성 변경)이며 description 필드에 원문을 그대로 기록.",
+    "'Note:' 류 부가 설명은 type:'note'로 별도 entry 처리.",
+    "transfer 항목은 fromMap/toMap 모두 기록 — 표시 여부는 런타임에 시나리오의 maps 배열로 판단 (둘 다 포함 시 숨김, toMap만 포함 시 증원, fromMap만 포함 시 제거, 둘 다 미포함 시 숨김)."
+  ],
+  "schedule": [
+    {
+      "turn": { "year": 1941, "month": 10, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "10 Mtr Div", "components": ["20 Mtrd Inf Rgt", "41 Mtrd Inf Rgt", "10 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-1-2 Hun Sec Div", "components": ["102 Hun", "108 Hun"] },
+          { "label": "20-4-3 Inf Div", "components": ["62", "294", "298"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "3-5-4 Cossack Cav Bn (Aufk)", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Rum Cav Corps HQ", "components": [] },
+          { "label": "5-4-4 Rum Cav Bde", "components": ["5"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["45", "95", "296"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "51 Corps HQ", "components": [] },
+          { "label": "4-0-2 Hun Sec Div", "components": ["105 Hun"] },
+          { "label": "20-4-3 Inf Div", "components": ["44", "79"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["170"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "25 Mtr Div", "components": ["25 Aufk Bn", "25 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["24"] },
+          { "label": "7-4-4 Rum Cav Bde", "components": ["8"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "49 Mtn Corps HQ", "components": [] },
+          { "label": "17-5-3 Mtn Inf Div", "components": ["1", "4"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "9 Pz Div", "components": ["Organic Truck"] },
+          { "label": "15-4-3 Inf Div", "components": ["707"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-4-3 Croat Inf Rgt", "components": ["369"] },
+          { "label": "20-3-3 Inf Div", "components": ["75"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "9 Pz Div", "components": ["I/33 Pz Bn", "9 Aufk Bn", "59 Krd MC Bn", "10 Mtrd Inf Rgt", "11 Mtrd Inf Rgt", "102 Arty Rgt", "Organic Truck"] },
+          { "label": "16 Mtr Div", "components": ["341 Aufk Bn", "165 Krd MC Bn", "60 Mtrd Inf Rgt", "156 Mtrd Inf Rgt", "146 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "pool": "emergency", "units": [
+          { "label": "29 Corps HQ", "components": [] },
+          { "label": "20-4-3 Inf Div", "components": ["168", "299"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "optional", "units": [
+          { "label": "20-5-4 Spanish Inf Div", "components": ["250 Sp"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["71"] },
+          { "label": "15-4-3 Jg Div", "components": ["99"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["132"] }
+        ], "extras": [
+          { "kind": "wagonPoints", "amount": 2 },
+          { "kind": "sp", "amount": 2 }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "LAH Pz Bde", "components": ["all"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 15 },
+      "entries": [
+        { "map": "CB", "type": "conditional", "condition": "At any Rumanian HQ in Trace Supply", "units": [
+          { "label": "5-4-4 Rum Mtrd Cav Rgt", "components": ["Korne"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1941, "month": 10, "day": 19 }, "entries": [] },
+    { "turn": { "year": 1941, "month": 10, "day": 22 }, "entries": [] },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-2 French Inf Rgt", "components": ["LVF"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["111", "113"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 10, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "8 Corps HQ", "components": [] },
+          { "label": "20-4-3 Inf Div", "components": ["28"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "15-4-3 Jg Div", "components": ["99"] },
+          { "label": "2-3-2 Wach Bn", "components": ["542"] }
+        ], "extras": [
+          { "kind": "wagonPoints", "amount": 2 },
+          { "kind": "sp", "amount": 2 }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1941, "month": 11, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "SS-R Mtr Div", "components": ["11 SS Inf Rgt"] },
+          { "label": "1 Cav Div", "components": ["all"] }
+        ]},
+        { "map": "GBII", "type": "arrival", "condition": "GBII rule 2.5h", "units": [
+          { "label": "(10)-5-0 Sec KG", "components": ["Scherer"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "It SM.81", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-3-3 Rum Mtn Inf Bde", "components": ["2"] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "Hun CR.42", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "12-2-2 Rum Inf Div", "components": ["18 Rum"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "2-3-4 Cossack Bn", "components": ["Dubrovski"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "He.111", "components": [] },
+          { "label": "2x Bf.109e", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7-5-7 Flammpanzer Bn", "components": ["101"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6 Rum Corps HQ", "components": [] },
+          { "label": "12-2-2 Rum Inf Div", "components": ["2 Rum"] },
+          { "label": "1-2-4 Rum Cav Bn", "components": ["56"] },
+          { "label": "20-2-2 Rum Arty Grp", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "6-4-3 Hun Mtrd Inf Bde", "components": ["1"] },
+          { "label": "6-3-3 Hun Mtrd Inf Bde", "components": ["2"] },
+          { "label": "2-4-6 Hun Arm Car Bn", "components": ["1"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1941, "month": 11, "day": 8 }, "entries": [] },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 12 },
+      "entries": [
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "42 Corps HQ", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["197"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7-5-7 Flammpanzer Bn", "components": ["100"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 19 },
+      "entries": [
+        { "map": ["EatG", "CB"], "type": "arrival", "units": [
+          { "label": "3-5-3 LW Abn Inf Bn", "components": ["IV-Sturm"] },
+          { "label": "9-5-3 LW FJ Rgt", "components": ["2 FJ"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1-3-3 Ost Bn", "components": ["601"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1-3-3 Ost Bn", "components": ["602", "604"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["5", "8"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 11, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1-3-3 Ost Bn", "components": ["605"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1941, "month": 12, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "39 Pz Corps HQ", "components": [] },
+          { "label": "5-3-3 SS Mtrd Inf Rgt", "components": ["4 SS/2 Bde"] },
+          { "label": "4-4-3 Mtrd Inf KG", "components": ["Nehring"] },
+          { "label": "(3)-3-3 Kor Bn", "components": ["532", "553", "559", "582", "590"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1-3-6 Fr Pz Co", "components": ["221", "318", "445"] },
+          { "label": "2-3-3 Belgian Inf Bn", "components": ["Walloon"] },
+          { "label": "(1)-2-5 RR Bn", "components": ["I/3", "II/3"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Ju.87b", "components": [] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "Bf.109e", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Rum Cav Corps HQ", "components": [] },
+          { "label": "5-4-4 Rum Cav Bde", "components": ["5", "6"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "conditional", "condition": "if available in dead pile", "units": [
+          { "label": "26-2-2 Arty Grp", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "SS-R Mtr Div", "components": ["Langmarck Inf Rgt"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(1)-2-5 RR Bn", "components": ["106"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "2-5-4 Pio Bn", "components": ["43"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["81"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5-5-3 LW Sec Bde", "components": ["Schlemm"] },
+          { "label": "2-2-2 LW Sec Bn", "components": ["I/Mos"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "1x Bf.110", "components": [] },
+          { "label": "1x He111", "components": [] },
+          { "label": "2x Ju87b", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 15 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-5-8 Pz Bn", "components": ["Mntfort"] },
+          { "label": "(1)-2-5 RR Bn", "components": ["511"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["73"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["205"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["211"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "55 Corps HQ", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Bf.109e", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1941, "month": 12, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1-2-2 Sec Bn", "components": ["480"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-3-2 Wach Bn", "components": ["617"] }
+        ]},
+        { "map": "Any", "type": "remove", "units": [
+          { "label": "15-4-3 Jg Div", "components": ["99"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 1, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3-4-3 SS Mtrd Inf Bn", "components": ["Finn-SS"] },
+          { "label": "12-2-2 Rum Inf Div", "components": ["10 Rum"] },
+          { "label": "He.111", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Bf.109e", "components": [] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "2-5-4 Pio Bn", "components": ["43"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["299"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "5x Truck Points", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 5 },
+      "entries": [
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["239"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["216"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Ju-87b", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-0-2 Hun Sec Div", "components": ["121 Hun"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1942, "month": 1, "day": 12 }, "entries": [] },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["208"] },
+          { "label": "9-5-3 LW Mtrd Sec KG", "components": ["Meindl"] }
+        ]},
+        { "map": "GBII", "type": "conditional", "condition": "If not already released from Emergency Reinforcements", "units": [
+          { "label": "5-3-3 SS Mtrd Inf Rgt", "components": ["4 SS/2 Bde"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["88"] },
+          { "label": "8-2-3 Werfer Bn", "components": ["102"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["328"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2x Truck Points", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["83", "329"] },
+          { "label": "26-2-2 Arty Grp", "components": [], "note": "if available in dead pile" },
+          { "label": "3-3-2 LW Rgt", "components": ["1/Meindl"] },
+          { "label": "Eq Repl", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["246"] },
+          { "label": "20-4-3 Inf Div", "components": ["330"] },
+          { "label": "3-3-2 LW Rgt", "components": ["2/Meindl"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "4-4-4 Rum Ski Bn", "components": ["Rotta"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 1, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["331"] },
+          { "label": "3-3-2 LW Rgt", "components": ["3/Meindl", "4/Meindl"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Bf-109e", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 2, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "Any", "type": "remove", "units": [
+          { "label": "All Captured Russian Trains", "components": [] }
+        ]},
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-3-2 LW Rgt", "components": ["5/Meindl"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-5-4 It Ski Bn", "components": ["M.Cerv"] },
+          { "label": "Ju.87R", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["218", "342"] },
+          { "label": "3-2-2 LW Rgt", "components": ["14/Meindl", "21/Meindl"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "6-2-2 Sec Div", "components": ["454"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5x Ju-87d", "components": [] },
+          { "label": "Eq Repl", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "3x Ju-87b", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2-2-2 Sec Rgt", "components": ["122"] },
+          { "label": "4-0-2 Hun Sec Div", "components": ["105"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "59 Corps HQ", "components": [] },
+          { "label": "Eq Repl", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2-2-2 Sec Rgt", "components": ["61"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "15-5-3 Jg Div", "components": ["5", "8"] },
+          { "label": "1-3-2 Pol Bn", "components": ["III/8"] },
+          { "label": "2x Pax Repl", "components": [] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "LAH Pz Bde: LAH AG Bn for Schbrg PJ Bn" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 2, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3x Pax Repl", "components": [] },
+          { "label": "2x Eq Repl", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 3, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4x Pax Repl", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "(7)-4-3 Flak Bn", "components": ["277", "278"] },
+          { "label": "It MC.200", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Ju.88", "components": [] },
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "map": "Any", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "Dora RR Gun Bn", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5x Pax Repl", "components": [] },
+          { "label": "Eq Repl", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["192"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "3 Pz Div", "components": ["I/6 Pz Bn", "II/6 Pz Bn", "III/6 Pz Bn", "394 Mtrd Inf Rgt", "3 Mtrd Inf Rgt", "1 Pz Recon Bn", "3 Krd MC Bn", "75 Arty Rgt", "Organic Truck"] },
+          { "label": "5-5-8 AG Bn", "components": ["177"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6x Pax Repl", "components": [] }
+        ]},
+        { "map": "GBII", "type": "conditional", "condition": "If not already released from Emergency Reinforcements", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["122"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "22 Pz Div", "components": ["I/204 Pz Bn", "II/204 Pz Bn", "III/204 Pz Bn", "129 PG Rgt", "140 Mtrd Inf Rgt", "24 MC Bn", "140 PJ Bn", "140 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7x Pax Repl", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "8 Corps HQ", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["249"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "4-1-2 Hun Sec Div", "components": ["102"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6x Pax Repl", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "9-5-3 LW Mtrd Sec KG", "components": ["Meindl"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5x Pax Repl", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4x Pax Repl", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3x Pax Repl", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-4-3 Inf KG", "components": ["Friedrich"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 3, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x Pax Repl", "components": [] }
+        ]},
+        { "map": "Any", "type": "note", "text": "Aufklärungs Battalion Reorganization. Remove: All Panzer and Motorized Division Aufk Bns (regardless of their location, dead, alive, or if they are Emergency reinforcements). The only exceptions are the SS Divisions and the GD Mtr Div (they retain their Aufk Bns). For each Aufk Bn removed alive from the map, the player can return one MC Bn from the dead pile (these do not have to be from the same division). Place the returning MC Bn in any hex containing any other unit of its division." }
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 4, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Rum Inf Div", "components": ["4 Rum"] },
+          { "label": "Hs.129b", "components": [] },
+          { "label": "Hs.123", "components": [], "note": "reduced" }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "5-5-8 Pz Bn", "components": ["Mntfort"] },
+          { "label": "8-2-3 Werfer Bn", "components": ["102"] },
+          { "label": "D'Aosta It Cav Div", "components": ["all"] },
+          { "label": "It SM.81", "components": [] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "13 Pz Div (66 Mtrd Inf Rgt) becomes 13 Pz Div (66 PG Rgt)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "15-4-3 Jg Div", "components": ["28"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "Bf.109e", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["88"] },
+          { "label": "5-3-3 SS Mtrd Inf Rgt", "components": ["8 SS", "10 SS"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "He.111", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3 Mtr Div", "components": ["103 Pz Bn", "3 PJ Bn"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "18 Pz Div", "components": ["III/18 Pz Bn"] },
+          { "label": "4-4-4 SS Cav Rgt", "components": ["1 SS", "2 SS"] },
+          { "label": "6 Pz Div", "components": ["all"] },
+          { "label": "10 Pz Div", "components": ["all"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3 Pz Div", "components": ["543 PJ Bn"] },
+          { "label": "13 Pz Div", "components": ["13 PJ Bn"] },
+          { "label": "12-2-2 Rum Inf Div", "components": ["20 Rum"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x Ju-88", "components": [] },
+          { "label": "2-2-2 LW Sec Bn", "components": ["II/Mos"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["162"] },
+          { "label": "10-5-4 Mtrd Inf Rgt", "components": ["IRGD"] },
+          { "label": "7-3-3 Arty Bn", "components": ["400"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "1-3-6 Fr Pz Co", "components": ["I/223"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "SS Cav Div", "components": ["1 SS", "2 SS Cav Rgt", "Bicycle Recon Bn", "SS Arty Rgt"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["383"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "SS-R Mtr Div", "components": ["R Krd Bn"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "SS-R Mtr Div", "components": ["R SS Pz Bn"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5-4-8 AG Bn", "components": ["209"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1x He.111", "components": [] },
+          { "label": "2x Ju87d", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 4, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "3 Mtr Div", "components": ["103 Pz Bn", "8 Mtrd Inf Rgt", "29 Mtrd Inf Rgt", "53 Krd MC Bn", "3 PJ Bn", "3 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "SS-W Mtrd Inf Div", "components": ["5 SS PJ Bn"] },
+          { "label": "Bf.109g", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 5, "day": 1 },
+      "schwerpunkt": "GBII",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1 Pz Div", "components": ["37 PJ Bn"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "40 Pz Corps HQ", "components": [] },
+          { "label": "20-4-3 Inf Div", "components": ["106", "167"] },
+          { "label": "(10)-5-0 Sec KG", "components": ["Sherer"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "23 Pz Div", "components": ["I/201 Pz Bn", "II/201 Pz Bn", "III/201 Pz Bn", "126 PG Rgt", "128 Mtrd Inf Rgt", "23 Krd MC Bn", "128 Arty Rgt", "Organic Truck"] },
+          { "label": "20-4-3 Inf Div", "components": ["384"] },
+          { "label": "1-3-2 Pol Bn", "components": ["551"] },
+          { "label": "9 Flk Div", "components": ["I/5 Flak Bn", "I/7 Flak Bn", "I/9 Flak Bn", "I/12 Flak Bn"] },
+          { "label": "Ju.87D", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "Bf.109f", "components": [] },
+          { "label": "3x Bf.109e7", "components": [] },
+          { "label": "3x Bf.110", "components": [] },
+          { "label": "It MC.200", "components": [] },
+          { "label": "It SM.81", "components": [] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "14 Pz Div (103 Mtrd Inf Rgt) becomes 14 Pz Div (103 PG Rgt)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(1)-2-5 RR Bn", "components": ["83"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["1"] },
+          { "label": "He.111", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Bf.109g", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 5 },
+      "entries": [
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["93"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "2 Pz Div", "components": ["I/3 Pz Bn"] },
+          { "label": "20-4-3 Inf Div", "components": ["15"] }
+        ]},
+        { "map": "Any", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "2-3-4 Cossack Cav Bn", "components": ["v.Urach"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "9 Pz Div", "components": ["III/33 Pz Bn"] },
+          { "label": "19 Pz Div", "components": ["19 PJ Bn"] },
+          { "label": "4x Eq Repl", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["71", "305"] },
+          { "label": "(7)-4-6 Flak Bn", "components": ["608", "619"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "3x Ju.87b", "components": [] },
+          { "label": "5x He.111", "components": [] },
+          { "label": "Bf.109g", "components": [] },
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 15 },
+      "entries": [
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "1-5-2 Fkl Pz Bn", "components": ["300"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "5-4-4 Rum Mtrd Cav Rgt", "components": ["Korne"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "17-4-3 Inf Div", "components": ["82"] },
+          { "label": "5 Pz Div", "components": ["53 PJ Bn"] },
+          { "label": "26-2-2 Arty Grp", "components": [], "note": "if available in dead pile" }
+        ]},
+        { "map": "GBII", "type": "conditional", "condition": "Add to Emergency Reinforcements, if the division is still there, otherwise add to division where it is", "units": [
+          { "label": "8 Pz Div", "components": ["43 PJ Bn"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] },
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "7 Rum Corps HQ", "components": [] },
+          { "label": "1-2-4 Rum Cav Bn", "components": ["57"] },
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "22 Pz Div", "components": ["I/204 Pz Bn", "II/204 Pz Bn", "III/204 Pz Bn", "129 PG Rgt", "140 Mtrd Inf Rgt", "24 MC Bn", "140 PJ Bn", "140 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2 Pz Div", "components": ["38 PJ Bn"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Bf.109g", "components": [] }
+        ]},
+        { "map": ["CB", "EatG"], "type": "arrival", "units": [
+          { "label": "6x Eq Repl", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3x 26-2-2 Arty Grp", "components": [] }
+        ]},
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "10-3-3 Inf Div", "components": ["442zbv"] },
+          { "label": "3 Hun Corps HQ", "components": [] },
+          { "label": "1-2-4 Hun Bicycle Bn", "components": ["3"] },
+          { "label": "2-3-2 Hun Pio Bn", "components": ["3"] },
+          { "label": "18-1-2 Hun Arty Grp", "components": [] },
+          { "label": "7-3-3 Hun Inf Div", "components": ["6 Hun"] },
+          { "label": "7-2-2 Hun Inf Div", "components": ["7 Hun", "9 Hun"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "8 Pz Div", "components": ["II/10 Pz Bn"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["203", "210"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 5, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["377"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5x Ju-87b", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "40 Pz Corps HQ", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "2x Ju.87b", "components": [] },
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 6, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "GD Mtr Div", "components": ["Rec Aufk Bn", "1 Pz Bn", "AG Bn", "Füs", "Gren Inf Rgt", "PJ Bn", "20-4-3 Arty Rgt", "Organic Truck"] },
+          { "label": "4 Pz Div", "components": ["49 PJ Bn"] },
+          { "label": "24 Pz Div", "components": ["I/24 Pz Bn", "II/24 Pz Bn", "III/24 Pz Bn", "26 PG Rgt", "21 Mtrd Inf Rgt", "4 Krd MC Bn", "89 Arty Rgt", "Organic Truck"] },
+          { "label": "6-3-2 Sec Div", "components": ["201"] },
+          { "label": "20-4-3 Inf Div", "components": ["385 less one step", "387"] }
+        ]},
+        { "map": "GBII", "type": "exchange", "description": "11 Pz Div (110 Mtrd Inf Rgt) becomes 11 Pz Div (110 PG Rgt)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5-5-3 LW Sec Bde", "components": ["Schlemm"] },
+          { "label": "7 Pz Div", "components": ["all"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "LAH Pz Bde", "components": ["PJ Bn"] },
+          { "label": "Rychla Slovak Mtr Inf Div", "components": ["12 Lt Pz Bn"] },
+          { "label": "20-4-3 Inf Div", "components": ["336", "389"] },
+          { "label": "20-3-3 Inf Div", "components": ["376"] },
+          { "label": "(1)-2-5 RR Bn", "components": ["I/2", "II/2"] },
+          { "label": "1-2-2 Sec Bn", "components": ["416"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["2", "3", "70"] },
+          { "label": "(1)-1-5 Slovak RR Bn", "components": ["12"] },
+          { "label": "D'Aosta It Cav Div", "components": ["47 Brs MC Bn", "67 Brs Lt Arm Bn", "13 AG Bn", "90 Mortar Bn", "3 Brs Mtrd Inf Rgt", "6 Brs Mtrd Inf Rgt", "120 Arty Rgt"] },
+          { "label": "6-4-4 It Cav Bde", "components": ["Barbo"] },
+          { "label": "12-2-2 Rum Inf Div", "components": ["19 Rum"] },
+          { "label": "Ju.87d", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "Bf.109f", "components": [] },
+          { "label": "Bf.110", "components": [] },
+          { "label": "Slovak B.534", "components": [], "note": "reduced" },
+          { "label": "He.111zbV w/Glider", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "8-2-3 Werfer Bn", "components": ["4"] },
+          { "label": "Ju.87R", "components": [] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "16 Pz Div (64 Mtrd Inf Rgt) becomes 16 Pz Div (64 PG Rgt)" },
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]},
+        { "map": "Any", "type": "remove", "units": [
+          { "label": "3-5-3 LW Abn Inf Bn", "components": ["IV-Sturm"] },
+          { "label": "9-5-3 LW FJ Rgt", "components": ["2 FJ"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "30-2-3 Werfer Rgt", "components": ["54"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "5 Corps HQ", "components": [] },
+          { "label": "29 Mtr Div", "components": ["15 Mtrd Inf Rgt", "71 Mtrd Inf Rgt", "29 Krd MC Bn", "29 Arty Rgt", "Organic Truck"] },
+          { "label": "4x Truck Points", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Bf.109e", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2x Ju-88", "components": [] }
+        ]},
+        { "map": "Any", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "18 Mtr Inf Div", "components": ["18 PJ Bn"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "30-2-3 Werfer Rgt", "components": ["Lehr"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4-1-2 Hun Sec Div", "components": ["102 Hun"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "57 Pz Corps HQ", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "6-3-4 Cav Rgt", "components": ["Mitte"] },
+          { "label": "(1)-2-5 RR Bn", "components": ["2"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "24 Pz Corps HQ", "components": [] },
+          { "label": "13 Corps HQ", "components": [] },
+          { "label": "13 Pz Div", "components": ["I/4 Pz Bn", "66 PG Rgt", "93 Mtrd Inf Rgt", "13 Krd MC Bn", "13 PJ Bn", "13 Arty Rgt", "Organic Truck"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["2", "51", "52"] },
+          { "label": "3x Truck Points", "components": [] }
+        ], "note": "Ignore the 2x Truck Point transfer above if only part of the GBII mapset is in play." }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "18 Pz Div", "components": ["I/18 Pz Bn"] },
+          { "label": "SS-R Mtr Div", "components": ["all"] },
+          { "label": "20-4-3 Inf Div", "components": ["17"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "60 Mtr Div", "components": ["160 Pz Bn", "160 PJ Bn"] },
+          { "label": "SS-W Mtr Div", "components": ["5 SS Pz Bn"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11 Pz Div", "components": ["III/15 Pz Bn"] },
+          { "label": "16 Mtr Div", "components": ["116 Pz Bn", "228 PJ Bn"] },
+          { "label": "20-4-3 Inf Div", "components": ["340"] },
+          { "label": "(7)-4-6 Flak Bn", "components": ["602"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "1 Pz Div", "components": ["I/1 Pz Bn"] },
+          { "label": "4 Pz Div", "components": ["I/35 Pz Bn"] },
+          { "label": "17 Pz Div", "components": ["I/39 Pz Bn", "III/39 Pz Bn"] },
+          { "label": "19 Pz Div", "components": ["II/27 Pz Bn", "III/27 Pz Bn"] },
+          { "label": "20 Pz Div", "components": ["II/21 Pz Bn", "III/21 Pz Bn"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "29 Mtr Div", "components": ["129 Pz Bn", "29 PJ Bn"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11 Pz Div", "components": ["Lehr MC Bn"] },
+          { "label": "1 Hun Pz Div", "components": ["1 Pz Recon Bn", "I/30 Pz Bn", "II/30 Pz Bn", "1 Mtrd Inf Rgt", "2 PJ Bn", "1 Arty Rgt"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Ju.87D", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-2-2 Hun Inf Div", "components": ["19 Hun"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 6, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3 Mtr Div", "components": ["103 Pz Bn", "8 Mtrd Inf Rgt", "29 Mtrd Inf Rgt", "53 Krd MC Bn", "3 PJ Bn", "3 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-2-3 Inf Div", "components": ["370"] },
+          { "label": "17-3-3 Inf Div", "components": ["323"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 7, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "7-3-3 Hun Inf Div", "components": ["20 Hun"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["371"] },
+          { "label": "7-2-2 Hun Inf Div", "components": ["23 Hun"] },
+          { "label": "1-2-2 Lithuanian Pol Bn", "components": ["4"] },
+          { "label": "He.111", "components": [] },
+          { "label": "2x Bf.109g", "components": [] },
+          { "label": "Go.244b", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "4-1-2 Hun Sec Div", "components": ["108 Hun"] },
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "1-5-2 Fkl Pz Bn", "components": ["300"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["1"] },
+          { "label": "2x Ju.87b", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "He.111", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "13 Pz Div", "components": ["I/4 Pz Bn", "II/4 Pz Bn", "III/4 Pz Bn", "66 PG Rgt", "93 Mtrd Inf Rgt", "13 PJ Bn", "13 Krd MC Bn", "13 Arty Rgt", "Organic Truck"] },
+          { "label": "7-2-2 Hun Inf Div", "components": ["19 Hun"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "exchange", "description": "2 Pz Div (304 Mtrd Inf Rgt) becomes 2 Pz Div (304 PG Rgt)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-2-2 Sec Rgt", "components": ["46", "57"] },
+          { "label": "7 Hun Corps HQ", "components": [] },
+          { "label": "(5)-3-3 Hun Mtrd PJ Bn", "components": ["101"] },
+          { "label": "1-1-4 Hun Bicycle Bn", "components": ["7"] },
+          { "label": "2-3-2 Hun Pio Bn", "components": ["7"] },
+          { "label": "2x 18-1-2 Hun Arty Grp", "components": [] },
+          { "label": "6x Truck Points", "components": [] },
+          { "label": "10x Wagon Points", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "12-2-2 Rum Inf Div", "components": ["18 Rum"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-3-3 SS Pol Rgt", "components": ["8 SS", "13 SS", "14 SS"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["226"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-2-2 Hun Inf Div", "components": ["10 Hun"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "GD Mtr Div", "components": ["Rec Aufk Bn", "1 Pz Bn", "AG Bn", "Füs", "Gren Inf Rgt", "PJ Bn", "20-4-3 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 12 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4 Hun Corps HQ", "components": [] },
+          { "label": "1-1-4 Hun Bicycle Bn", "components": ["4"] },
+          { "label": "2-3-2 Hun Pio Bn", "components": ["4"] },
+          { "label": "7-3-3 Hun Inf Div", "components": ["12 Hun", "13 Hun"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "LAH Pz Bde", "components": ["all"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 15 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-3-4 Bicycle Bn", "components": ["326"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "1-3-6 Fr Pz Co", "components": ["II/223"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "4 Pz Gp Army HQ", "components": [] },
+          { "label": "24 Pz Corps HQ", "components": [] },
+          { "label": "48 Pz Corps HQ", "components": [] },
+          { "label": "13 Corps HQ", "components": [] },
+          { "label": "24 Pz Div", "components": ["I/24 Pz Bn", "II/24 Pz Bn", "III/24 Pz Bn", "26 PG Rgt", "21 Mtrd Inf Rgt", "4 Krd MC Bn", "89 Arty Rgt", "Organic Truck"] },
+          { "label": "3 Mtr Div", "components": ["103 Pz Bn", "8 Mtrd Inf Rgt", "29 Mtrd Inf Rgt", "53 Krd MC Bn", "3 PJ Bn", "3 Arty Rgt", "Organic Truck"] },
+          { "label": "5-5-8 AG Bn", "components": ["243"] },
+          { "label": "(7)-4-6 Flak Bn", "components": ["602", "619"] },
+          { "label": "1-3-2 Pol Bn", "components": ["521"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["2", "3", "51", "53"] },
+          { "label": "4x 26-2-2 Arty Grp", "components": [] },
+          { "label": "4x Truck Points", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["23"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "GBII", "units": [
+          { "label": "5-4-8 AG Bn", "components": ["190"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 22 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-3-3 Rum Mtn Inf Bde", "components": ["3"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "(7)-4-6 Flak Bn", "components": ["616"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "2-3-4 Cossack Cav Bn", "components": ["403"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "1 Pz Gp Army HQ", "components": [] },
+          { "label": "3 Pz Corps HQ", "components": [] },
+          { "label": "40 Pz Corps HQ", "components": [] },
+          { "label": "3 Pz Div", "components": ["I/6 Pz Bn", "II/6 Pz Bn", "III/6 Pz Bn", "394 Mtrd Inf Rgt", "3 Mtrd Inf Rgt", "3 Krd MC Bn", "75 Arty Rgt", "Organic Truck"] },
+          { "label": "13 Pz Div", "components": ["I/4 Pz Bn", "II/4 Pz Bn", "III/4 Pz Bn", "66 PG Rgt", "93 Mtrd Inf Rgt", "13 PJ Bn", "13 Krd MC Bn", "13 Arty Rgt", "Organic Truck"] },
+          { "label": "23 Pz Div", "components": ["I/201 Pz Bn", "II/201 Pz Bn", "III/201 Pz Bn", "126 PG Rgt", "128 Mtrd Inf Rgt", "23 Krd MC Bn", "128 Arty Rgt", "Organic Truck"] },
+          { "label": "SS-W Mtrd Inf Div", "components": ["5 SS Pz Bn", "Germ Mtrd Inf Rgt", "Nordld Mtrd Inf Rgt", "Westld Mtrd Inf Rgt", "5 SS PJ Bn", "5 SS Pz Recon Bn", "5 SS Arty Rgt", "Organic Truck"] },
+          { "label": "GD Mtr Div", "components": ["Rec Aufk Bn", "Gren Inf Rgt"] },
+          { "label": "Rychla Slovak Mtr Inf Div", "components": ["20 Mtr Inf Rgt", "21 Mtr Inf Rgt", "11 Bicycle Bn", "12 Lt Tank Bn", "11 Arty Bn"] },
+          { "label": "5-5-8 AG Bn", "components": ["203"] },
+          { "label": "17-5-3 Mtn Inf Div", "components": ["4"] },
+          { "label": "20-4-3 Inf Div", "components": ["73", "125", "198", "298"] },
+          { "label": "2-4-8 PJ Bn", "components": ["525"] },
+          { "label": "1-3-2 Pol Bn", "components": ["682", "685"] },
+          { "label": "(7)-4-3 Flak Bn", "components": ["275"] },
+          { "label": "3-5-4 Cossack Cav Bn", "components": ["Aufk"] },
+          { "label": "3-4-3 SS Mtrd Inf Bn", "components": ["Finn-SS"] },
+          { "label": "4x 26-2-2 Arty Grp", "components": [] },
+          { "label": "Slovak B.534", "components": [] },
+          { "label": "5x Wagon Points", "components": [] },
+          { "label": "4x Truck Points", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "conditional", "condition": "If not already released from Emergency Reinforcements", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["126"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "GD Mtr Div", "components": ["1 Pz Bn", "AG Bn", "Füs Inf Rgt", "PJ Bn", "20-4-3 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 7, "day": 29 },
+      "entries": [
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "44 Corps HQ", "components": [] },
+          { "label": "57 Pz Corps HQ", "components": [] },
+          { "label": "15-4-3 Jg Div", "components": ["97", "101"] },
+          { "label": "5-5-8 AG Bn", "components": ["210"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 8, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "18 Pz Div", "components": ["88 PJ Bn"] }
+        ]},
+        { "map": "GBII", "type": "exchange", "description": "9 Pz Div (10 Mtrd Inf Rgt) becomes 9 Pz Div (10 PG Rgt)" },
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5-3-3 SS Mtrd Inf Rgt", "components": ["8 SS", "10 SS"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "14 Pz Div", "components": ["4 PJ Bn"] },
+          { "label": "16 Pz Div", "components": ["16 PJ Bn"] },
+          { "label": "3-3-3 SS Pol Rgt", "components": ["6 SS"] },
+          { "label": "1-3-2 Pol Bn", "components": ["698"] },
+          { "label": "2 It Corps HQ", "components": [] },
+          { "label": "12-3-3 It Inf Div", "components": ["Ravenna", "Sfzsca"] },
+          { "label": "3-3-3 It CCNN Assault Bn", "components": ["2", "15", "30"] },
+          { "label": "2 Rum Corps HQ", "components": [] },
+          { "label": "1-1-2 Rum Penal Bn", "components": ["430"] },
+          { "label": "Ju.87d", "components": [] },
+          { "label": "Hun Re.2000", "components": [] },
+          { "label": "It MC.202", "components": [] },
+          { "label": "It Br.20", "components": [], "note": "reduced" }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Ju.87b", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "2x Bf.109e7", "components": [] },
+          { "label": "Bf.110", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "1-1-8 Oil Exploitation Bde", "components": ["Krasnodar"] },
+          { "label": "6-3-3 Rum Mtn Inf Bde", "components": ["2"] },
+          { "label": "3-5-4 Turk FJ Bn", "components": ["Bergmn"] },
+          { "label": "9 Rum Cav Div", "components": ["3 Ros Cav Rgt", "13 Cal Cav Rgt", "13 Ros Mtrd Cav Rgt", "6 Arty Rgt"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "5-3-4 Cossack Cav Rgt", "components": ["Platov", "Sinegorski"] },
+          { "label": "1-2-3 N.Cauc Ost Bn", "components": ["801"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "20-5-4 Inf Div", "components": ["22"] },
+          { "label": "20-4-3 Inf Div", "components": ["170"] },
+          { "label": "(1)-2-5 RR Bn", "components": ["106"] },
+          { "label": "(7)-4-3 Flak Bn", "components": ["22"] },
+          { "label": "(7)-4-6 Flak Bn", "components": ["610"] },
+          { "label": "Dora RR Gun Bn", "components": [] },
+          { "label": "Odin RR Gun Bn", "components": [] },
+          { "label": "Thor RR Gun Bn", "components": [] },
+          { "label": "2x 36-2-1 Siege Arty Bn", "components": [] },
+          { "label": "2x 26-2-2 Arty Group", "components": [] },
+          { "label": "16-0-rr RR Gun Bn", "components": ["459", "688"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "5 Corps HQ", "components": [] },
+          { "label": "49 Mtn Corps HQ", "components": [] },
+          { "label": "17-5-3 Mtn Inf Div", "components": ["1"] },
+          { "label": "20-4-3 Inf Div", "components": ["9"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["1"] },
+          { "label": "1-3-2 Pol Bn", "components": ["693"] },
+          { "label": "6-3-3 Rum Mtn Bde", "components": ["3"] },
+          { "label": "He.111", "components": [] },
+          { "label": "2x Bf.109g", "components": [] },
+          { "label": "Bf.110", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["57", "68"] },
+          { "label": "17-3-3 Inf Div", "components": ["323"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "16 Mtr Div", "components": ["116 Pz Bn", "165 Krd MC Bn", "60 Mtrd Inf Rgt", "156 Mtrd Inf Rgt", "228 PJ Bn", "146 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "GBII", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["197"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20 Pz Div", "components": ["92 PJ Bn"] },
+          { "label": "2-2-2 Sec Rgt", "components": ["27"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4-3-3 It MG Bn", "components": ["2", "102"] },
+          { "label": "1x 24-2-2 It Arty Grp", "components": [] },
+          { "label": "1-2-4 Rum Cav Bn", "components": ["52"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["257"] },
+          { "label": "1-5-2 Fkl Pz Bn", "components": ["300"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "52 Corps HQ", "components": [] },
+          { "label": "20-4-3 Inf Div", "components": ["111"] },
+          { "label": "20-2-3 Inf Div", "components": ["370"] },
+          { "label": "(7)-4-3 Flak Bn", "components": ["279"] },
+          { "label": "Rum Cav Corps HQ", "components": [] },
+          { "label": "5-4-4 Rum Cav Bde", "components": ["5", "6"] },
+          { "label": "2x Ju.88", "components": [] },
+          { "label": "He.111", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["191"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Hs-129b", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Alpini It Corps HQ", "components": [] },
+          { "label": "13-4-3 It Mtn Inf Div", "components": ["Cunense", "Julia", "Tridntina"] },
+          { "label": "1x 24-2-2 It Arty Grp", "components": [] },
+          { "label": "1 Rum Corps HQ", "components": [] },
+          { "label": "14-3-3 Rum Inf Div", "components": ["13 Rum"] },
+          { "label": "1-2-4 Rum Cav Bn", "components": ["51"] },
+          { "label": "2x 20-2-2 Rum Arty Grp", "components": [] }
+        ]},
+        { "map": "Any", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "2x Porter", "components": ["1000 Turk", "1001 Turk"] },
+          { "label": "Terek Camels", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-4 Bicycle Rgt", "components": ["36"] },
+          { "label": "5-4-8 AG Bn", "components": ["667"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-3-3 It Inf Div", "components": ["Cosseria"] },
+          { "label": "8-3-3 It CCNN Inf Bde", "components": ["23 Mar"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "CB", "units": [
+          { "label": "30-2-3 Werfer Rgt", "components": ["52"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "6-2-2 Sec Div", "components": ["454"] },
+          { "label": "1-3-6 Fr Pz Co", "components": ["445"] },
+          { "label": "2-3-2 Wach Bn", "components": ["617"] },
+          { "label": "3-4-3 Penal Bn", "components": ["500 zbV"] },
+          { "label": "4-3-4 Bicycle Rgt", "components": ["4"] },
+          { "label": "2-3-4 Bicycle Bn", "components": ["755"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1-5-6 Pz (T-34) Co", "components": ["2/66zbV"] },
+          { "label": "3-5-3 Jg Bn", "components": ["7"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6-1-2 It Sec Div", "components": ["Vicenza"] },
+          { "label": "2-3-6 It PJ Bn", "components": ["10"] },
+          { "label": "4-3-3 It MG Bn", "components": ["109", "156"] },
+          { "label": "(1)-1-5 It RR Bn", "components": ["8"] },
+          { "label": "1-0-3 It Ter Bn", "components": ["215", "217", "218", "247", "441", "450", "454"] },
+          { "label": "2x 24-2-2 It Arty Grp", "components": [] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "5-4-4 Cossack Cav Rgt", "components": ["v.Jung"] },
+          { "label": "1-2-3 Georg Ost Bn", "components": ["795"] },
+          { "label": "1-2-3 Azerb Ost Bn", "components": ["805"] },
+          { "label": "1-2-3 Turk Ost Bn", "components": ["450", "452"] }
+        ]},
+        { "map": "Any", "type": "remove", "units": [
+          { "label": "30 Corps HQ", "components": [] },
+          { "label": "54 Corps HQ", "components": [] },
+          { "label": "15-4-3 Jg Div", "components": ["28"] },
+          { "label": "20-4-3 Inf Div", "components": ["24"] },
+          { "label": "2-3-4 Cossack Cav Bn", "components": ["v.Urach", "Dubrovski"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "(1)-2-5 RR Bn", "components": ["I/2", "II/2"] },
+          { "label": "(1)-1-5 Slovak RR Bn", "components": ["12"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "GBII", "units": [
+          { "label": "GD Mtr Div", "components": ["Rec Aufk Bn", "1 Pz Bn", "AG Bn", "Füs", "Gren Inf Rgt", "PJ Bn", "20-4-3 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "4-3-4 Bicycle Rgt", "components": ["183"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "2x Ju.52", "components": [] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["72"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "2x Ju.88", "components": [] },
+          { "label": "He.111", "components": [] },
+          { "label": "2x Bf.109g", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2-2-2 Sec Rgt", "components": ["44"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1 Rum Pz Div", "components": ["1 MC Bn", "I/1 Lt Pz Bn", "II/1 Lt Pz Bn", "3 Mtrd Inf Rgt", "4 Mtrd Inf Rgt", "1 Arty Rgt"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "14-3-3 Rum Inf Div", "components": ["5 Rum"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["132"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 8, "day": 29 },
+      "entries": [
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Bf.109g", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 9, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Bf.110", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1-2-2 Sec Bn", "components": ["380"] },
+          { "label": "Ju.87d", "components": [] },
+          { "label": "Croat Bf.109g", "components": [], "note": "reduced" },
+          { "label": "Rum IAR.81", "components": [], "note": "reduced" },
+          { "label": "Rum JIS.79", "components": [], "note": "reduced" },
+          { "label": "Rum Bf.109e", "components": [] },
+          { "label": "2x Truck Points", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "2x Ju.87b", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "2x Truck Points", "components": [] },
+          { "label": "Rum IAR.80", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["298"] },
+          { "label": "30-2-3 Wefer Rgt", "components": ["Lehr"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "GBII", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["75"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Fw.190a", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Bf-109f", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-5-4 LW FJ MG Co", "components": ["4/VII"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "(7)-4-6 Flak Bn", "components": ["616"] },
+          { "label": "4-4-4 Rum Ski Bn", "components": ["Rotta"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 8 },
+      "entries": [
+        { "map": "CB", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "16-3-3 Inf Div", "components": ["381 Trng"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["72"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "SS Cav Div", "components": ["3 SS Cav Rgt"] },
+          { "label": "3-5-3 Jg Bn", "components": ["2", "4"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "1-3-3 LW Ost Bn", "components": ["1 Cauc"] },
+          { "label": "Rychla Slovak Mtr Inf Div", "components": ["31 Arty Rgt"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-5-3 Jg Bn", "components": ["9"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "2-2-2 LW Sec Bn", "components": ["I/Mos", "II/Mos"] }
+        ]},
+        { "map": "GBII", "type": "conditional", "condition": "Release from Emergency Reinforcements, if not already", "units": [
+          { "label": "7 LW Flg Div", "components": ["1 Para Inf Rgt", "3 Para Inf Rgt", "4 Para Inf Rgt"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Rum Inf Div", "components": ["11 Rum", "14 Rum"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-5-3 Jg Bn", "components": ["5"] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At Any Italian HQ", "units": [
+          { "label": "2-4-4 It Cossack Cav Bn", "components": ["Savoia"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 9, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Meindl LW Div", "components": ["1 LW Rgt", "2 LW Rgt", "3 LW Rgt", "4 LW Rgt", "5 LW Rgt", "14 LW Rgt", "21 LW Rgt"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "8-3-3 It CCNN Inf Bde", "components": ["3 Gen"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "3-3-3 It CCNN Assault Bn", "components": ["Tagliamento"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 10, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "conditional", "condition": "At or adjacent to any German HQ in Trace Supply", "units": [
+          { "label": "27 Pz Div", "components": ["127 Pz Bn", "140 Mtrd Inf Rgt", "127 PJ Bn", "127 Arty Rgt"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3-4-3 Mtrd LW Bn", "components": ["1 zbV"] },
+          { "label": "1-2-2 Sec Bn", "components": ["798"] },
+          { "label": "5 Rum Corps HQ", "components": [] },
+          { "label": "12-2-2 Rum Inf Div", "components": ["7 Rum"] },
+          { "label": "2-3-4 Rum Cav Bn", "components": ["55"] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "Bf.109g", "components": [] },
+          { "label": "Hun Bf.109f", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "He.111", "components": [] },
+          { "label": "3x Bf.109f", "components": [] },
+          { "label": "Hun Re.2000", "components": [] },
+          { "label": "Go.244b", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "6-5-3 Mtrd Commando Rgt", "components": ["287.Snd"] },
+          { "label": "5-4-3 Turk Inf Rgt", "components": ["Bergmn"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "5-3-4 Cossack Cav Rgt", "components": ["Lehman"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "3-5-4 Turk FJ Bn", "components": ["Bergmn"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "1 Hun Pz Div", "components": ["1 Pz Recon Bn", "I/30 Pz Bn", "II/30 Pz Bn", "1 Mtrd Inf Rgt", "2 PJ Bn", "1 Arty Rgt"] },
+          { "label": "Bf.110", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Ju.88", "components": [] },
+          { "label": "Croat Bf.109g", "components": [], "note": "reduced" }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 5 },
+      "entries": [
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "SS-T Mtr Div", "components": ["all"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "16-3-3 Inf Div", "components": ["382 Trng"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "2-4-8 AG Co", "components": ["287"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1942, "month": 10, "day": 12 }, "entries": [] },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 15 },
+      "entries": [
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "2-3-4 Kalmuck Cav Bn", "components": ["66"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "2 LW Corps HQ", "components": [] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "1 Rum Pz Div (I/1, II/1 Lt Pz Bn) with 1 Rum Pz Div (I/1, II/1 Pz Bn)" }
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 LW Div", "components": ["2 Fld", "3 Fld", "4 Fld"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "23 Pz Div", "components": ["128 PJ Bn"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "3x Ju.88", "components": [] },
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "17-5-3 Mtn Inf Div", "components": ["3"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["161"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "24 Pz Div", "components": ["40 PJ Bn"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "3x Wagon Points", "components": [] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Cossack Inf Bn", "components": ["580"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 10, "day": 29 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Ju-88", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "4 Rum Corps HQ", "components": [] },
+          { "label": "1-2-4 Rum Cav Bn", "components": ["54"] },
+          { "label": "20-2-2 Rum Arty Grp", "components": [] },
+          { "label": "3x Wagon Points", "components": [] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 11, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "17 Pz Div", "components": ["27 PJ Bn"] },
+          { "label": "9 Pz Div", "components": ["50 PJ Bn"] },
+          { "label": "1-3-3 Ost Bn", "components": ["618", "620"] },
+          { "label": "5-1-2 Ost Arty Bn", "components": ["621"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "12-2-2 Rum Inf Div", "components": ["9 Rum"] },
+          { "label": "7-4-4 Rum Cav Bde", "components": ["1"] },
+          { "label": "7 Rum Cav Div", "components": ["5 Ros Cav Rgt", "11 Cal Cav Rgt", "11 Ros Mtrd Cav Rgt", "5 Arty Rgt"] },
+          { "label": "2-4-3 Estonian Pol Bn", "components": ["36"] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Russian Ost Bn", "components": ["448"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Bf.109f", "components": [] },
+          { "label": "He.111zbV w/Glider", "components": [] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Armen Ost Bn", "components": ["808"] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Slovak Bf.109e", "components": [], "note": "reduced" }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 5 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "14-3-3 Rum Inf Div", "components": ["6 Rum"] },
+          { "label": "12-2-2 Rum Inf Div", "components": ["15 Rum"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Turk Ost Bn", "components": ["781", "782", "783"] },
+          { "label": "1-2-3 Georg Ost Bn", "components": ["796"] },
+          { "label": "1-2-3 N. Cauc Ost Bn", "components": ["800"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 8 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1-2-3 Ukrainian Ost Bn", "components": ["551"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Turk Ost Bn", "components": ["784"] },
+          { "label": "1-2-3 N.Cauc Ost Bn", "components": ["802"] },
+          { "label": "1-2-3 Azerb Ost Bn", "components": ["804", "806"] },
+          { "label": "1-2-3 Armen Ost Bn", "components": ["809"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Fw.190a", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Bf-109f", "components": [] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At Any German Airbase in Trace Supply", "units": [
+          { "label": "7-5-3 Mtrd Pio KG", "components": ["Linden"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-3-4 Cossack Cav Bn", "components": ["299"] },
+          { "label": "1-2-3 Cossack Inf Bn", "components": ["581"] },
+          { "label": "1-2-3 Turk Ost Bn", "components": ["811"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "2-4-6 PJ Bn", "components": ["559"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "11 Pz Div", "components": ["231 PJ Bn"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "3x Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 19 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["337"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "Bf.109f", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["291"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-5-8 AG Co", "components": ["17 Lehr"] },
+          { "label": "Bf.109f", "components": [] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any Axis Airbase or HQ in Trace Supply", "units": [
+          { "label": "Mieth Corps HQ", "components": [] },
+          { "label": "6-5-3 LW KG", "components": ["Stahel"] },
+          { "label": "(4)-4-4 Mtrd Inf KG", "components": ["Adam", "Heilman", "Huffman", "Spang"] },
+          { "label": "(4)-4-3 LW KG", "components": ["Heinemann"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "6-5-5 Cossack Cav KG", "components": ["v.Pannwitz"] }
+        ]},
+        { "map": "CB", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "12-3-2 LW Div", "components": ["5 Fld"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "6 Pz Div", "components": ["I/11 Pz Bn", "II/11 Pz Bn", "6 Krad MC Bn", "4 Mtr Inf Rgt", "114 PG Rgt", "76 Arty Rgt", "Organic Truck"] },
+          { "label": "3-3-5 Lt Pz Bn", "components": ["700 zbV"] },
+          { "label": "1-5-2 Fkl Pz Co", "components": ["Abndrth"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "He.111", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["190"] },
+          { "label": "Ju.52", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 11, "day": 29 },
+      "entries": [
+        { "map": "EatG", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "12-2-2 LW Div", "components": ["15 Fld"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "11 Pz Div", "components": ["I/15 Pz Bn", "II/15 Pz Bn", "III/15 Pz Bn", "111 Mtrd Inf Rgt", "110 PG Rgt", "61 Krd MC Bn", "Lehr MC Bn", "231 PJ Bn", "119 Arty Rgt", "Organic Truck"] },
+          { "label": "20-4-3 Inf Div", "components": ["26"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "57 Pz Corps HQ", "components": [] },
+          { "label": "23 Pz Div", "components": ["I/201 Pz Bn", "II/201 Pz Bn", "III/201 Pz Bn", "126 PG Rgt", "128 Mtrd Inf Rgt", "128 PJ Bn", "23 Krd MC Bn", "128 Arty Rgt", "Organic Truck"] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "Bf.109f", "components": [] }
+        ], "note": "23 Pz Div (I/201, II/201, III/201 Pz Bn) arrive in the Dead Pile." }
+      ]
+    },
+
+    {
+      "turn": { "year": 1942, "month": 12, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "1-3-3 Ost Bn", "components": ["615", "616", "617", "619"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["328"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-3-2 Wach Bn", "components": ["591"] },
+          { "label": "3x Ju.88", "components": [] },
+          { "label": "He.177", "components": [] },
+          { "label": "Hun Re.2000", "components": [] },
+          { "label": "1x Ju.52", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Hs.129", "components": [] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "If not already released from Emergency Reinforcements", "units": [
+          { "label": "1x Ju.52", "components": [] }
+        ]},
+        { "map": "CB", "type": "exchange", "description": "5-3-4 Kalmuck Cav Rgt (Dr. Droll) for 2-3-4 Kalmuck Cav Bn (66)" },
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "He.111", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "2x Ju.52", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "conditional", "condition": "If not already released from Emergency Reinforcements", "units": [
+          { "label": "8 Pz Div", "components": ["I/10 Pz Bn", "III/10 Pz Bn", "8 Inf Rgt", "28 Inf Rgt", "59 Aufk Bn", "8 Krad Bn", "43 PJ Bn", "8 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "2-3-3 SS Cav KG", "components": ["Fegelein"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "note": "release from Emergency Reserves and then transfer if needed", "units": [
+          { "label": "12-2-2 LW Div", "components": ["7 Fld", "8 Fld"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20 Mtr Div", "components": ["76 Mtrd Inf Rgt", "90 Mtrd Inf Rgt", "30 Krad MC Bn", "20 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["228"] }
+        ]},
+        { "map": "CB", "type": "arrival", "pool": "emergency", "units": [
+          { "label": "16-4-3 Inf Div", "components": ["153 Trng"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "27 Pz Div", "components": ["127 Pz Bn", "140 Mtrd Inf Rgt", "127 PJ Bn", "127 Arty Rgt"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 12 },
+      "entries": [
+        { "map": "EatG", "type": "conditional", "condition": "In any Axis HQ hex in trace supply", "units": [
+          { "label": "20-4-3 Ost Inf Div", "components": ["v.Stumpfld"] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any Italian HQ hex in trace supply", "units": [
+          { "label": "2-4-8 AG Co", "components": ["393"] },
+          { "label": "4-5-4 Mtrd Inf Bn", "components": ["393 Sturm"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "17 Pz Div", "components": ["II/39 Pz Bn", "40 Mtrd Inf Rgt", "63 Mtrd Inf Rgt", "17 Krd MC Bn", "27 PJ Bn", "27 Arty Rgt", "Organic Truck"] },
+          { "label": "20-4-3 Inf Div", "components": ["387", "385"] },
+          { "label": "5-4-8 AG Bn", "components": ["209"] },
+          { "label": "(1)-2-5 RR Bn", "components": ["2"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 15 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "1-5-3 Commando Co", "components": ["9-800 zbV", "10-800 zbV"] },
+          { "label": "1x He.111", "components": [] },
+          { "label": "2x Ju.88", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7-4-3 SS Mtrd Inf Bde", "components": ["Schulte"] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any Italian HQ in Trace Supply", "units": [
+          { "label": "2-4-8 PJ Bn", "components": ["654"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["203"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 19 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3-5-3 LW Abn Inf Bn", "components": ["100 zbV"] },
+          { "label": "17-2-3 Inf Div", "components": ["304"] },
+          { "label": "17-3-3 Inf Div", "components": ["306"] },
+          { "label": "5-5-3 Mtn Inf KG", "components": ["Krysg"] },
+          { "label": "4-5-4 Mtrd Inf KG", "components": ["I-Pohlmn"] },
+          { "label": "3-5-6 Pz KG", "components": ["II-Pohlmn"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["111 less one step"] },
+          { "label": "6-2-2 Sec Div", "components": ["454"] },
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 22 },
+      "entries": [
+        { "map": "GBII", "type": "conditional", "condition": "if available in dead pile", "units": [
+          { "label": "26-2-2 Arty Grp", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1-3-3 SS Pol Bn", "components": ["I/15 SS"] },
+          { "label": "5-4-8 Pz Bn", "components": ["138"] },
+          { "label": "5-5-8 AG Bn", "components": ["232"] },
+          { "label": "2-5-8 AG Co", "components": ["901 Lehr"] },
+          { "label": "8-5-6 PG Rgt", "components": ["901 Lehr"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "Release from Emergency Reinforcements, if not already", "units": [
+          { "label": "12-3-2 LW Div", "components": ["5 Fld"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "7 Pz Div", "components": ["I/25 Pz Bn", "II/25 Pz Bn", "6 PG Rgt", "7 Mtrd Inf Rgt", "7 Krd MC Bn", "78 Arty Rgt", "Organic Truck"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "19 Pz Div", "components": ["I/27 Pz Bn", "73 Mtrd Inf Rgt", "74 Mtrd Inf Rgt", "19 Krd MC Bn", "19 PJ Bn", "19 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1942, "month": 12, "day": 29 },
+      "entries": [
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "SS-W Mtrd Inf Div", "components": ["5 SS Pz Bn", "Germ Mtrd Inf Rgt", "Nordld Mtrd Inf Rgt", "Westld Mtrd Inf Rgt", "5 SS PJ Bn", "5 SS Pz Recon Bn", "5 SS Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1943, "month": 1, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "9 Pz Div", "components": ["II/33 Pz Bn"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Cramer Corps HQ", "components": [] },
+          { "label": "5-5-5 Tgr Pz Bn", "components": ["503"] },
+          { "label": "Bf.109g", "components": [] },
+          { "label": "2x He.111zbV", "components": [] },
+          { "label": "Ju.86", "components": [] },
+          { "label": "Fw.200", "components": [] },
+          { "label": "Do.17 w/Glider", "components": [] },
+          { "label": "He.46 w/Glider", "components": [] },
+          { "label": "He.111zbV w/Glider", "components": [] },
+          { "label": "He.111z w/Glider", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "Bf.109e7", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "He.111", "components": [] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "5-3-4 Cossack Cav Rgt", "components": ["Kuban"] },
+          { "label": "1-2-3 Armen Ost Bn", "components": ["810"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "(7)-4-3 Flak Bn", "components": ["279"] },
+          { "label": "7-4-4 Rum Cav Bde", "components": ["8"] },
+          { "label": "2x Porter", "components": ["1000 Turk", "1001 Turk"] },
+          { "label": "Terek Camels", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "5-3-8 AG Bn", "components": ["202"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "16 Mtrd Inf Div", "components": ["116 Pz Bn", "60 Mtrd Inf Rgt", "156 Mtrd Inf Rgt", "165 Krd MC Bn", "228 PJ Bn", "146 Arty Rgt", "Organic Truck"] },
+          { "label": "1-2-3 Turk Ost Bn", "components": ["450", "782", "811"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["321"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-5-5 Tgr Pz Co", "components": ["2-502"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Ju.87d", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "3-4-3 SS Mtrd Inf Bn", "components": ["Finn-SS"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "12-2-2 LW Div", "components": ["6 Fld", "21 Fld"] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any Hungarian HQ hex in trace supply", "units": [
+          { "label": "4-5-4 Mtrd Inf Bn", "components": ["395 Sturm"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "1-3-6 Fr Pz Co", "components": ["II/223"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "3 Pz Corps HQ", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 12 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "3-5-3 Jg Bn", "components": ["11"] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5-5-8 AG Bn", "components": ["197"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "3-5-8 AG Bn", "components": ["242"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 15 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["302"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "1 Pz Gp Army HQ", "components": [] },
+          { "label": "40 Pz Corps HQ", "components": [] },
+          { "label": "3 Pz Div", "components": ["I/6 Pz Bn", "II/6 Pz Bn", "III/6 Pz Bn", "3 Mtrd Inf Rgt", "394 Mtrd Inf Rgt", "3 Krd MC Bn", "543 PJ Bn", "75 Arty Rgt", "Organic Truck"] },
+          { "label": "5-4-4 Cossack Cav Rgt", "components": ["v.Jung"] },
+          { "label": "5-3-4 Kalmuck Cav Rgt", "components": ["Dr. Droll"] },
+          { "label": "5-4-3 Turk Inf Rgt", "components": ["Bergmn"] },
+          { "label": "1-2-3 N.Cauc Ost Bn", "components": ["802"] },
+          { "label": "1-2-3 Azerb Ost Bn", "components": ["805"] },
+          { "label": "30-2-3 Werfer Rgt", "components": ["1"] }
+        ], "note": "3 Pz Div (II/6, III/6 Pz Bn) arrive in the Dead Pile" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 19 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-5-8 Pz Co", "components": ["Lehr"] },
+          { "label": "17-3-3 Inf Div", "components": ["320"] },
+          { "label": "20-3-3 Inf Div", "components": ["335"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "GD Mtr Div", "components": ["Gren Inf Rgt"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 22 },
+      "entries": [
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "GD Mtr Div", "components": ["1 Pz Bn", "AG Bn", "Füs Inf Rgt", "PJ Bn", "20-4-3 Arty Rgt", "Organic Truck"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Truck Point", "components": [] },
+          { "label": "2x Fw.190a", "components": [] }
+        ]},
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "4x Bf.109f", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "2-4-8 AG Co", "components": ["395"] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "3-3-3 Inf Bn", "components": ["Ftr-Pico"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "3x Bf.109f", "components": [] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "1-1-8 Oil Exploitation Bde", "components": ["Krasnodar"] }
+        ], "note": "Remove if not currently in an Oil Field Hex" },
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "GD Mtr Div", "components": ["Rec Aufk Bn"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 1, "day": 29 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "SS Pz Corps HQ", "components": [] },
+          { "label": "SS-AH Pz Div", "components": ["1-AH Pz Bn", "2-AH Pz Bn", "1 SS Mtrd Inf Rgt", "2 SS PG Rgt", "AH AG Bn", "AH PJ Bn", "AH Pz Recon Bn", "AH Arty Rgt", "Organic Truck"] },
+          { "label": "SS-DR Pz Div", "components": ["R Aufk Bn", "1-DR Pz Bn", "2-DR Pz Bn", "DR AG Bn", "Führer PG Rgt", "Deutld Mtrd Inf Rgt", "DR PJ Bn", "DR Arty Rgt", "Organic Truck"] },
+          { "label": "16-2-8 SS Werfer Bn", "components": ["SS"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "1-5-2 Fkl Pz Co", "components": ["Abndrth"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1943, "month": 2, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "SS-DR Pz Div", "components": ["Tiger Co"] },
+          { "label": "20-4-3 Inf Div", "components": ["17"] },
+          { "label": "1-2-3 Don Ost Inf Bn", "components": ["557"] },
+          { "label": "1-2-3 Kuban Ost Inf Bn", "components": ["558"] },
+          { "label": "He.111", "components": [] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "3 Pz Div (3 Mtrd Inf Rgt) becomes 3 Pz Div (3 PG Rgt)" },
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "11 Pz Div", "components": ["I/15 Pz Bn"] },
+          { "label": "3-3-5 Lt Pz Bn", "components": ["700 zbV"] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "He.177", "components": [] },
+          { "label": "Bf.109g", "components": [] },
+          { "label": "It SM.81", "components": [] },
+          { "label": "It MC.202", "components": [] },
+          { "label": "4x Ju.52", "components": [] }
+        ]},
+        { "map": "CB", "type": "arrival", "units": [
+          { "label": "Hs.129", "components": [] },
+          { "label": "Slovak Bf.109f", "components": [], "note": "reduced" }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Cossack Ost Inf Bn", "components": ["123"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "Slovak Bf.109e", "components": [], "note": "reduced" }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "2x Bf.109g", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "He.111", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "Ju-88", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-3-3 Inf Div", "components": ["333"] },
+          { "label": "5-3-6 AG Bn", "components": ["905"] },
+          { "label": "6-4-3 Inf KG", "components": ["Steinbr"] },
+          { "label": "1-1-3 Russian Ost Bn", "components": ["555", "556"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "60 Mtr Div", "components": ["160 Pz Bn"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "1-3-6 Fr Pz Co", "components": ["445"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 8 },
+      "entries": [
+        { "map": "EatG", "type": "note", "text": "Convert into Repls: 22 Pz Div (all living parts)" },
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "SS-TK Pz Div", "components": ["Thule Mtrd Inf Rgt"] },
+          { "label": "SS-AH Pz Div", "components": ["Tiger Co"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "52 Corps HQ", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 12 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "Raus Corps HQ", "components": [] },
+          { "label": "5-4-6 PG Bn", "components": ["Brgsthr"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 15 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "GD Mtr Div", "components": ["2 Pz Bn"] },
+          { "label": "SS-TK Pz Div", "components": ["3 Aufk Bn", "1-TK Pz Bn", "2-TK Pz Bn", "TK AG Bn", "1 PG Rgt", "3 Mtrd Inf Rgt", "TK PJ Bn", "TK Arty Rgt", "Organic Truck"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "27 Pz Div", "components": ["127 Pz Bn"] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Turk Ost Bn", "components": ["785"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 19 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "SS-TK Pz Div", "components": ["Tiger Co"] }
+        ]},
+        { "map": "EatG", "type": "exchange", "description": "GD Mtr Div (26-4-3 Arty Rgt) for GD Mtr Div (20-4-3 Arty Rgt)" }
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 22 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "8-3-2 Rum Inf Div", "components": ["Asov"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 2, "day": 26 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Ju-88", "components": [] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "17-3-3 Inf Div", "components": ["39"] },
+          { "label": "20-3-3 Inf Div", "components": ["332"] },
+          { "label": "(7)-4-3 Flak Bn", "components": ["289"] }
+        ]}
+      ]
+    },
+
+    {
+      "turn": { "year": 1943, "month": 3, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "GD Mtr Div", "components": ["Tiger Co"] },
+          { "label": "20-4-3 Inf Div", "components": ["106", "167"] },
+          { "label": "Bf.109g", "components": [] },
+          { "label": "Hun Bf.109g", "components": [] }
+        ]},
+        { "map": "EatG", "type": "conditional", "condition": "First Entry of SS-DR units into Kharkov this turn or after, place into that hex", "units": [
+          { "label": "SS-DR Pz Div", "components": ["zbV T-34 Tank Bn"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "3-4-3 SS Mtrd Inf Rgt", "components": ["Finn-SS"] },
+          { "label": "2-5-8 Pz Co", "components": ["Lehr"] },
+          { "label": "Ju.87d", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "He.111", "components": [] },
+          { "label": "Hs.123", "components": [] },
+          { "label": "Hun Bf.109f", "components": [] },
+          { "label": "Fw.200", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Ju.88", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "Ju-88", "components": [] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "42 Corps HQ", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "7 LW Flg Div", "components": ["all"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "1-2-2 Sec Bn", "components": ["Seidel"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1943, "month": 3, "day": 12 }, "entries": [] },
+    {
+      "turn": { "year": 1943, "month": 3, "day": 15 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "5-4-8 AG Bn", "components": ["911"] },
+          { "label": "20-4-3 Inf Div", "components": ["15"] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "5-5-3 Mtn Inf KG", "components": ["Krysg"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1943, "month": 3, "day": 19 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 3, "day": 22 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 3, "day": 26 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 3, "day": 29 }, "entries": [] },
+
+    {
+      "turn": { "year": 1943, "month": 4, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "arrival", "units": [
+          { "label": "5-3-8 AG Bn", "components": ["904"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "17-3-3 Inf Div", "components": ["38"] },
+          { "label": "20-4-3 Inf Div", "components": ["257"] },
+          { "label": "20-4-3 Inf Div", "components": ["282 less 1 step"] },
+          { "label": "5-4-8 AG Bn", "components": ["909"] },
+          { "label": "Ju.87d", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "Fw.190a5", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "23 Pz Div", "components": ["II/201 Pz Bn"] },
+          { "label": "5-4-8 Pz Bn", "components": ["138"] },
+          { "label": "Bf.110", "components": [] },
+          { "label": "2x He.111zbV", "components": [] },
+          { "label": "Ju.86", "components": [] },
+          { "label": "Do.17 w/Glider", "components": [] },
+          { "label": "He.46 w/Glider", "components": [] },
+          { "label": "He.111zbV w/Glider", "components": [] },
+          { "label": "He.111z w/Glider", "components": [] }
+        ]},
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Cossack Inf Bn", "components": ["5", "126", "161"] }
+        ]},
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "2x Ju.87d", "components": [] },
+          { "label": "Ju.88", "components": [] },
+          { "label": "He.111", "components": [] },
+          { "label": "Bf.109g", "components": [] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 5 },
+      "entries": [
+        { "map": "GBII", "type": "note", "text": "Rebuild Allowed: Bf.110 to full strength" },
+        { "map": "EatG", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-6 Cap Pz Co", "components": ["1 Ost", "2 Ost"] }
+        ]},
+        { "type": "transfer", "fromMap": "GBII", "toMap": "EatG", "units": [
+          { "label": "17-5-3 Mtn Inf Div", "components": ["3"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 8 },
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "10-3-3 Inf Div", "components": ["442 zbV"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1943, "month": 4, "day": 12 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 4, "day": 15 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 4, "day": 19 }, "entries": [] },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 22 },
+      "entries": [
+        { "map": "CB", "type": "conditional", "condition": "At any German HQ in Trace Supply", "units": [
+          { "label": "1-2-3 Turk Ost Bn", "components": ["909", "943"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 4, "day": 26 },
+      "entries": [
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "SS-W Mtrd Inf Div", "components": ["Nordld Mtrd Inf Rgt"] },
+          { "label": "5-4-4 Cossack Cav Rgt", "components": ["v.Jung"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "5-3-4 Cossack Cav Rgt", "components": ["Kuban", "Lehman", "Platov"] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1943, "month": 4, "day": 29 }, "entries": [] },
+
+    {
+      "turn": { "year": 1943, "month": 5, "day": 1 },
+      "schwerpunkt": "EatG",
+      "entries": [
+        { "map": "GBII", "type": "remove", "units": [
+          { "label": "5 Pz Div", "components": ["I/31 Pz Bn"] }
+        ]},
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "He.111", "components": [] },
+          { "label": "Hun Bf.109g", "components": [] }
+        ]},
+        { "map": "EatG", "type": "remove", "units": [
+          { "label": "3-5-3 LW Abn Inf Bn", "components": ["100 zbV"] },
+          { "label": "6 Pz Div", "components": ["I/11 Pz Bn"] },
+          { "label": "SS-AH Pz Div", "components": ["I-AH Pz Bn"] },
+          { "label": "SS-DR Pz Div", "components": ["1-DR Pz Bn"] }
+        ]},
+        { "map": "CB", "type": "remove", "units": [
+          { "label": "13 Pz Div", "components": ["III/4 Pz Bn"] }
+        ]},
+        { "type": "transfer", "fromMap": "CB", "toMap": "EatG", "units": [
+          { "label": "2x Ju.87d", "components": [] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1943, "month": 5, "day": 5 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 5, "day": 8 }, "entries": [] },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 12 },
+      "entries": [
+        { "map": "EatG", "type": "arrival", "units": [
+          { "label": "20-4-3 Inf Div", "components": ["161"] }
+        ]}
+      ]
+    },
+    {
+      "turn": { "year": 1943, "month": 5, "day": 15 },
+      "entries": [
+        { "type": "transfer", "fromMap": "EatG", "toMap": "CB", "units": [
+          { "label": "Bf.109g", "components": [] }
+        ]}
+      ]
+    },
+    { "turn": { "year": 1943, "month": 5, "day": 19 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 5, "day": 22 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 5, "day": 26 }, "entries": [] },
+    { "turn": { "year": 1943, "month": 5, "day": 29 }, "entries": [] }
+  ]
+}

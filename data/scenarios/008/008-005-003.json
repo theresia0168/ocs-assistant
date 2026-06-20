@@ -29,6 +29,17 @@
         "note": "1 Oct 41: Dry with Normal Flight. River Condition is Normal."
     },
 
+    "reinforcement": {
+        "tableFiles": {
+            "axis": "reinf-tables/008-ooa-axis.json"
+        },
+        "maps": ["GBII"],
+        "supplyStatusTables": {
+            "axis": "reinf-tables/008-supply-status-table.json"
+        },
+        "supplyMaps": ["GBII"]
+    },
+
     "sides": {
         "axis": {
             "label": "추축국",
