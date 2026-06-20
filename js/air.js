@@ -1000,7 +1000,7 @@ let bombState = {};
 function bombInit() {
   bombState = {
     step:'setup',
-    units:[{id:0,name:'유닛 1',airStr:1,groundStr:2,isFighter:false,aborted:false,stepLost:false}],
+    units:[{id:0,name:'유닛 1',airStr:1,groundStr:2,isFighter:false,aborted:false,stepLost:false,aircraftId:null,aircraftState:null}],
     hasFighter:false, inEnemyAirspace:false, aaResult:null, finalGroundStr:0,
   };
   dfReset(); icReset(); aaReset();
@@ -1034,10 +1034,21 @@ function renderBombing() {
 // STEP 1
 function renderBombSetup() {
   const units = bombState.units;
+  const hasPresets = (typeof getAircraftOptionsForCurrentSide === 'function')
+    && getAircraftOptionsForCurrentSide().length > 0;
+
   const rows = units.map((u,i) => `
     <div class="bom-unit-row">
       <div class="bom-unit-idx">${i+1}</div>
       <div class="bom-unit-fields">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" id="bAircraft_${i}" style="width:150px;" onchange="bombPickAircraft(${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId)}
+          </select>
+        </div>` : ''}
         <div class="field-group">
           <label class="field-label">공대공 전력</label>
           <input class="field-input" type="number" id="bAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:70px;">
@@ -1050,6 +1061,14 @@ function renderBombSetup() {
           <input type="checkbox" id="bFighter_${i}" ${u.isFighter?'checked':''}>
           <span class="field-label" style="margin:0;">전투기</span>
         </label>
+        ${u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">상태</label>
+          <div class="btn-row" style="gap:4px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState!=='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="bombSetAircraftState(${i},'full')">풀</button>
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState==='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="bombSetAircraftState(${i},'reduced')">손실</button>
+          </div>
+        </div>` : ''}
       </div>
       ${units.length>1?`<button class="bom-del-btn" onclick="bombRemoveUnit(${i})">✕</button>`:''}
     </div>`).join('');
@@ -1057,7 +1076,7 @@ function renderBombSetup() {
     <div class="card">
       <div class="card-title"><span class="icon">✈</span> STEP 1 — 유닛 이동 / 편성</div>
       <div class="air-manual-desc" style="margin-bottom:12px;">
-        <p>임무 참가 항공 유닛을 <strong>임무 목표 헥스</strong>로 이동시킨 뒤, 각 유닛의 전력을 입력하세요.</p>
+        <p>임무 참가 항공 유닛을 <strong>임무 목표 헥스</strong>로 이동시킨 뒤, 각 유닛의 전력을 입력하세요.${hasPresets ? ' 기종을 선택하면 능력치가 자동으로 채워집니다.' : ''}</p>
       </div>
       <div class="bom-unit-list">${rows}</div>
       <div class="btn-row" style="margin-top:8px;">
@@ -1076,9 +1095,54 @@ function bombSaveSetup() {
     if(as) u.airStr=parseFloat(as.value)||0; if(gs) u.groundStr=parseFloat(gs.value)||0; if(ft) u.isFighter=ft.checked;
   });
 }
-function bombAddUnit() { bombSaveSetup(); const i=bombState.units.length; bombState.units.push({id:i,name:`유닛 ${i+1}`,airStr:1,groundStr:2,isFighter:false,aborted:false,stepLost:false}); airUI(); }
-function bombRemoveUnit(idx) { bombSaveSetup(); bombState.units.splice(idx,1); bombState.units.forEach((u,i)=>{u.id=i;u.name=`유닛 ${i+1}`;}); airUI(); }
+function bombAddUnit() { bombSaveSetup(); const i=bombState.units.length; bombState.units.push({id:i,name:`유닛 ${i+1}`,airStr:1,groundStr:2,isFighter:false,aborted:false,stepLost:false,aircraftId:null,aircraftState:null}); airUI(); }
+function bombRemoveUnit(idx) { bombSaveSetup(); bombState.units.splice(idx,1); bombState.units.forEach((u,i)=>{u.id=i; if(!u.aircraftId) u.name=`유닛 ${i+1}`;}); airUI(); }
 function bombSetupDone() { bombSaveSetup(); bombState.hasFighter=bombState.units.some(u=>u.isFighter); bombState.step='dogfight'; airUI(); }
+
+/** 드롭다운에서 기종 선택 → 능력치 자동 채움 (풀 스텝 기준) */
+function bombPickAircraft(i, aircraftId) {
+  bombSaveSetup();
+  const u = bombState.units[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.aircraftState = null;
+    airUI();
+    return;
+  }
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(aircraftId) : null;
+  if (!ac) return;
+
+  u.aircraftId    = ac.id;
+  u.name          = ac.name;
+  u.isFighter     = !!ac.isFighter;
+  u.airStr        = ac.full?.airStr    ?? 0;
+  u.groundStr     = ac.full?.groundStr ?? 0;
+  u.aircraftState = 'full';
+
+  airUI();
+}
+
+/** 선택된 기종의 풀/손실(리듀스드) 상태 전환 */
+function bombSetAircraftState(i, stateName) {
+  bombSaveSetup();
+  const u = bombState.units[i];
+  if (!u || !u.aircraftId) return;
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(u.aircraftId) : null;
+  if (!ac) return;
+
+  const stats = stateName === 'reduced' ? ac.reduced : ac.full;
+  if (!stats) return;
+
+  u.aircraftState = stateName;
+  u.airStr    = stats.airStr    ?? 0;
+  u.groundStr = stats.groundStr ?? 0;
+
+  airUI();
+}
 
 // STEP 2
 function renderBombDogfightCheck() {
@@ -1641,7 +1705,7 @@ function airdropInit() {
   airdropState = {
     step: 'setup',
     // 항공 유닛 목록: { id, name, airStr, unitType('fighter'|'transport'|'other'), capacity, aborted, destroyed }
-    units: [{ id:0, name:'유닛 1', airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false }],
+    units: [{ id:0, name:'유닛 1', airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false, aircraftId:null, aircraftState:null }],
     // 화물 목록: { id, name, type('unit'|'supply'), weight, transporterId, destroyed }
     cargo: [{ id:0, name:'화물 1', type:'unit', weight:1, transporterId:0, destroyed:false }],
     inEnemyAirspace: false,
@@ -1697,11 +1761,21 @@ function renderAirdropSetup() {
 
   // 수송기만 화물 적재 대상
   const transporters = units.filter(u => u.unitType === 'transport');
+  const hasPresets = (typeof getAircraftOptionsForCurrentSide === 'function')
+    && getAircraftOptionsForCurrentSide().length > 0;
 
   const unitRows = units.map((u, i) => `
     <div class="bom-unit-row">
       <div class="bom-unit-idx">${i + 1}</div>
       <div class="bom-unit-fields" style="flex-wrap:wrap;gap:6px;">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" id="adAircraft_${i}" style="width:140px;" onchange="airdropPickAircraft(${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId)}
+          </select>
+        </div>` : ''}
         <div class="field-group">
           <label class="field-label">유닛 이름</label>
           <input class="field-input" type="text" id="adName_${i}" value="${u.name}" style="width:100px;">
@@ -1722,6 +1796,14 @@ function renderAirdropSetup() {
         <div class="field-group">
           <label class="field-label">적재 용량(T)</label>
           <input class="field-input" type="number" id="adCap_${i}" value="${u.capacity}" min="0" step="1" style="width:65px;">
+        </div>` : ''}
+        ${u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">상태</label>
+          <div class="btn-row" style="gap:4px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState!=='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="airdropSetAircraftState(${i},'full')">풀</button>
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState==='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="airdropSetAircraftState(${i},'reduced')">손실</button>
+          </div>
         </div>` : ''}
       </div>
       ${units.length > 1 ? `<button class="bom-del-btn" onclick="airdropRemoveUnit(${i})">✕</button>` : ''}
@@ -1811,7 +1893,7 @@ function airdropSaveSetup() {
 function airdropAddUnit() {
   airdropSaveSetup();
   const i = airdropState.units.length;
-  airdropState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false });
+  airdropState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false, aircraftId:null, aircraftState:null });
   airUI();
 }
 
@@ -1819,6 +1901,49 @@ function airdropRemoveUnit(idx) {
   airdropSaveSetup();
   airdropState.units.splice(idx, 1);
   airdropState.units.forEach((u, i) => { u.id = i; });
+  airUI();
+}
+
+/** 드롭다운에서 기종 선택 → 능력치 자동 채움 (풀 스텝 기준) */
+function airdropPickAircraft(i, aircraftId) {
+  airdropSaveSetup();
+  const u = airdropState.units[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.aircraftState = null;
+    airUI();
+    return;
+  }
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(aircraftId) : null;
+  if (!ac) return;
+
+  u.aircraftId    = ac.id;
+  u.name          = ac.name;
+  u.unitType      = ac.isFighter ? 'fighter' : 'transport';
+  u.airStr        = ac.full?.airStr ?? 0;
+  u.aircraftState = 'full';
+
+  airUI();
+}
+
+/** 선택된 기종의 풀/손실(리듀스드) 상태 전환 */
+function airdropSetAircraftState(i, stateName) {
+  airdropSaveSetup();
+  const u = airdropState.units[i];
+  if (!u || !u.aircraftId) return;
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(u.aircraftId) : null;
+  if (!ac) return;
+
+  const stats = stateName === 'reduced' ? ac.reduced : ac.full;
+  if (!stats) return;
+
+  u.aircraftState = stateName;
+  u.airStr = stats.airStr ?? 0;
+
   airUI();
 }
 
@@ -2298,7 +2423,7 @@ let airliftState = {};
 function airliftInit() {
   airliftState = {
     step: 'setup',
-    units: [{ id:0, name:'유닛 1', airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false }],
+    units: [{ id:0, name:'유닛 1', airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false, aircraftId:null, aircraftState:null }],
     cargo: [{ id:0, name:'화물 1', type:'unit', weight:1, transporterId:0, destroyed:false }],
     inEnemyAirspace: false,
     withinRange: null,
@@ -2334,11 +2459,21 @@ function renderAirliftSetup() {
   const units = airliftState.units;
   const cargo = airliftState.cargo;
   const transporters = units.filter(u => u.unitType === 'transport');
+  const hasPresets = (typeof getAircraftOptionsForCurrentSide === 'function')
+    && getAircraftOptionsForCurrentSide().length > 0;
 
   const unitRows = units.map((u, i) => `
     <div class="bom-unit-row">
       <div class="bom-unit-idx">${i + 1}</div>
       <div class="bom-unit-fields" style="flex-wrap:wrap;gap:6px;">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" id="alAircraft_${i}" style="width:140px;" onchange="airliftPickAircraft(${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId)}
+          </select>
+        </div>` : ''}
         <div class="field-group">
           <label class="field-label">유닛 이름</label>
           <input class="field-input" type="text" id="alName_${i}" value="${u.name}" style="width:100px;">
@@ -2359,6 +2494,14 @@ function renderAirliftSetup() {
         <div class="field-group">
           <label class="field-label">적재 용량(T)</label>
           <input class="field-input" type="number" id="alCap_${i}" value="${u.capacity}" min="0" style="width:55px;">
+        </div>` : ''}
+        ${u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">상태</label>
+          <div class="btn-row" style="gap:4px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState!=='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="airliftSetAircraftState(${i},'full')">풀</button>
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState==='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="airliftSetAircraftState(${i},'reduced')">손실</button>
+          </div>
         </div>` : ''}
       </div>
       ${units.length > 1 ? `<button class="bom-del-btn" onclick="airliftRemoveUnit(${i})">✕</button>` : ''}
@@ -2444,7 +2587,7 @@ function airliftSaveSetup() {
 function airliftAddUnit() {
   airliftSaveSetup();
   const i = airliftState.units.length;
-  airliftState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false });
+  airliftState.units.push({ id:i, name:`유닛 ${i+1}`, airStr:1, unitType:'transport', capacity:1, aborted:false, destroyed:false, aircraftId:null, aircraftState:null });
   airUI();
 }
 
@@ -2452,6 +2595,49 @@ function airliftRemoveUnit(idx) {
   airliftSaveSetup();
   airliftState.units.splice(idx, 1);
   airliftState.units.forEach((u, i) => { u.id = i; });
+  airUI();
+}
+
+/** 드롭다운에서 기종 선택 → 능력치 자동 채움 (풀 스텝 기준) */
+function airliftPickAircraft(i, aircraftId) {
+  airliftSaveSetup();
+  const u = airliftState.units[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.aircraftState = null;
+    airUI();
+    return;
+  }
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(aircraftId) : null;
+  if (!ac) return;
+
+  u.aircraftId    = ac.id;
+  u.name          = ac.name;
+  u.unitType      = ac.isFighter ? 'fighter' : 'transport';
+  u.airStr        = ac.full?.airStr ?? 0;
+  u.aircraftState = 'full';
+
+  airUI();
+}
+
+/** 선택된 기종의 풀/손실(리듀스드) 상태 전환 */
+function airliftSetAircraftState(i, stateName) {
+  airliftSaveSetup();
+  const u = airliftState.units[i];
+  if (!u || !u.aircraftId) return;
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(u.aircraftId) : null;
+  if (!ac) return;
+
+  const stats = stateName === 'reduced' ? ac.reduced : ac.full;
+  if (!stats) return;
+
+  u.aircraftState = stateName;
+  u.airStr = stats.airStr ?? 0;
+
   airUI();
 }
 
@@ -2715,7 +2901,7 @@ let transferState = {};
 function transferInit() {
   transferState = {
     step: 'move',
-    units: [{ id: 0, name: '유닛 1', airStr: 1, aborted: false }],
+    units: [{ id: 0, name: '유닛 1', airStr: 1, aborted: false, aircraftId: null, aircraftState: null }],
     inEnemyAirspace: false,
     overRange: false,
   };
@@ -2746,10 +2932,21 @@ function renderTransfer() {
 // STEP 1 — 유닛 이동 / 편성
 function renderTransferMove() {
   const units = transferState.units;
+  const hasPresets = (typeof getAircraftOptionsForCurrentSide === 'function')
+    && getAircraftOptionsForCurrentSide().length > 0;
+
   const rows = units.map((u, i) => `
     <div class="bom-unit-row">
       <div class="bom-unit-idx">${i + 1}</div>
       <div class="bom-unit-fields">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" id="trAircraft_${i}" style="width:140px;" onchange="transferPickAircraft(${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId)}
+          </select>
+        </div>` : ''}
         <div class="field-group">
           <label class="field-label">유닛 이름</label>
           <input class="field-input" type="text" id="trName_${i}" value="${u.name}" style="width:110px;">
@@ -2758,6 +2955,14 @@ function renderTransferMove() {
           <label class="field-label">공대공 전력</label>
           <input class="field-input" type="number" id="trAirStr_${i}" value="${u.airStr}" min="0" step="0.5" style="width:70px;">
         </div>
+        ${u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">상태</label>
+          <div class="btn-row" style="gap:4px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState!=='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="transferSetAircraftState(${i},'full')">풀</button>
+            <button type="button" class="btn btn-secondary" style="padding:4px 8px;font-size:0.7rem;${u.aircraftState==='reduced'?'opacity:1;':'opacity:0.5;'}" onclick="transferSetAircraftState(${i},'reduced')">손실</button>
+          </div>
+        </div>` : ''}
       </div>
       ${units.length > 1 ? `<button class="bom-unit-remove" onclick="transferRemoveUnit(${i})">✕</button>` : ''}
     </div>`).join('');
@@ -2770,7 +2975,7 @@ function renderTransferMove() {
         <span class="air-step-en">Move Unit to New Base</span>
       </div>
       <div class="air-manual-desc">
-        <p>이동할 항공 유닛을 <strong>새 기지 헥스</strong>로 이동시키세요. 유닛 정보를 입력하세요.</p>
+        <p>이동할 항공 유닛을 <strong>새 기지 헥스</strong>로 이동시키세요. 유닛 정보를 입력하세요.${hasPresets ? ' 기종을 선택하면 능력치가 자동으로 채워집니다.' : ''}</p>
       </div>
       <div class="bom-unit-list" id="transferUnitList">${rows}</div>
       <div class="btn-row" style="margin-top:8px;">
@@ -2785,14 +2990,14 @@ function renderTransferMove() {
 function transferAddUnit() {
   transferSaveUnits();
   const id = transferState.units.length;
-  transferState.units.push({ id, name: `유닛 ${id + 1}`, airStr: 1, aborted: false });
+  transferState.units.push({ id, name: `유닛 ${id + 1}`, airStr: 1, aborted: false, aircraftId: null, aircraftState: null });
   airUI();
 }
 
 function transferRemoveUnit(idx) {
   transferSaveUnits();
   transferState.units.splice(idx, 1);
-  transferState.units.forEach((u, i) => { u.id = i; });
+  transferState.units.forEach((u, i) => { u.id = i; if (!u.aircraftId) u.name = `유닛 ${i+1}`; });
   airUI();
 }
 
@@ -2803,6 +3008,48 @@ function transferSaveUnits() {
     if (nameEl)   u.name   = nameEl.value || u.name;
     if (airStrEl) u.airStr = parseFloat(airStrEl.value) || 0;
   });
+}
+
+/** 드롭다운에서 기종 선택 → 능력치 자동 채움 (풀 스텝 기준) */
+function transferPickAircraft(i, aircraftId) {
+  transferSaveUnits();
+  const u = transferState.units[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.aircraftState = null;
+    airUI();
+    return;
+  }
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(aircraftId) : null;
+  if (!ac) return;
+
+  u.aircraftId    = ac.id;
+  u.name          = ac.name;
+  u.airStr        = ac.full?.airStr ?? 0;
+  u.aircraftState = 'full';
+
+  airUI();
+}
+
+/** 선택된 기종의 풀/손실(리듀스드) 상태 전환 */
+function transferSetAircraftState(i, stateName) {
+  transferSaveUnits();
+  const u = transferState.units[i];
+  if (!u || !u.aircraftId) return;
+
+  const ac = (typeof findAircraftById === 'function') ? findAircraftById(u.aircraftId) : null;
+  if (!ac) return;
+
+  const stats = stateName === 'reduced' ? ac.reduced : ac.full;
+  if (!stats) return;
+
+  u.aircraftState = stateName;
+  u.airStr = stats.airStr ?? 0;
+
+  airUI();
 }
 
 function transferSaveMove() {
