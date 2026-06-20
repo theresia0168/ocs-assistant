@@ -1,0 +1,62 @@
+{
+  "cols": [
+    { "max": 1,    "label": "1 이하", "cost": "1T" },
+    { "max": 2,    "label": "2",      "cost": "1T" },
+    { "max": 4,    "label": "3-4",    "cost": "2T" },
+    { "max": 7,    "label": "5-7",    "cost": "2T" },
+    { "max": 11,   "label": "8-11",   "cost": "2T" },
+    { "max": 16,   "label": "12-16",  "cost": "3T" },
+    { "max": 24,   "label": "17-24",  "cost": "3T" },
+    { "max": 40,   "label": "25-40",  "cost": "4T" },
+    { "max": 68,   "label": "41-68",  "cost": "6T" },
+    { "max": 116,  "label": "69-116", "cost": "8T" },
+    { "max": null, "label": "117+",   "cost": "10T" }
+  ],
+  "table": [
+    ["-","-","-","-","-","-","-","-","-","DG","DG"],
+    ["-","-","-","-","-","-","-","-","DG","DG","DG"],
+    ["-","-","-","-","-","-","-","DG","DG","DG","DG"],
+    ["-","-","-","-","-","-","DG","DG","DG","DG","HALF_COND"],
+    ["-","-","-","-","-","DG","DG","DG","DG","HALF_COND","HALF_COND"],
+    ["-","-","-","-","DG","DG","DG","DG","HALF_COND","HALF_COND","HALF"],
+    ["-","-","-","DG","DG","DG","DG","HALF_COND","HALF_COND","HALF","HALF"],
+    ["-","-","DG","DG","DG","HALF_COND","HALF_COND","HALF_COND","HALF","HALF","HALF"],
+    ["-","DG","DG","DG","HALF_COND","HALF_COND","HALF","HALF","HALF","1","1"],
+    ["DG","DG","DG","HALF_COND","HALF_COND","HALF","HALF","HALF","1","1","2"],
+    ["DG","HALF","HALF","HALF","HALF","1","1","1","1","2","3"]
+  ],
+  "densityShift": {
+    "le1": -1,
+    "le3": 0,
+    "le4": 1,
+    "le5": 2,
+    "le6": 3,
+    "gt6": 4
+  },
+  "densityLabel": {
+    "le1": "1 RE 이하 (1L)",
+    "le3": "3 RE 이하 (No Effect)",
+    "le4": "4 RE 이하 (1R)",
+    "le5": "5 RE 이하 (2R)",
+    "le6": "6 RE 이하 (3R)",
+    "gt6": "6 RE 초과 (4R)"
+  },
+  "resultLabel": {
+    "-":         { "text": "효과 없음", "cls": "brt-none" },
+    "DG":        { "text": "DG",        "cls": "brt-dg" },
+    "HALF_COND": { "text": "[1/2]",     "cls": "brt-half-cond" },
+    "HALF":      { "text": "1/2",       "cls": "brt-half" },
+    "1":         { "text": "1 스텝",    "cls": "brt-step" },
+    "2":         { "text": "2 스텝",    "cls": "brt-step" },
+    "3":         { "text": "3 스텝",    "cls": "brt-step" }
+  },
+  "checklist": [
+    { "shift": -1, "desc": "아무 레벨의 진지 존재 (1L)" },
+    { "shift": -1, "desc": "Close / Very Close 헥스 (1L)" },
+    { "shift": -2, "desc": "Extr Close 헥스 (2L)" },
+    { "shift": 3,  "desc": "목표 헥스 내 유닛 전략 이동 모드 (3R)" },
+    { "shift": 1,  "desc": "모든 항공 유닛이 10헥스 이내 기지 출격 (1R)" },
+    { "shift": -1, "desc": "항공 유닛 항속 거리 절반 이상 이동 (1L, 옵션)" },
+    { "shift": -3, "desc": "관측 유닛 없음 (3L)" }
+  ]
+}

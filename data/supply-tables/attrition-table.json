@@ -1,0 +1,75 @@
+{
+  "id": "attrition-table",
+  "label": "소모 판정표",
+  "en": "Attrition Table",
+  "rule": "12.8b",
+
+  "dice": "2d6",
+
+  "description": "OOS(보급 단절) 상태의 스택에서 가장 높은 AR(Attack Rating) 칼럼을 사용합니다. 주사위 2개를 굴려 합계(+DRM)에 해당하는 결과를 적용합니다.",
+
+  "columns": ["5", "4", "3", "2", "1", "0"],
+
+  "results": {
+    "none": { "label": "손실 없음", "en": "No Loss" },
+    "-1":   { "label": "-1 스텝",   "en": "-1 Step" },
+    "-2":   { "label": "-2 스텝",   "en": "-2 Step" },
+    "-4":   { "label": "-4 스텝",   "en": "-4 Step" },
+    "full": { "label": "전체 스텝", "en": "Eliminated" }
+  },
+
+  "table": {
+    "5": [
+      { "max": 8,    "result": "none" },
+      { "max": 10,   "result": "-1" },
+      { "max": 11,   "result": "-2" },
+      { "max": 12,   "result": "-4" },
+      { "max": null, "result": "full" }
+    ],
+    "4": [
+      { "max": 7,    "result": "none" },
+      { "max": 9,    "result": "-1" },
+      { "max": 10,   "result": "-2" },
+      { "max": 11,   "result": "-4" },
+      { "max": null, "result": "full" }
+    ],
+    "3": [
+      { "max": 5,    "result": "none" },
+      { "max": 7,    "result": "-1" },
+      { "max": 9,    "result": "-2" },
+      { "max": 11,   "result": "-4" },
+      { "max": null, "result": "full" }
+    ],
+    "2": [
+      { "max": 3,    "result": "none" },
+      { "max": 5,    "result": "-1" },
+      { "max": 7,    "result": "-2" },
+      { "max": 9,    "result": "-4" },
+      { "max": null, "result": "full" }
+    ],
+    "1": [
+      { "max": 2,    "result": "none" },
+      { "max": 4,    "result": "-1" },
+      { "max": 6,    "result": "-2" },
+      { "max": 8,    "result": "-4" },
+      { "max": null, "result": "full" }
+    ],
+    "0": [
+      { "max": 3,    "result": "-1" },
+      { "max": 5,    "result": "-2" },
+      { "max": 7,    "result": "-4" },
+      { "max": null, "result": "full" }
+    ]
+  },
+
+  "drm": [
+    {
+      "id": "stack5plus",
+      "label": "헥스 내 유닛 스텝 총합이 5 이상",
+      "en": "5+ steps in hex",
+      "value": 3
+    }
+  ],
+
+  "note": "table의 각 칼럼은 [{max, result}] 임계값 배열이며, 오름차순으로 처음 (2d6 합계 + DRM) <= max 를 만족하는 항목의 result를 사용합니다. max가 null이면 그 이상의 모든 값을 의미합니다 (예: 칼럼 5의 13+ → full)."
+}

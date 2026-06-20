@@ -106,6 +106,10 @@ function rollCombatDice(mode) {
     updateSurpriseIndicator();
 
   } else if (mode === 'combat') {
+    if (!CRT) {
+      area.innerHTML = `<div class="dice-placeholder roll-blocked">⚠ 전투 테이블 로딩 중입니다. 잠시 후 다시 시도하세요</div>`;
+      tag.textContent = ''; return;
+    }
     if (!surpriseState) {
       area.innerHTML = `<div class="dice-placeholder roll-blocked">⚠ 기습 굴림을 먼저 실시하세요</div>`;
       tag.textContent = ''; return;

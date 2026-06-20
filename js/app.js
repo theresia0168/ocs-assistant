@@ -39,8 +39,10 @@ function showPage(id, btn) {
 // 초기화
 updateTurnUI();           // 기본 UI 렌더링 (날짜 미설정 상태)
 calcOdds();
+loadCombatTables();       // 전투 결과표 fetch (롤 버튼 클릭 시점까지 백그라운드 로드)
 initBarrage();
 renderAirActionSelect();  // 항공 임무 초기 화면
+renderSupplyActionGrid(); // 보급 판정 초기 화면 (테이블 fetch 후 렌더)
 setInterval(updateClock, 1000);
 updateClock();
 if (!restoreAutoSave()) {

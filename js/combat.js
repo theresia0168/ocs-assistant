@@ -61,43 +61,31 @@ function calcOdds() {
   ).join('');
 }
 
-const CRT_COLS = {
-  extr_close: [-1,1,2,3,4,8,12,16,20,28,36,44,52],
-  very_close: [-2,-1,1,2,3,4,6,9,12,15,18,21,24],
-  close:      [-3,-2,-1,1,2,3,4,6,8,10,12,15,18],
-  open:       [-4,-3,-2,-1,1,2,3,4,5,7,9,11,13],
-};
-const CRT_COL_LABELS = {
-  extr_close: ['1:2','1:1','2:1','3:1','4:1','8:1','12:1','16:1','20:1','28:1','36:1','44:1','52:1'],
-  very_close: ['1:3','1:2','1:1','2:1','3:1','4:1','6:1','9:1','12:1','15:1','18:1','21:1','24:1'],
-  close:      ['1:4','1:3','1:2','1:1','2:1','3:1','4:1','6:1','8:1','10:1','12:1','15:1','18:1'],
-  open:       ['1:5','1:4','1:3','1:2','1:1','2:1','3:1','4:1','5:1','7:1','9:1','11:1','13:1'],
-};
+// CRT 데이터(CRT_COLS/CRT_COL_LABELS/CRT)는 data/combat-tables/combat-result-table.json 에서 fetch.
+// 모든 지형이 동일한 결과 테이블을 공유하며, 지형별로 전력비 → 컬럼 매핑(CRT_COLS)만 다름.
+let CRT_COLS       = null;
+let CRT_COL_LABELS = null;
+let CRT            = null;
 
-const CRT_ROW = (t) => [
-  ['AL2','AL2','AL2','AL2','AL2','AL2','AL2','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','AL1 Do1','AL1 DL1o1'],
-  ['AL2','AL2','AL2','AL2','AL2','AL2','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','AL1 Do1','Ao1 DL1o1','Ao1 DL1o1'],
-  ['AL2','AL2','AL2','AL2','AL2','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','AL1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o1'],
-  ['AL2','AL2','AL2','AL2','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','AL1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2'],
-  ['AL2','AL2','AL2','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','AL1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2'],
-  ['AL2','AL2','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','AL1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o1','Ae4 DL1o2','Ae4 DL1o2'],
-  ['AL1o1','AL1o1','AL1o1 Do1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG'],
-  ['AL1o1','AL1o1 Do1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG'],
-  ['AL1o1 Do1','AL1o1 Do1','AL1o1 Do1','AL1 Do1','Ao1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG'],
-  ['AL1o1 Do1','AL1o1 Do1','AL1 Do1','Ao1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae2 DL2o3 DG'],
-  ['AL1o1 Do1','AL1 Do1','Ao1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o1','Ae4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae2 DL2o3 DG'],
-  ['AL1o1 Do1','Ao1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG'],
-  ['Ao1 Do1','Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 DL1o2','Ao1 e4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG'],
-  ['Ao1 Do1','Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ao1 e4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG'],
-  ['Ao1 DL1o1','Ao1 DL1o1','Ao1 e4 DL1o2','Ae4 DL1o2','Ae4 DL1o2','Ae3 DL2o2 DG','Ae3 DL2o2 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG','Ae2 DL2o3 DG'],
-];
+let _combatTablesLoaded = null;
 
-const CRT = {
-  extr_close: CRT_ROW('extr_close'),
-  very_close: CRT_ROW('very_close'),
-  close:      CRT_ROW('close'),
-  open:       CRT_ROW('open'),
-};
+function loadCombatTables() {
+  if (_combatTablesLoaded) return _combatTablesLoaded;
+  _combatTablesLoaded = fetch('data/combat-tables/combat-result-table.json')
+    .then(r => r.json())
+    .then(data => {
+      CRT_COLS       = data.colsByTerrain;
+      CRT_COL_LABELS = data.colLabelsByTerrain;
+      CRT = {
+        extr_close: data.table,
+        very_close: data.table,
+        close:      data.table,
+        open:       data.table,
+      };
+    })
+    .catch(() => { _combatTablesLoaded = null; });
+  return _combatTablesLoaded;
+}
 
 function getCRTColIndex(ratioNum, terrain) {
   const cols = CRT_COLS[terrain];

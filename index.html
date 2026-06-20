@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/date-addon.css">
   <link rel="stylesheet" href="css/air.css">
+  <link rel="stylesheet" href="css/supply.css">
   <link rel="stylesheet" href="css/lobby.css">
   <link rel="stylesheet" href="css/save-modal.css">
 </head>
@@ -60,6 +61,7 @@
     <button onclick="showPage('combat', this)">전투 계산기</button>
     <button onclick="showPage('barrage', this)">포격/폭격</button>
     <button onclick="showPage('air', this)">항공 임무</button>
+    <button onclick="showPage('supply', this)">보급 판정</button>
   </nav>
 
   <!-- ========================================================
@@ -295,6 +297,13 @@
   ======================================================== -->
   <div id="barrage" class="page">
 
+    <div class="barrage-tab-bar">
+      <button class="barrage-tab active" id="barrageTabNormal"   onclick="setBarrageTab('normal')">포격/폭격</button>
+      <button class="barrage-tab"        id="barrageTabFacility" onclick="setBarrageTab('facility')">시설 포격/폭격</button>
+    </div>
+
+    <div id="barrageNormalContent">
+
     <div class="barrage-row1">
       <div class="card">
         <div class="card-title"><span class="icon">💥</span> 화력</div>
@@ -375,6 +384,73 @@
       </div>
     </div>
 
+    </div><!-- /barrageNormalContent -->
+
+    <div id="barrageFacilityContent" style="display:none;">
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🏭</span> 시설 포격/폭격 <span class="air-step-en">Rule 10.0c</span></div>
+        <div class="fac-note" style="margin-top:8px;">포격/폭격 능력에 맞는 컬럼에 대해 주사위 1개(1d6)를 굴립니다. DRM은 없습니다.</div>
+
+        <div class="field-group" style="margin-top:12px;">
+          <label class="field-label">대상 시설</label>
+          <div class="fac-target-btns" id="facTargetBtns"></div>
+        </div>
+
+        <div class="field-group" style="margin-top:12px;">
+          <label class="field-label">화력 (Barrage/Bombing Strength)</label>
+          <input class="field-input" type="number" id="facilityStr" value="8" min="0" step="0.5" oninput="calcFacility()">
+        </div>
+
+        <div class="barrage-col-display" style="margin-top:12px;">
+          <div class="bcol-row">
+            <div class="bcol-block">
+              <div class="bcol-sublabel">화력 컬럼</div>
+              <div class="bcol-main bcol-final" id="fColLabel">—</div>
+              <div class="bcol-cost">보급 <span id="fColCost">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="facilityUnitsCard">
+        <div class="card-title"><span class="icon">✈</span> 항공 기지 주둔 유닛</div>
+        <div id="facilityUnitsContainer"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🎲</span> 시설 포격/폭격 굴림 (1d6)</div>
+        <div class="combat-dice-inner">
+          <div class="combat-dice-controls">
+            <div class="combat-roll-btns">
+              <button class="dice-roll-btn combat-btn" style="width:100%;" onclick="rollFacility()">
+                <span class="roll-label">시설 포격/폭격 굴림</span>
+                <span class="roll-formula">1d6</span>
+              </button>
+            </div>
+          </div>
+          <div class="combat-dice-result-wrap">
+            <div class="dice-result-area combat-dice-result" id="facilityDiceResult">
+              <span class="dice-placeholder">버튼을 눌러 굴리세요</span>
+            </div>
+            <div class="dice-result-tag" id="facilityDiceTag"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fac-legend-card">
+        <div class="card-title"><span class="icon">📖</span> 결과 해설</div>
+        <div class="fac-legend">
+          <div class="fac-legend-row"><span class="fac-legend-key fac-none">-</span><span class="fac-legend-desc">효과 없음</span></div>
+          <div class="fac-legend-row"><span class="fac-legend-key fac-star">*</span><span class="fac-legend-desc">철도 방해 포격/폭격 성공</span></div>
+          <div class="fac-legend-row"><span class="fac-legend-key fac-num">1</span><span class="fac-legend-desc">비행장 1레벨 감소(최소 Level 1), 또는 항구 1 손실(최대 4 손실)</span></div>
+          <div class="fac-legend-row"><span class="fac-legend-key fac-num">2</span><span class="fac-legend-desc">비행장 2레벨 감소(최소 Level 1), 또는 항구 2 손실(최대 4 손실)</span></div>
+          <div class="fac-legend-row"><span class="fac-legend-key fac-paren">(#)</span><span class="fac-legend-desc">비행장이 목표라면 괄호 안의 숫자를 사용해 비행장에 있는 각 항공 유닛을 개별적으로 확인. 이 숫자 이상(주사위 1개)으로 나올 시 해당 유닛 1스텝 손실.</span></div>
+        </div>
+      </div>
+
+    </div><!-- /barrageFacilityContent -->
+
   </div><!-- /barrage -->
 
 
@@ -384,6 +460,14 @@
   <div id="air" class="page">
     <div id="airContent"></div>
   </div><!-- /air -->
+
+
+  <!-- ========================================================
+       PAGE: 보급 판정
+  ======================================================== -->
+  <div id="supply" class="page">
+    <div id="supplyContent"></div>
+  </div><!-- /supply -->
 
 
   <footer>
@@ -427,6 +511,7 @@
 <script src="js/barrage.js"></script>
 <script src="js/aircraft.js"></script>
 <script src="js/air.js"></script>
+<script src="js/supply.js"></script>
 <script src="js/scenario.js"></script>
 <script src="js/persist.js"></script>
 <script src="js/app.js"></script>

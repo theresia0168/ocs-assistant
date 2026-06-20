@@ -1,60 +1,40 @@
 // ============================================================
 // 포격/폭격 (Barrage)
 // ============================================================
+// 테이블 데이터(BRT_COLS/BRT/DENSITY_*/CHECKLIST, FBRT_COLS/FBRT_RAW)는
+// data/barrage-tables/*.json 에서 fetch — loadBarrageTables() 참고.
 
-const BRT_COLS = [
-  { max: 1,   label: '1 이하', cost: '1T' },
-  { max: 2,   label: '2',      cost: '1T' },
-  { max: 4,   label: '3-4',    cost: '2T' },
-  { max: 7,   label: '5-7',    cost: '2T' },
-  { max: 11,  label: '8-11',   cost: '2T' },
-  { max: 16,  label: '12-16',  cost: '3T' },
-  { max: 24,  label: '17-24',  cost: '3T' },
-  { max: 40,  label: '25-40',  cost: '4T' },
-  { max: 68,  label: '41-68',  cost: '6T' },
-  { max: 116, label: '69-116', cost: '8T' },
-  { max: Infinity, label: '117+', cost: '10T' },
-];
+let BRT_COLS         = null;
+let BRT              = null;
+let DENSITY_SHIFT    = null;
+let DENSITY_LABEL    = null;
+let BRT_RESULT_LABEL = null;
+let CHECKLIST        = null;
+let FBRT_COLS        = null;
+let FBRT_RAW         = null;
 
-const BRT = [
-  ['-','-','-','-','-','-','-','-','-','DG','DG'],
-  ['-','-','-','-','-','-','-','-','DG','DG','DG'],
-  ['-','-','-','-','-','-','-','DG','DG','DG','DG'],
-  ['-','-','-','-','-','-','DG','DG','DG','DG','HALF_COND'],
-  ['-','-','-','-','-','DG','DG','DG','DG','HALF_COND','HALF_COND'],
-  ['-','-','-','-','DG','DG','DG','DG','HALF_COND','HALF_COND','HALF'],
-  ['-','-','-','DG','DG','DG','DG','HALF_COND','HALF_COND','HALF','HALF'],
-  ['-','-','DG','DG','DG','HALF_COND','HALF_COND','HALF_COND','HALF','HALF','HALF'],
-  ['-','DG','DG','DG','HALF_COND','HALF_COND','HALF','HALF','HALF','1','1'],
-  ['DG','DG','DG','HALF_COND','HALF_COND','HALF','HALF','HALF','1','1','2'],
-  ['DG','HALF','HALF','HALF','HALF','1','1','1','1','2','3'],
-];
+let _barrageTablesLoaded = null; // 로딩 완료 후의 Promise 캐시
 
-const DENSITY_SHIFT = {
-  le1: -1,
-  le3:  0,
-  le4: +1,
-  le5: +2,
-  le6: +3,
-  gt6: +4,
-};
-const DENSITY_LABEL = {
-  le1: '1 RE 이하 (1L)',
-  le3: '3 RE 이하 (No Effect)',
-  le4: '4 RE 이하 (1R)',
-  le5: '5 RE 이하 (2R)',
-  le6: '6 RE 이하 (3R)',
-  gt6: '6 RE 초과 (4R)',
-};
-const BRT_RESULT_LABEL = {
-  '-':        { text: '효과 없음',   cls: 'brt-none' },
-  'DG':       { text: 'DG',         cls: 'brt-dg'   },
-  'HALF_COND':{ text: '[1/2]',      cls: 'brt-half-cond' },
-  'HALF':     { text: '1/2',        cls: 'brt-half' },
-  '1':        { text: '1 스텝',     cls: 'brt-step' },
-  '2':        { text: '2 스텝',     cls: 'brt-step' },
-  '3':        { text: '3 스텝',     cls: 'brt-step' },
-};
+function loadBarrageTables() {
+  if (_barrageTablesLoaded) return _barrageTablesLoaded;
+  _barrageTablesLoaded = Promise.all([
+    fetch('data/barrage-tables/barrage-table.json').then(r => r.json()),
+    fetch('data/barrage-tables/facility-bombardment-table.json').then(r => r.json()),
+  ]).then(([brt, fbrt]) => {
+    // JSON은 Infinity를 표현할 수 없어 null로 저장 — 로드 시점에 복원
+    BRT_COLS = brt.cols.map(c => ({ ...c, max: c.max === null ? Infinity : c.max }));
+    BRT              = brt.table;
+    DENSITY_SHIFT    = brt.densityShift;
+    DENSITY_LABEL    = brt.densityLabel;
+    BRT_RESULT_LABEL = brt.resultLabel;
+    CHECKLIST        = brt.checklist;
+    FBRT_COLS = fbrt.cols.map(c => ({ ...c, max: c.max === null ? Infinity : c.max }));
+    FBRT_RAW  = fbrt.table;
+  }).catch(() => {
+    _barrageTablesLoaded = null; // 실패 시 재시도 가능하도록 캐시 해제
+  });
+  return _barrageTablesLoaded;
+}
 
 // 함선 포격 결과 조정
 // [1/2], 1/2 → DG, 1 → 1/2, 2 → 1, 3 → 2
@@ -103,16 +83,6 @@ let barrageType    = 'artillery';
 let barrageFort    = 0;
 let barrageDensity = 'le3';
 
-const CHECKLIST = [
-  { shift: -1, desc: '아무 레벨의 진지 존재 (1L)' },
-  { shift: -1, desc: 'Close / Very Close 헥스 (1L)' },
-  { shift: -2, desc: 'Extr Close 헥스 (2L)' },
-  { shift: +3, desc: '목표 헥스 내 유닛 전략 이동 모드 (3R)' },
-  { shift: +1, desc: '모든 항공 유닛이 10헥스 이내 기지 출격 (1R)' },
-  { shift: -1, desc: '항공 유닛 항속 거리 절반 이상 이동 (1L, 옵션)' },
-  { shift: -3, desc: '관측 유닛 없음 (3L)' },
-];
-
 function getChecklistShift() {
   const checks = document.querySelectorAll('.bcl-item input[type=checkbox]');
   let total = 0;
@@ -142,7 +112,7 @@ function setDensity(val, btn) {
 }
 
 function calcBarrage() {
-  if (!document.getElementById('barrageStr')) return;
+  if (!document.getElementById('barrageStr') || !BRT_COLS) return;
   const raw         = parseFloat(document.getElementById('barrageStr').value) || 0;
   const baseColIdx  = getBarrageColIndex(raw);
   const densShift   = DENSITY_SHIFT[barrageDensity];
@@ -195,6 +165,7 @@ function calcBarrage() {
 }
 
 function rollBarrage() {
+  if (!BRT_COLS) return;
   const area = document.getElementById('barrageDiceResult');
   const tag  = document.getElementById('barrageDiceTag');
   area.innerHTML = '';
@@ -263,37 +234,7 @@ function rollBarrage() {
 // ============================================================
 // 시설 포격/폭격 (Facility Barrage/Bombing)
 // ============================================================
-
-// 화력 컬럼: 1이하, 2, 3-4, 5-10, 11-20, 21-40, 41-80, 81+
-// 보급 소모: 1T, 1T, 1T, 1T, 2T, 4T, 6T, 8T
-const FBRT_COLS = [
-  { max: 1,        label: '1 이하', cost: '1T' },
-  { max: 2,        label: '2',      cost: '1T' },
-  { max: 4,        label: '3-4',    cost: '1T' },
-  { max: 10,       label: '5-10',   cost: '1T' },
-  { max: 20,       label: '11-20',  cost: '2T' },
-  { max: 40,       label: '21-40',  cost: '4T' },
-  { max: 80,       label: '41-80',  cost: '6T' },
-  { max: Infinity, label: '81+',    cost: '8T' },
-];
-
-// 시설 포격/폭격 결과 테이블
-// 행: 주사위 1~6 (인덱스 0~5), 열: 화력 컬럼 0~7
-// 셀 표기: '-' 효과없음, '*' 철도방해, 숫자 시설손실, '(N)' 항공유닛확인, 조합 가능
-const FBRT_RAW = [
-  // 주사위 1
-  ['-',   '-',   '-',   '-',   '-',   '-',  '-(5)', '1(5)'    ],
-  // 주사위 2
-  ['-',   '-',   '-',   '-',   '-',   '-(5)',  '1(4)', '1(4)' ],
-  // 주사위 3
-  ['-',   '-',   '-',   '-',   '-(5)','1(5)',  '1(4)', '1(4)' ],
-  // 주사위 4
-  ['-',   '-',   '-',   '*(6)','1*(5)','1*(4)', '1*(4)','2*(4)'],
-  // 주사위 5
-  ['-',   '-(6)','*(6)','1*(5)','1*(4)','2*(4)','2*(4)','2*(3)'],
-  // 주사위 6
-  ['(6)', '*(5)','1*(5)','1*(4)','1*(4)','2*(4)','2*(3)','2*(3)'],
-];
+// FBRT_COLS / FBRT_RAW 데이터는 loadBarrageTables()에서 채워짐 (위 참고)
 
 function parseFBRTCell(cell) {
   let num   = null;
@@ -334,10 +275,140 @@ function setBarrageTab(tab) {
   if (tab === 'facility') calcFacility();
 }
 
+// ── 대상 시설 ────────────────────────────────────────────────
+const FAC_TARGET_LABEL = { rail: '철도', airbase: '항공 기지', port: '항구' };
+
+let facilityTarget = 'rail';
+let facilityUnits  = [];   // 항공 기지 개별 확인 판정용: [{ id, name, aircraftId, roll, lost }]
+// (#) 판정이 발생했을 때만 채워지는 임계값. null이면 유닛 입력 카드 자체를 숨김 — 전장의 안개 보호:
+// 메인 굴림 결과가 나오기 전에는 어떤 유닛이 체크 대상인지 미리 알 수 없어야 함.
+let facilityCheckThreshold = null;
+
+function setFacilityTarget(target, btn) {
+  facilityTarget = target;
+  document.querySelectorAll('.fac-target-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  facilityCheckThreshold = null;
+  facilityUnits = [];
+  renderFacilityUnitsContainer();
+}
+
+function addFacilityUnit() {
+  facilityUnits.push({ id: facilityUnits.length, name: `유닛 ${facilityUnits.length + 1}`, aircraftId: null, roll: null, lost: false });
+  renderFacilityUnitsContainer();
+}
+
+function removeFacilityUnit(i) {
+  facilityUnits.splice(i, 1);
+  facilityUnits.forEach((u, idx) => { u.id = idx; if (!u.aircraftId) u.name = `유닛 ${idx + 1}`; });
+  renderFacilityUnitsContainer();
+}
+
+function facilityPickAircraft(i, aircraftId) {
+  const u = facilityUnits[i];
+  if (!u) return;
+
+  if (!aircraftId) {
+    u.aircraftId = null;
+    u.name = `유닛 ${i + 1}`;
+    renderFacilityUnitsContainer();
+    return;
+  }
+
+  const sideKey = (typeof resolveSideKey === 'function') ? resolveSideKey('opposing') : null;
+  const ac = (typeof getAircraftOptionsForSide === 'function')
+    ? getAircraftOptionsForSide(sideKey).find(a => a.id === aircraftId)
+    : null;
+  if (!ac) return;
+
+  u.aircraftId = ac.id;
+  u.name       = ac.name;
+  renderFacilityUnitsContainer();
+}
+
+function facilitySetUnitName(i, val) {
+  const u = facilityUnits[i];
+  if (u) u.name = val;
+}
+
+function rollFacilityUnitChecks() {
+  if (facilityCheckThreshold === null) return;
+  const r = () => Math.floor(Math.random() * 6) + 1;
+  facilityUnits.forEach(u => {
+    const roll = r();
+    u.roll = roll;
+    u.lost = roll >= facilityCheckThreshold;
+  });
+  renderFacilityUnitsContainer();
+}
+
+function renderFacilityUnitsHTML() {
+  const sideKey    = (typeof resolveSideKey === 'function') ? resolveSideKey('opposing') : null;
+  const hasPresets = (typeof getAircraftOptionsForSide === 'function') && getAircraftOptionsForSide(sideKey).length > 0;
+
+  const rows = facilityUnits.map((u, i) => `
+    <div class="bom-unit-row">
+      <div class="bom-unit-idx">${i + 1}</div>
+      <div class="bom-unit-fields">
+        ${hasPresets ? `
+        <div class="field-group">
+          <label class="field-label">기종 선택</label>
+          <select class="field-input" style="width:160px;" onchange="facilityPickAircraft(${i}, this.value)">
+            <option value="">직접 입력</option>
+            ${buildAircraftSelectOptionsHTML(u.aircraftId, sideKey)}
+          </select>
+        </div>` : ''}
+        ${!u.aircraftId ? `
+        <div class="field-group">
+          <label class="field-label">유닛 이름</label>
+          <input class="field-input" type="text" style="width:120px;" value="${u.name}" oninput="facilitySetUnitName(${i}, this.value)">
+        </div>` : `
+        <div class="field-group">
+          <label class="field-label">기종</label>
+          <div class="fac-unit-name">${u.name}</div>
+        </div>`}
+        ${u.roll !== null ? `
+        <div class="fac-unit-roll ${u.lost ? 'fac-unit-lost' : 'fac-unit-safe'}">
+          굴림 ${u.roll} → ${u.lost ? '1스텝 손실' : '무사'}
+        </div>` : ''}
+      </div>
+      ${facilityUnits.length > 1 ? `<button class="bom-del-btn" onclick="removeFacilityUnit(${i})">✕</button>` : ''}
+    </div>`).join('');
+
+  return `
+    <div class="fac-note" style="margin-bottom:10px;">주사위 <strong>${facilityCheckThreshold} 이상</strong>이면 해당 유닛 1스텝 손실. 비행장에 있던 유닛만 입력한 뒤 판정 굴림을 누르세요.</div>
+    <div class="bom-unit-list">${rows}</div>
+    <button class="btn btn-secondary" style="margin-top:6px;width:100%;" onclick="addFacilityUnit()">+ 항공 유닛 추가</button>
+    <button class="dice-roll-btn combat-btn" style="width:100%;margin-top:10px;" onclick="rollFacilityUnitChecks()" ${facilityUnits.length === 0 ? 'disabled' : ''}>
+      <span class="roll-label">유닛별 손실 판정 굴림</span>
+      <span class="roll-formula">1d6 ea</span>
+    </button>`;
+}
+
+function renderFacilityUnitsContainer() {
+  const card = document.getElementById('facilityUnitsCard');
+  const el   = document.getElementById('facilityUnitsContainer');
+  if (!card || !el) return;
+  const show = facilityTarget === 'airbase' && facilityCheckThreshold !== null;
+  card.style.display = show ? '' : 'none';
+  el.innerHTML = show ? renderFacilityUnitsHTML() : '';
+}
+
+function initFacility() {
+  const targetEl = document.getElementById('facTargetBtns');
+  if (targetEl) {
+    targetEl.innerHTML = Object.entries(FAC_TARGET_LABEL).map(([val, label]) => `
+      <button class="fac-target-btn${val === facilityTarget ? ' active' : ''}" onclick="setFacilityTarget('${val}', this)">${label}</button>
+    `).join('');
+  }
+  renderFacilityUnitsContainer();
+  calcFacility();
+}
+
 // ── 시설 화력 컬럼 계산 ──────────────────────────────────────
 function calcFacility() {
   const el = document.getElementById('facilityStr');
-  if (!el) return;
+  if (!el || !FBRT_COLS) return;
   const raw    = parseFloat(el.value) || 0;
   const colIdx = getFBRTColIndex(raw);
   const col    = FBRT_COLS[colIdx];
@@ -345,10 +416,31 @@ function calcFacility() {
   document.getElementById('fColCost').textContent  = col.cost;
 }
 
+// 결과 코드(num/star/paren) → 대상 시설에 맞는 해설 라인
+function getFacilityResultLines(parsed, target) {
+  const { num, star, paren } = parsed;
+
+  if (target === 'rail') {
+    return star
+      ? [{ cls: 'fac-star', text: '★ 철도 방해 포격/폭격 성공' }]
+      : [{ cls: 'fac-none', text: '효과 없음' }];
+  }
+
+  const lines = [];
+  if (target === 'airbase') {
+    if (num)   lines.push({ cls: 'fac-num',   text: `비행장 ${num}레벨 감소 (최소 Level 1)` });
+    if (paren) lines.push({ cls: 'fac-paren', text: `주둔 항공 유닛 개별 확인 — 주사위 ${paren} 이상 시 1스텝 손실` });
+  } else if (target === 'port') {
+    if (num)   lines.push({ cls: 'fac-num',   text: `항구 ${num} 손실 (최대 4 손실)` });
+  }
+  if (!lines.length) lines.push({ cls: 'fac-none', text: '효과 없음' });
+  return lines;
+}
+
 // ── 시설 포격 굴림 ──────────────────────────────────────────
 function rollFacility() {
   const el = document.getElementById('facilityStr');
-  if (!el) return;
+  if (!el || !FBRT_COLS) return;
   const raw    = parseFloat(el.value) || 0;
   const colIdx = getFBRTColIndex(raw);
   const col    = FBRT_COLS[colIdx];
@@ -364,17 +456,8 @@ function rollFacility() {
   // 주사위 면 렌더링
   area.appendChild(makeDie(diceVal, 'ivory'));
 
-  const { num, star, paren } = parsed;
-  const noEffect = !num && !star && !paren;
-
-  let html = '';
-  if (noEffect) {
-    html += `<div class="fac-result-line fac-none">— 효과 없음</div>`;
-  } else {
-    if (star) html += `<div class="fac-result-line fac-star">★ 철도방해(항공 저지) 성공</div>`;
-    if (num)  html += `<div class="fac-result-line fac-num">시설 ${num} 손실</div>`;
-    if (paren) html += `<div class="fac-result-line fac-paren">항공 유닛 개별 확인 (${paren}+)</div>`;
-  }
+  const lines = getFacilityResultLines(parsed, facilityTarget);
+  const html  = lines.map(l => `<div class="fac-result-line ${l.cls}">${l.text}</div>`).join('');
 
   const modDiv = document.createElement('div');
   modDiv.className = 'dice-modified-total';
@@ -383,7 +466,13 @@ function rollFacility() {
     <div class="drm-line">주사위 ${diceVal} / 화력 컬럼: ${col.label} (보급 ${col.cost})</div>`;
   area.appendChild(modDiv);
 
-  tag.textContent = '시설 포격/폭격 굴림';
+  // 항공 기지 대상이고 (#) 결과가 나온 경우에만 개별 유닛 확인 카드를 노출.
+  // 결과가 나오기 전까지는 어떤 유닛이 위험한지 알 수 없어야 하므로, 유닛 입력은 항상 빈 목록에서 새로 시작.
+  facilityCheckThreshold = (facilityTarget === 'airbase' && parsed.paren) ? parsed.paren : null;
+  facilityUnits = [];
+  renderFacilityUnitsContainer();
+
+  tag.textContent = `시설 포격/폭격 굴림 — ${FAC_TARGET_LABEL[facilityTarget]}`;
   tag.className   = 'dice-result-tag combat';
 }
 
@@ -392,40 +481,45 @@ function rollFacility() {
 // ============================================================
 
 function initBarrage() {
-  // 밀집도 버튼
-  const densityEl = document.getElementById('densityBtns');
-  if (densityEl) {
-    densityEl.innerHTML = Object.entries(DENSITY_LABEL).map(([val, label]) => `
-      <button class="density-btn${val === barrageDensity ? ' active' : ''}"
-              onclick="setDensity('${val}', this)">${label}</button>
-    `).join('');
-  }
+  loadBarrageTables().then(() => {
+    if (!BRT_COLS) return; // fetch 실패 시 조용히 중단 (콘솔에서 원인 확인)
 
-  // Hedgehog 버튼
-  const fortEl = document.getElementById('barrFortBtns');
-  if (fortEl) {
-    fortEl.innerHTML = [0,1,2,3,4].map(v => `
-      <button class="fort-btn barrage-fort-btn${barrageFort === v ? ' active' : ''}"
-              onclick="setBarrageFort(${v}, this)">${v === 0 ? '없음' : v}</button>
-    `).join('');
-  }
+    // 밀집도 버튼
+    const densityEl = document.getElementById('densityBtns');
+    if (densityEl) {
+      densityEl.innerHTML = Object.entries(DENSITY_LABEL).map(([val, label]) => `
+        <button class="density-btn${val === barrageDensity ? ' active' : ''}"
+                onclick="setDensity('${val}', this)">${label}</button>
+      `).join('');
+    }
 
-  // 컬럼 시프트 체크리스트
-  const checkEl = document.getElementById('barrageChecklist');
-  if (checkEl) {
-    checkEl.innerHTML = CHECKLIST.map((item, i) => {
-      const shiftCls = item.shift > 0 ? 'bcl-R' : 'bcl-L';
-      const isOptional = item.desc.includes('옵션');
-      const isNoObs = item.shift === -3;
-      const itemCls = isOptional ? 'bcl-item bcl-optional' : isNoObs ? 'bcl-item bcl-no-obs-item' : 'bcl-item';
-      return `
-        <label class="${itemCls}">
-          <input type="checkbox" onchange="calcBarrage()">
-          <span class="bcl-shift ${shiftCls}">${item.shift > 0 ? '+' : ''}${item.shift}</span>
-          <span class="bcl-desc">${item.desc}</span>
-        </label>`;
-    }).join('');
-  }
+    // Hedgehog 버튼
+    const fortEl = document.getElementById('barrFortBtns');
+    if (fortEl) {
+      fortEl.innerHTML = [0,1,2,3,4].map(v => `
+        <button class="fort-btn barrage-fort-btn${barrageFort === v ? ' active' : ''}"
+                onclick="setBarrageFort(${v}, this)">${v === 0 ? '없음' : v}</button>
+      `).join('');
+    }
 
-  calcBarrage();
+    // 컬럼 시프트 체크리스트
+    const checkEl = document.getElementById('barrageChecklist');
+    if (checkEl) {
+      checkEl.innerHTML = CHECKLIST.map((item, i) => {
+        const shiftCls = item.shift > 0 ? 'bcl-R' : 'bcl-L';
+        const isOptional = item.desc.includes('옵션');
+        const isNoObs = item.shift === -3;
+        const itemCls = isOptional ? 'bcl-item bcl-optional' : isNoObs ? 'bcl-item bcl-no-obs-item' : 'bcl-item';
+        return `
+          <label class="${itemCls}">
+            <input type="checkbox" onchange="calcBarrage()">
+            <span class="bcl-shift ${shiftCls}">${item.shift > 0 ? '+' : ''}${item.shift}</span>
+            <span class="bcl-desc">${item.desc}</span>
+          </label>`;
+      }).join('');
+    }
+
+    calcBarrage();
+    initFacility();
+  });
 }

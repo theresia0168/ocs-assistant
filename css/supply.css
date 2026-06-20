@@ -1,0 +1,51 @@
+/* ============================================================
+   보급 판정 (Supply Tables) — Styles
+============================================================ */
+
+/* AR 선택 버튼 */
+.supply-ar-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.supply-ar-btn {
+  font-family: var(--font); font-size: 0.95rem; font-weight: 900;
+  width: 44px; height: 44px;
+  background: var(--paper-dark); color: var(--ink);
+  border: 2px solid var(--ink); border-bottom: 4px solid var(--ink);
+  cursor: pointer; transition: all 0.1s;
+}
+.supply-ar-btn:hover  { background: var(--khaki); }
+.supply-ar-btn.active { background: var(--ink); color: var(--paper); }
+.supply-ar-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+/* DRM 체크박스 */
+.supply-drm-check {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 0.82rem; color: var(--ink);
+}
+.supply-drm-check input { width: 16px; height: 16px; accent-color: var(--ink); }
+
+/* 주사위 숫자 배지 (간이 다이) */
+.supply-die-badge {
+  width: 42px; height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  background: #f0e8d0; border: 2px solid var(--ink);
+  box-shadow: 2px 3px 0 rgba(0,0,0,0.45);
+  font-size: 1.3rem; font-weight: 900; color: var(--ink);
+  flex-shrink: 0;
+}
+
+/* SP + T 분리 입력 */
+.supply-spt-row { display: flex; align-items: center; gap: 6px; }
+.supply-spt-unit { font-size: 0.78rem; font-weight: 700; color: var(--ink-faded); }
+.supply-spt-plus { font-size: 0.95rem; font-weight: 900; color: var(--border); }
+
+/* 결과 박스 */
+.supply-result-box {
+  margin-top: 6px; padding: 8px 12px;
+  font-size: 0.9rem; font-weight: 700; color: var(--ink);
+  background: rgba(0,0,0,0.05); border-left: 4px solid var(--border);
+  text-align: right;
+}
+.supply-result-box.result-none { border-left-color: var(--olive); color: var(--olive); }
+.supply-result-box.result--1   { border-left-color: var(--khaki); }
+.supply-result-box.result--2   { border-left-color: #c87820; color: #8b4a10; }
+.supply-result-box.result--4   { border-left-color: #c84020; color: #8b1a1a; }
+.supply-result-box.result-full { border-left-color: #6a1010; color: #6a1010; background: rgba(200,64,32,0.1); }
